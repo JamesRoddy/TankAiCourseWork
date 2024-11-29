@@ -75,6 +75,7 @@ public class DumbTank : AITank
         }
         else
         {
+            //test comment
             //if there is a enemy tank found
             if (enemyTanksFound.Count > 0 && enemyTanksFound.First().Key != null)
             {
