@@ -93,7 +93,7 @@ public abstract class AITank : MonoBehaviour
         fireSound = transform.Find("FireSound").GetComponent<AudioSource>();
   
         //Search for friendly bases.
-        BaseScript[] basesScript = transform.parent.GetComponentsInChildren<BaseScript>();
+        BaseState[] basesScript = transform.parent.GetComponentsInChildren<BaseState>();
         //Store bases in a list. 
         foreach (var item in basesScript)
         {

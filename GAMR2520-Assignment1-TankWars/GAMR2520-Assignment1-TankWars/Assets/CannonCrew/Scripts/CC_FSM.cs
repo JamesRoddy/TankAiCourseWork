@@ -8,11 +8,11 @@ public class CC_FSM : MonoBehaviour
 {
 
 
-    Dictionary<Type, BaseState> states; // dicitionary that will store all of the states available to the
+    Dictionary<Type, BaseST> states; // dicitionary that will store all of the states available to the
    // state machine with the key for a particualr state being a type associated with one of
    // the child classes of the abstract  base class 
-    BaseState currentState; // the current state of the state machine 
-    public BaseState CState // getter and setter for current state
+    BaseST currentState; // the current state of the state machine 
+    public BaseST CState // getter and setter for current state
     {
         get
         {
@@ -26,7 +26,7 @@ public class CC_FSM : MonoBehaviour
 
     } 
 
-    public void setStates(Dictionary<Type, BaseState> newStates)
+    public void setStates(Dictionary<Type, BaseST> newStates)
     {
         states = newStates;
     }

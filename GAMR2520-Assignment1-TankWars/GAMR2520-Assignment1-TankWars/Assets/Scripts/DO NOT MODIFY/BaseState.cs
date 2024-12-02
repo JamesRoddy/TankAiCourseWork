@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Class <c>BaseScript</c> handles the Tank Base behaviour, specifically the destruction process.
 /// </summary>
-public class BaseScript : MonoBehaviour
+public class BaseState : MonoBehaviour
 {
     bool baseHit = false; /*!< <c>baseHit</c> stores if the base has been hit. */
     private ParticleSystem destroyPart; /*!< <c>destroyPart</c> stores particle system for when destroying base */
