@@ -29,6 +29,7 @@ public class CC_SmartTank : AITank
     public GameObject consumable;
     public GameObject enemyTank;
     public GameObject enemyBase;
+    public PRIORITIES currentPriority;
     // enums for prioirity these can be obtained through prioritites.name 
     public enum PRIORITIES
     {
@@ -39,9 +40,9 @@ public class CC_SmartTank : AITank
 
     }
 
-    public PRIORITIES priority ;
+  
     // idea: priority queue(might become more relevant as project moves on )
- /*   public List<PRIORITIES> currentPriorites = new List<PRIORITIES> {   };*/
+    /*   public List<PRIORITIES> currentPriorites = new List<PRIORITIES> {   };*/
 
     public override void AITankStart()
     {
@@ -49,8 +50,8 @@ public class CC_SmartTank : AITank
         // calc maxiumum for resources 
         maxHealth = a_GetHealthLevel;
         maxAmmo = a_GetAmmoLevel + ammoMaxOffset;
-        maxFuel =  a_GetFuelLevel;
-        priority = PRIORITIES.NONE;
+        maxFuel = a_GetFuelLevel;
+        currentPriority = PRIORITIES.NONE;
         // current thresholds for when something should become a priority
         healthPriorityThresh = 30.0f;
         ammoPriorityThresh = 4.0f;
@@ -62,12 +63,12 @@ public class CC_SmartTank : AITank
     }
     public override void AIOnCollisionEnter(Collision collision)
     {
-       
+
     }
     public override void AITankUpdate()
     {
 
-        setPriority();
+        /*setPriority();*/
 
 
     }
@@ -96,7 +97,7 @@ public class CC_SmartTank : AITank
     private bool hasLowResource()
     {
 
-        int isLow =  Convert.ToInt32(CheckLowFuel()) + Convert.ToInt32(CheckLowAmmo()) + Convert.ToInt32(CheckLowHealth());
+        int isLow = Convert.ToInt32(CheckLowFuel()) + Convert.ToInt32(CheckLowAmmo()) + Convert.ToInt32(CheckLowHealth());
 
 
         return isLow > 0;
@@ -104,42 +105,49 @@ public class CC_SmartTank : AITank
 
     }
     // get lowest resource will return the HEALTH enum if low health for example 
-   public PRIORITIES  GetCurrentLowestResource()
+    public PRIORITIES GetCurrentLowestResource()
     {
-        if (hasLowResource())
+        if (hasLowResource()) // if we have any resource that is below its thresh hold
         {
-            float min = Mathf.Min(a_GetAmmoLevel / maxAmmo, Mathf.Min(a_GetHealthLevel / maxHealth, a_GetFuelLevel / maxFuel));
+            float min = Mathf.Min(a_GetAmmoLevel / maxAmmo, Mathf.Min(a_GetHealthLevel / maxHealth, a_GetFuelLevel / maxFuel)); // get the lowest percentage out of the resources
 
-            if (min == a_GetHealthLevel/maxHealth)
+
+            // return the current highest priority resource based on it being the lowest in terms of amount 
+            if (min == a_GetHealthLevel / maxHealth)
             {
                 return PRIORITIES.HEALTH;
             }
-            if (min == a_GetFuelLevel/maxAmmo)
+            else if (min == a_GetFuelLevel / maxAmmo)
             {
                 return PRIORITIES.FUEL;
             }
+
             return PRIORITIES.AMMO;
 
         }
-        return PRIORITIES.NONE;
-        
+
+
+        return PRIORITIES.NONE;// if we didnt have any resource of priority return none 
+
     }
-    // continously called in update to set the current priority level to the lowest resource 
-    private void setPriority()
+
+
+    // allows for manual assignment of currentPrioity
+    public PRIORITIES setCurrentPriority{
+
+        set
+        {
+            currentPriority = value;
+        }
+
+      }
+
+ 
+    public void setPriorityToLowest()
     {
 
-        if (GetCurrentLowestResource() != PRIORITIES.NONE)
-        {
-            priority = GetCurrentLowestResource();
-            return;
-            
-
-
-
-        }
-        priority = PRIORITIES.NONE; // will be set to NONE  if we dont have any low resources according to the thresh holds 
-
-
+            currentPriority = GetCurrentLowestResource();
+         
     }
 
 
