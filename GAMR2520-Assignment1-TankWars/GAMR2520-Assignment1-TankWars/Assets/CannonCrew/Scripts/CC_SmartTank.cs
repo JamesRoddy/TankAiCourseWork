@@ -51,7 +51,7 @@ public class CC_SmartTank : AITank
     private void initStateMachine()
     {
 
-        Dictionary<Type,BaseState> states = new Dictionary<Type,BaseState>();
+        Dictionary<Type,BaseST> states = new Dictionary<Type,BaseST>();
 
 
         GetComponent<CC_FSM>().setStates(states);
