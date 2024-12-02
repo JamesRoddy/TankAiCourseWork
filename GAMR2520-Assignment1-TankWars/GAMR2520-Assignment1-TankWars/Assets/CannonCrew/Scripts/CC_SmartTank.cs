@@ -48,6 +48,16 @@ public class CC_SmartTank : AITank
 
     }
 
+    private void initStateMachine()
+    {
+
+        Dictionary<Type,BaseState> states = new Dictionary<Type,BaseState>();
+
+
+        GetComponent<CC_FSM>().setStates(states);
+
+
+    }
   
     // idea: priority queue(might become more relevant as project moves on )
     /*   public List<PRIORITIES> currentPriorites = new List<PRIORITIES> {   };*/
