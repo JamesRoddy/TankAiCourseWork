@@ -91,20 +91,20 @@ public class CC_SmartTank : AITank
 
     }
     // methods for checking if a specifc resource is low 
-    private bool CheckLowHealth()
+    public bool CheckLowHealth()
     {
 
         return a_GetHealthLevel <= healthPriorityThresh;
 
     }
-    private bool CheckLowAmmo()
+    public bool CheckLowAmmo()
     {
         return a_GetAmmoLevel <= ammoPriorityThresh;
 
 
 
     }
-    private bool CheckLowFuel()
+    public bool CheckLowFuel()
     {
         return a_GetFuelLevel <= fuelPriorityThresh;
 
@@ -112,7 +112,7 @@ public class CC_SmartTank : AITank
 
     }
     // check if we have any low resources at all 
-    private bool hasLowResource()
+    public bool hasLowResource()
     {
 
         int isLow = Convert.ToInt32(CheckLowFuel()) + Convert.ToInt32(CheckLowAmmo()) + Convert.ToInt32(CheckLowHealth());
