@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static AStar;
 
@@ -31,6 +32,10 @@ public class CC_SmartTank : AITank
     public GameObject enemyTank;
     public GameObject enemyBase;
     public PRIORITIES currentPriority;
+
+
+
+
 
     public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     /*!< <c>enemyTanksFound</c> stores all tanks that are visible within the tanks sensor. */
     public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    /*!< <c>consumablesFound</c> stores all consumables that are visible within the tanks sensor. */
@@ -85,8 +90,13 @@ public class CC_SmartTank : AITank
     }
     public override void AITankUpdate()
     {
+        enemyBasesFound = a_BasesFound;
+        enemyTanksFound = a_TanksFound; 
+        consumablesFound = a_ConsumablesFound;
 
-        /*setPriority();*/
+        enemyTank = enemyTanksFound.First().Key;
+        enemyBase = enemyBasesFound.First().Key;
+
 
 
     }
