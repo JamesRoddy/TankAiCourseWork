@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BaseST: MonoBehaviour
+public abstract class BaseST 
 {
     public abstract Type Entry();
     public abstract Type Update();
