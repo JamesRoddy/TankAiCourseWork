@@ -26,9 +26,14 @@ public class CC_AttackState : BaseST
             Tank.TurretFireAtPoint(EnemyTankPositionStore);
             return null;
         }
-        else if (EnemyTankPositionStore)
+        else if (!EnemyTankPositionStore.transform.position.Equals(Tank.enemyTank.transform.position) && !Tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL, CC_SmartTank.PRIORITIES.HEALTH))
         {
+            return typeof(Chase);
+        }
 
+        else
+        {
+            return typeof(Retreat);
         }
     }
 
