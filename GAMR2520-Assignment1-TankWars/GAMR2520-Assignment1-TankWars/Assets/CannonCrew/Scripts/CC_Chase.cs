@@ -41,8 +41,7 @@ public class Chase : BaseST
                 && (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, CC_SmartTank.PRIORITIES.FUEL) || 
                 Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, CC_SmartTank.PRIORITIES.FUEL)))
             {
-                //return typeof(AttackState);
-                return null;
+                return typeof(CC_AttackState);
             }
 
             else
