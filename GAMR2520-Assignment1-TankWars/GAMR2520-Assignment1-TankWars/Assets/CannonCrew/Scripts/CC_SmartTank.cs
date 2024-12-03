@@ -62,8 +62,7 @@ public class CC_SmartTank : AITank
     public GameObject consumable;
     public GameObject enemyTank;
     public GameObject enemyBase;
-
-
+    public List<GameObject> currentBases;
 
     PRIORITIES currentPriority;
     PRIORITIES currentWorkingPriority;
@@ -84,6 +83,25 @@ public class CC_SmartTank : AITank
         // calc maxiumum for resources 
      
     }
+    public Vector3 getBasePosition()
+    {
+        if (isBasesALive()){
+            
+            return currentBases[0].transform.position;
+
+
+        }
+        return Vector3.zero;
+    }
+    public bool isBasesALive()
+    {
+        if (currentBases.Count > 0)
+        {
+            return true;
+        }
+        return false;
+
+    }
     private void initStateMachine()
     {
 
@@ -96,11 +114,14 @@ public class CC_SmartTank : AITank
     }
     public override void AITankStart()
     {
+        // store current bases 
+        currentBases = MyBases;
         /// lower thesh holds, higher thresh holds and max for each resource 
         
         maxHealth = a_GetHealthLevel;
         maxAmmo = a_GetAmmoLevel ;
         maxFuel = a_GetFuelLevel;
+        
 
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
         healthPriorityThresh = 30.0f;
@@ -123,7 +144,7 @@ public class CC_SmartTank : AITank
         {
              new PriorityHolder(PRIORITIES.FUEL, PriorityManager.queuePriority.SAFE, fuelValuesHolder) ,
              new PriorityHolder(PRIORITIES.HEALTH, PriorityManager.queuePriority.SAFE, healthValuesHolder) ,
-                new PriorityHolder(PRIORITIES.AMMO, PriorityManager.queuePriority.SAFE, ammoValuesHolder) ,
+             new PriorityHolder(PRIORITIES.AMMO, PriorityManager.queuePriority.SAFE, ammoValuesHolder) ,
         };
 
         // instantiate prriority manager using list of defined prioity holders  
@@ -136,8 +157,8 @@ public class CC_SmartTank : AITank
 
     }
 
-  
-    
+   
+   
    public override void AIOnCollisionEnter(Collision collision)
     {
 

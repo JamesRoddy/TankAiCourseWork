@@ -44,7 +44,7 @@ public class CC_FSM:MonoBehaviour
         }
         else
         {
-            var next = currentState.Update(); // contionuly update the current state 
+            var next = currentState.Update(); // continuely update the current state 
 
             if (next != null && next.GetType() != CState.GetType()) // waiting for change in state i.e none rull return from update  
             {
