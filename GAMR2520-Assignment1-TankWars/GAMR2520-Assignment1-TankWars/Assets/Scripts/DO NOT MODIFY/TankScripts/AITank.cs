@@ -136,6 +136,7 @@ public abstract class AITank : MonoBehaviour
         //Fuel depletion
         fuel -= Mathf.Abs(((rb.velocity.x + rb.velocity.y + rb.velocity.z) / 3f) * 0.002f);
         //Idle fuel depletion
+        /*fuel -= 0.004f;*/
         fuel -= 0.004f;
         //Fuel level sprite
         fuelSprite.size = new Vector2(fuelSprite.size.x, Mathf.Lerp(0, 1.7f, Mathf.InverseLerp(0, fuelMax, fuel)));

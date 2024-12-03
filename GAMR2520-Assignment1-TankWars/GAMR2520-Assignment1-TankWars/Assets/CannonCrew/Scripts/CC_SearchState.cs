@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static CC_SmartTank;
 
@@ -26,18 +27,16 @@ public class SearchState : BaseST
     public override Type Update()
     {
 
-        if (tank.hasLowResource())
+       /* if (tank.hasLowResource() && !(tank.consumablesFound.Count ==0))
         {
             PRIORITIES currentLowest = tank.GetCurrentLowestResource(); 
 
-            if(currentLowest == PRIORITIES.HEALTH)
+            if(tank.CurrentWorkingPriority == PRIORITIES.NONE)
             {
 
+                tank.currentPriority = currentLowest;
             }
-
-
-
-        }
+        }*/
         
 
 

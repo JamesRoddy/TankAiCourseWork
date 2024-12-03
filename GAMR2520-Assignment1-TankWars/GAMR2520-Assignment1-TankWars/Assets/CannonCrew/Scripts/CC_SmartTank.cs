@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static AStar;
+using static CC_SmartTank;
+
+
+
+
 
 public class CC_SmartTank : AITank
 {
@@ -12,38 +17,12 @@ public class CC_SmartTank : AITank
     private float fuelMaxOffset = 25.0f;
     private float healthMaxOffset = 25.0f;
 
-    /*    // current percentages for tank resources
-        private float healthPercentage;
-        private float fuelPercentage;
-        private float ammoPercentage;*/
+    public PriorityValuesHolder healthValuesHolder;
+    public PriorityValuesHolder fuelValuesHolder;
+    public PriorityValuesHolder ammoValuesHolder;
 
-    // maximum for each resource
-    private float maxHealth;
-    private float maxAmmo;
-    private float maxFuel;
+    public PriorityManager priorityManager;
 
-    // default thresholds for resources becoming a priority 
-    float healthPriorityThresh;
-    float ammoPriorityThresh;
-    float fuelPriorityThresh;
-
-    // keep track of the current targets for the tank
-    public GameObject consumable;
-    public GameObject enemyTank;
-    public GameObject enemyBase;
-    public PRIORITIES currentPriority;
-
-
-
-
-
-    public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     /*!< <c>enemyTanksFound</c> stores all tanks that are visible within the tanks sensor. */
-    public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    /*!< <c>consumablesFound</c> stores all consumables that are visible within the tanks sensor. */
-    public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();     /*!< <c>enemyBasesFound</c> stores all enemybases that are visible within the tanks sensor. */
-    float t;    /*!< <c>t</c> stores timer value */
-    public HeuristicMode heuristicMode; /*!< <c>heuristicMode</c> Which heuristic used for find path. */
-
-    // enums for prioirity these can be obtained through prioritites.name 
     public enum PRIORITIES
     {
         HEALTH,
@@ -53,51 +32,140 @@ public class CC_SmartTank : AITank
 
     }
 
+
+    // current percentages for tank resources
+    private float healthPercentage;
+    private float fuelPercentage;
+    private float ammoPercentage;
+
+
+
+
+    // maximum for each resource
+    private float maxHealth;
+    private float maxAmmo;
+    private float maxFuel;
+    
+
+
+    // default thresholds for resources becoming a priority 
+    float healthPriorityThresh;
+    float ammoPriorityThresh;
+    float fuelPriorityThresh;
+    float healthSafteyThresh;
+    float ammoSafteyThresh;
+    float fuelSafteyThresh;
+
+
+
+    // keep track of the current targets for the tank
+    public GameObject consumable;
+    public GameObject enemyTank;
+    public GameObject enemyBase;
+
+
+
+    PRIORITIES currentPriority;
+    PRIORITIES currentWorkingPriority;
+    
+    public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     /*!< <c>enemyTanksFound</c> stores all tanks that are visible within the tanks sensor. */
+    public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    /*!< <c>consumablesFound</c> stores all consumables that are visible within the tanks sensor. */
+    public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();     /*!< <c>enemyBasesFound</c> stores all enemybases that are visible within the tanks sensor. */
+    float t;    /*!< <c>t</c> stores timer value */
+    public HeuristicMode heuristicMode; /*!< <c>heuristicMode</c> Which heuristic used for find path. */
+
+    // enums for prioirity these can be obtained through prioritites.name 
+    private void Awake()
+    {
+
+        initStateMachine();
+        //wrappers for the values of each resource so they can be passed by reference to the priority holders that will then be sorted by the priority manager 
+        // current thresholds for when something should become a priority
+        // calc maxiumum for resources 
+     
+    }
     private void initStateMachine()
     {
 
         Dictionary<Type,BaseST> states = new Dictionary<Type,BaseST>();
 
 
-        GetComponent<CC_FSM>().setStates(states);
-
+/*        GetComponent<CC_FSM>().setStates(states);
+*/
 
     }
-  
-    // idea: priority queue(might become more relevant as project moves on )
-    /*   public List<PRIORITIES> currentPriorites = new List<PRIORITIES> {   };*/
-
     public override void AITankStart()
     {
-
-        // calc maxiumum for resources 
+        /// lower thesh holds, higher thresh holds and max for each resource 
+        
         maxHealth = a_GetHealthLevel;
-        maxAmmo = a_GetAmmoLevel + ammoMaxOffset;
+        maxAmmo = a_GetAmmoLevel ;
         maxFuel = a_GetFuelLevel;
-        currentPriority = PRIORITIES.NONE;
-        // current thresholds for when something should become a priority
+
+        // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
         healthPriorityThresh = 30.0f;
+        healthSafteyThresh = 50.0f;
+
         ammoPriorityThresh = 4.0f;
+        ammoSafteyThresh = 10.0f;
+
         fuelPriorityThresh = 40.0f;
+        fuelSafteyThresh = 55.0f;
+        // wrapper classes for the values associated with priroties so they can be passsed by refernce to the priority manager 
+        healthValuesHolder = new PriorityValuesHolder(healthPriorityThresh, healthSafteyThresh, maxHealth);
+        fuelValuesHolder = new PriorityValuesHolder(fuelPriorityThresh, fuelSafteyThresh, maxFuel);
+        ammoValuesHolder = new PriorityValuesHolder(ammoPriorityThresh, ammoSafteyThresh, maxAmmo);
+
+        currentPriority = PRIORITIES.NONE;
+        currentWorkingPriority = PRIORITIES.NONE;
+
+        List<PriorityHolder> currentPriorites = new List<PriorityHolder> // create new list of all priorties that need to be managed 
+        {
+             new PriorityHolder(PRIORITIES.FUEL, PriorityManager.queuePriority.SAFE, fuelValuesHolder) ,
+             new PriorityHolder(PRIORITIES.HEALTH, PriorityManager.queuePriority.SAFE, healthValuesHolder) ,
+                new PriorityHolder(PRIORITIES.AMMO, PriorityManager.queuePriority.SAFE, ammoValuesHolder) ,
+        };
+
+        // instantiate prriority manager using list of defined prioity holders  
+        priorityManager = new PriorityManager(currentPriorites);
+
+
 
 
 
 
     }
-    public override void AIOnCollisionEnter(Collision collision)
+
+  
+    
+   public override void AIOnCollisionEnter(Collision collision)
     {
 
     }
     public override void AITankUpdate()
     {
+        // checking for any targets/consumables
         enemyBasesFound = a_BasesFound;
         enemyTanksFound = a_TanksFound; 
         consumablesFound = a_ConsumablesFound;
+        // checking for enemy tanks and bases 
+        if(enemyTanksFound.Count > 0 && enemyTanksFound.First().Key != null)
+        {
+            enemyTank = enemyTanksFound.First().Key;
 
-        enemyTank = enemyTanksFound.First().Key;
-        enemyBase = enemyBasesFound.First().Key;
+        }
+        if (enemyBasesFound.Count > 0 && enemyBasesFound.First().Key != null)
+        {
+            enemyBase = enemyBasesFound.First().Key;
 
+        }
 
+        // updating current percent values for resources 
+        healthValuesHolder.CurrentPriorityVal = a_GetHealthLevel / maxHealth;
+        ammoValuesHolder.CurrentPriorityVal = a_GetAmmoLevel / maxAmmo;
+        fuelValuesHolder.CurrentPriorityVal = a_GetFuelLevel / maxFuel;
+
+        priorityManager.Update();// updating the priority queues of the priroity manager based on the percents above 
 
     }
     // methods for checking if a specifc resource is low 
@@ -137,15 +205,15 @@ public class CC_SmartTank : AITank
     {
         if (hasLowResource()) // if we have any resource that is below its thresh hold
         {
-            float min = Mathf.Min(a_GetAmmoLevel / maxAmmo, Mathf.Min(a_GetHealthLevel / maxHealth, a_GetFuelLevel / maxFuel)); // get the lowest percentage out of the resources
+            float min = Mathf.Min(ammoPercentage, Mathf.Min(healthPercentage, fuelPercentage)); // get the lowest percentage out of the resources
 
 
             // return the current highest priority resource based on it being the lowest in terms of amount 
-            if (min == a_GetHealthLevel / maxHealth)
+            if (min == healthPercentage)
             {
                 return PRIORITIES.HEALTH;
             }
-            else if (min == a_GetFuelLevel / maxAmmo)
+            else if (min == fuelPercentage)
             {
                 return PRIORITIES.FUEL;
             }
@@ -158,8 +226,7 @@ public class CC_SmartTank : AITank
         return PRIORITIES.NONE;// if we didnt have any resource of priority return none 
 
     }
-
-
+   
     // allows for manual assignment of currentPrioity
     public PRIORITIES setCurrentPriority{
 
@@ -176,6 +243,19 @@ public class CC_SmartTank : AITank
 
             currentPriority = GetCurrentLowestResource();
          
+    }
+    public PRIORITIES  CurrentWorkingPriority
+    {
+        get
+        {
+
+            return currentWorkingPriority;
+        }
+        set
+        {
+
+            currentWorkingPriority = value;
+        }
     }
 
     /// <summary>

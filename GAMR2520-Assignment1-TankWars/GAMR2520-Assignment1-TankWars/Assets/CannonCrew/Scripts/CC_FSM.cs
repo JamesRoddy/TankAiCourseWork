@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CC_FSM
+public class CC_FSM:MonoBehaviour
 {
 
 
