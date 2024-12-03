@@ -154,18 +154,10 @@ public class CC_SmartTank : AITank
             enemyTank = enemyTanksFound.First().Key;
 
         }
-        else
-        {
-            enemyTank = null;
-        }
         if (enemyBasesFound.Count > 0 && enemyBasesFound.First().Key != null)
         {
             enemyBase = enemyBasesFound.First().Key;
 
-        }
-        else
-        {
-            enemyBase = null;
         }
 
         // updating current percent values for resources 
