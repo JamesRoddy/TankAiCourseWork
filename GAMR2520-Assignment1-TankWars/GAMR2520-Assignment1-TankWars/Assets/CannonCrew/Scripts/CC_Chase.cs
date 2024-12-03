@@ -9,20 +9,22 @@ public class Chase : BaseST
 
     private CC_SmartTank Tank;
     GameObject EnemyTankPositionStore;
-    float fSpeed = 1f;
+    float fSpeed;
 
-    public Chase(CC_SmartTank tank)
+    public Chase(CC_SmartTank newtank)
     {
-        Tank = tank;
+        Tank = newtank;
     }
 
     public override Type Entry()
     {
+        fSpeed = 1f;
         return null;
     }
 
     public override Type Exit()
     {
+        fSpeed = 1f;
         return null;
     }
 
@@ -31,10 +33,28 @@ public class Chase : BaseST
         if (Tank != null)
         {
             EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;//Store the position of the enemy tank
-            Tank.TurretFaceWorldPoint(EnemyTankPositionStore);//Make the turret face the enemy tank that way we know if we are being chased
-            Tank.FollowPathToWorldPoint(EnemyTankPositionStore, fSpeed);
+            Tank.TurretFaceWorldPoint(EnemyTankPositionStore);//Make the turret face the enemy tank so that we keep it in our vision
+            Tank.FollowPathToWorldPoint(EnemyTankPositionStore, fSpeed);  //Follow the tank so that we have a more accurate shot
+
+            //if our tank is less than 25 units away from the enemy and we are good on fuel, we go into the attack state
+            if (Vector3.Distance(Tank.transform.position, EnemyTankPositionStore.transform.position) < 25f 
+                && (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, CC_SmartTank.PRIORITIES.FUEL) || 
+                Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, CC_SmartTank.PRIORITIES.FUEL)))
+            {
+                //return typeof(AttackState);
+                return null;
+            }
+
+            else
+            {
+                return null;
+            }
         }
 
-        return null;
+        else
+        {
+            return typeof(SearchState);
+        }
+
     }
 }
