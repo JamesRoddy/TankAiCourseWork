@@ -84,9 +84,17 @@ public class CC_SmartTank : AITank
     }
     public Vector3 getBasePosition()
     {
-        if (isBasesALive()){
+        
+        if (currentBases[0] != null){
             
             return currentBases[0].transform.position;
+
+
+        }
+        if (currentBases[1] != null)
+        {
+
+            return currentBases[1].transform.position;
 
 
         }
@@ -94,7 +102,8 @@ public class CC_SmartTank : AITank
     }
     public bool isBasesALive()
     {
-        if (currentBases.Count > 0)
+        Debug.Log(currentBases.Count);
+        if (currentBases[0] != null)
         {
             return true;
         }

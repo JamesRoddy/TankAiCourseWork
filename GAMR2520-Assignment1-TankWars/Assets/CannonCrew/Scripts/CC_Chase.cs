@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using UnityEngine;
 using static CC_SmartTank;
+using static PriorityManager;
 public class Chase : BaseST
 {
 
@@ -39,19 +40,31 @@ public class Chase : BaseST
             Tank.FollowPathToWorldPoint(EnemyTankPositionStore, fSpeed);  //Follow the tank so that we have a more accurate shot
 
             //if our tank is less than 25 units away from the enemy and we are good on fuel, we go into the attack state
-            if (Vector3.Distance(Tank.transform.position, EnemyTankPositionStore.transform.position) < 25f 
-                && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
+            if (Vector3.Distance(Tank.transform.position, EnemyTankPositionStore.transform.position) < 25f
+                && Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && Tank.TankCurrentAmmo != 0)
             {
                 return typeof(CC_AttackState);
             }
 
-           
-                return null;
-            
+
+            return null;
+
+        }
+
+        else if(Tank.enemyTank == null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
+        {
+            Tank.TurretFaceWorldPoint(EnemyTankPositionStore);//Make the turret face the enemy tank so that we keep it in our vision
+            Tank.FollowPathToWorldPoint(EnemyTankPositionStore, fSpeed);  //Follow the tank so that we have a more accurate shot
+            return null;
+        }
+
+        else if (Tank.enemyTank != null && Tank.priorityManager.checkLow(PRIORITIES.FUEL))
+        {
+            return typeof(Retreat);
         }
 
         else
-        {
+        { 
             return typeof(SearchState);
         }
 

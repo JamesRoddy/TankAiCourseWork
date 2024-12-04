@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static CC_SmartTank;
+using static PriorityManager;
 
 public class Retreat : BaseST
 {
@@ -49,79 +50,108 @@ public class Retreat : BaseST
         //If we are low on a certain resource
         else
         {
-            //We check if we have seen the enemy tank.
+            //We check if we have seen the enemy tank and that we still have bases alive.
              if(Tank.enemyTank != null)
              {
                 Debug.Log("Seen Tank");
                  //Set this boolean to true
                  bEnemySeen = true;
-                 BasePositionStore.transform.position = Tank.getBasePosition();
 
-                Debug.Log(BasePositionStore.transform.position);
-                 EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;//Store the position of the enemy tank
-                 Tank.FollowPathToWorldPoint(BasePositionStore, fSpeed); //We go in the opposite direction of the enemy tank.
-                 Tank.TurretFaceWorldPoint(EnemyTankPositionStore);//Make the turret face the enemy tank that way we know if we are being chased
-                 //IF we can make the tank change direction at random intervals to make dodging better.
-                 return null;
+                //If bases are alive we go to them.
+                if(Tank.getBasePosition() != Vector3.zero)
+                {
+                    BasePositionStore.transform.position = Tank.getBasePosition();
+                    Debug.Log(BasePositionStore.transform.position);
+                    EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;//Store the position of the enemy tank
+                    Tank.FollowPathToWorldPoint(BasePositionStore, fSpeed); //We go in the opposite direction of the enemy tank.
+                    Tank.TurretFaceWorldPoint(EnemyTankPositionStore);//Make the turret face the enemy tank that way we know if we are being chased
+                                                                      //IF we can make the tank change direction at random intervals to make dodging better.
+                    return null;
+                }
+
+                //Otherwise we can see the tank but our bases are destroyed so we go into the opposite position of the enemy
+                else
+                {
+                    EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;//Store the position of the enemy tank
+                    EnemyTankPositionStore.transform.position = -EnemyTankPositionStore.transform.position;
+                    Tank.FollowPathToWorldPoint(EnemyTankPositionStore, fSpeed); //We go in the opposite direction of the enemy tank.
+                    return null;
+                }
+               
              }
 
+             //If we can no longer see the tank
              else
              {
                  //If we did see the enemy
                  if(bEnemySeen)
                  {
                     
-                    BasePositionStore.transform.position = Tank.getBasePosition();
-                    //We generate a new random point in the world
-                    //Tank.GenerateNewRandomWorldPoint();
-
-
-                    //Travel to the that random point but whilst slowing down.
-                    //Tank.FollowPathToRandomWorldPoint(fSpeed);
-                    if (BasePositionStore != null)
+                    //And our bases havent been destroyed we go back our base.
+                    if (Tank.getBasePosition() != Vector3.zero)
                     {
+                        BasePositionStore.transform.position = Tank.getBasePosition();
                         Debug.Log("Going back to base");
                         Tank.FollowPathToWorldPoint(BasePositionStore, fSpeed);
-                        //Tank.TurretFaceWorldPoint(EnemyTankPositionStore);
 
-                        //Once we have slowed down to about half speed, we stop the tank. 
-                        if (Tank.enemyTank == null && Vector3.Distance(Tank.transform.position, BasePositionStore.transform.position) < 50f)
+                        //If we cant see the tank and we are close to the base
+                        if (Tank.enemyTank == null && Vector3.Distance(Tank.transform.position, BasePositionStore.transform.position) < 100f)
                         {
+                            //We stop
+                            Debug.Log("Stopping Tank");
                             Tank.TankStop();
+                            Tank.FollowPathToWorldPoint(BasePositionStore, 0f);
                             t += Time.deltaTime;
+
+                            //We then wait 3 seconds to pass to make sure that the enemy tank isn't anywhere near us.
+                            //If 3 seconds pass uninterrupted then we go back to the search state
+                            if (t >= 3f)
+                            {
+                                return typeof(SearchState);
+                            }
+
+                            //Other wise we stay in the retreat state and run to a random point on the map.
+                            else
+                            {
+                                Tank.GenerateNewRandomWorldPoint();
+                                Tank.FollowPathToRandomWorldPoint(fSpeed);
+                                return null;
+                            }
                         }
 
-                        //We then wait 3 seconds to pass to make sure that the enemy tank isn't anywhere near us.
-                        //If 3 seconds pass uninterrupted then we go back to the search state
-                        if (t >= 3f)
-                        {
-                            return typeof(SearchState);
-                        }
+                        else{ return null; }
 
-                        //Other wise we stay in the retreat state
-                        else
-                        {
-                            return null;
-                        }
                     }
 
-                    else 
+                    //If we never saw the enemy and our bases have been destroyed 
+                    else if(Tank.getBasePosition() == Vector3.zero)
                     {
-                        EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
-                        EnemyTankPositionStore.transform.position = -EnemyTankPositionStore.transform.position;
-                        Tank.FollowPathToWorldPoint(EnemyTankPositionStore, fSpeed);
-                        //Tank.TurretFaceWorldPoint(EnemyTankPositionStore);
+                        //We do see the enemy we run away
+                        if(Tank.enemyTank != null)
+                        {
+                            EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
+                            EnemyTankPositionStore.transform.position = -EnemyTankPositionStore.transform.position;
+                            Tank.FollowPathToWorldPoint(EnemyTankPositionStore, fSpeed);
+                            Tank.TurretFaceWorldPoint(EnemyTankPositionStore);
+                            return null;
+                        }
 
-                        if (Tank.enemyTank == null && Vector3.Distance(Tank.transform.position, BasePositionStore.transform.position) < 15f)
+                        //Otherwise we go to the search state
+                        else if (Tank.enemyTank == null)
                         {
                             return typeof(SearchState);
                         }
 
                         else
                         {
+                            Tank.GenerateNewRandomWorldPoint();
+                            Tank.FollowPathToRandomWorldPoint(fSpeed);
                             return null;
                         }
+
                     }
+
+                    else { return null; }
                     
                  }
 
@@ -133,7 +163,6 @@ public class Retreat : BaseST
 
              }
 
-            return null;
         }
     }
 
