@@ -71,22 +71,25 @@ public class Retreat : BaseST
                  if(bEnemySeen)
                  {
                     Debug.Log("Going back to base");
-                     BasePositionStore.transform.position = Tank.getBasePosition();
-                     //We generate a new random point in the world
-                     //Tank.GenerateNewRandomWorldPoint();
-                     while (fSpeed > 0.5f)
-                     {
-                        Debug.Log("Speed while loop");
-                         //Travel to the that random point but whilst slowing down.
-                         fSpeed = fSpeed - 0.05f;
-                         //Tank.FollowPathToRandomWorldPoint(fSpeed);
+                    BasePositionStore.transform.position = Tank.getBasePosition();
+                    //We generate a new random point in the world
+                    //Tank.GenerateNewRandomWorldPoint();
+                     
+                       
+                    //Travel to the that random point but whilst slowing down.
+                    fSpeed = fSpeed * 0.25f;
+                    //Tank.FollowPathToRandomWorldPoint(fSpeed);
 
-                         Tank.FollowPathToWorldPoint(BasePositionStore, fSpeed);
-                     }
+                    Tank.FollowPathToWorldPoint(BasePositionStore, fSpeed);
+                    Tank.TurretFaceWorldPoint(EnemyTankPositionStore);
 
-                     //Once we have slowed down to about half speed, we stop the tank. 
-                     Tank.TankStop();
-                     t += Time.deltaTime;
+
+                    //Once we have slowed down to about half speed, we stop the tank. 
+                    if(Tank.enemyTank == null)
+                    {
+                        Tank.TankStop();
+                        t += Time.deltaTime;
+                    }
 
                      //We then wait 3 seconds to pass to make sure that the enemy tank isn't anywhere near us.
                      //If 3 seconds pass uninterrupted then we go back to the search state
