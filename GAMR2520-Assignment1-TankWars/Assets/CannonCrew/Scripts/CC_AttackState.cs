@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static CC_SmartTank;
+using static PriorityManager;
 public class CC_AttackState : BaseST
 {
     private CC_SmartTank Tank;
@@ -30,7 +31,7 @@ public class CC_AttackState : BaseST
             Tank.TurretFireAtPoint(EnemyTankPositionStore);
             // return null since the state doesn't change, we will continue attacking
 
-            if (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, CC_SmartTank.PRIORITIES.HEALTH))
+            if (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, PRIORITIES.HEALTH))
             {
                 Debug.Log("Goto retreat");
                 return typeof(Retreat);
@@ -43,10 +44,10 @@ public class CC_AttackState : BaseST
         }
 
         else if (
-            Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, CC_SmartTank.PRIORITIES.HEALTH) ||
-            Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, CC_SmartTank.PRIORITIES.HEALTH) ||
+            Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, PRIORITIES.HEALTH) ||
+            Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, PRIORITIES.HEALTH) ||
 
-            Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, CC_SmartTank.PRIORITIES.HEALTH)) 
+            Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, PRIORITIES.HEALTH)) 
             // else if the enemy position changed and our health is either in safe, minor or major priority
 
         {
@@ -56,7 +57,7 @@ public class CC_AttackState : BaseST
             return typeof(Chase);
         }
         //otherwise if our health is low, retreat
-        else if (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, CC_SmartTank.PRIORITIES.HEALTH))
+        else if (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, PRIORITIES.HEALTH))
         {
             return typeof(Retreat);
         }

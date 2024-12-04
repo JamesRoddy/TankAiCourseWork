@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 using UnityEditor.XR;
 using UnityEngine;
 using static CC_SmartTank;
-
+using static PriorityManager;
 public class SearchState : BaseST
 {
 
@@ -27,6 +27,8 @@ public class SearchState : BaseST
     public override Type Entry()
     {
         currentSpeed = 0.85f;
+        priorityPosition = new GameObject();
+
         Debug.Log("Entered Search");
         return null;
     }
@@ -37,7 +39,7 @@ public class SearchState : BaseST
         organisedConsumables.Clear();
         currentSpeed = 0.85f;
         explorationTimer = 0.0f;
-        priorityPosition.transform.position = Vector3.zero;
+        priorityPosition = new GameObject();
 
         return null;
     }
@@ -216,14 +218,15 @@ public class SearchState : BaseST
     private void MoveToPriorityPositions() {
 
         if (priorityPositions.Count > 0) {
-
+           
             priorityPosition.transform.position = priorityPositions[0];
             tank.FollowPathToWorldPoint(priorityPosition, currentSpeed);
             Debug.Log("moving to priority position " + priorityPosition.transform.position);
-            if (Vector3.Distance(priorityPosition.transform.position, tank.transform.position) < 1.0f)
+            Debug.Log(Vector3.Distance(tank.transform.position, priorityPosition.transform.position));
+            if (Vector3.Distance(priorityPosition.transform.position, tank.transform.position) < 5.0f)
             {
                 Debug.Log("removed position " + priorityPosition.transform.position);
-                priorityPositions.Remove(priorityPositions[0]);
+                priorityPositions.RemoveAt(0);
             }
 
 
@@ -300,7 +303,16 @@ public class SearchState : BaseST
 
 
             }
+            // sweep the remaining queue where resources would be of concern(minor priority and see if any game resources were sighted that relate to that priority)
+            foreach(PRIORITIES priority in tank.priorityManager.sweepQueues(new List<PriorityManager.queuePriority> { PriorityManager.queuePriority.MINOR }))
+            {
+                if (organisedConsumables.ContainsKey(priority))
+                {
+                    priorityPositions.Add(organisedConsumables[priority].transform.position);
+                }
+            }
 
+           
 
 
 
@@ -313,9 +325,6 @@ public class SearchState : BaseST
     }
     public void checkFuelSpeed() 
     {
-
-
-
 
         currentSpeed = tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL, PRIORITIES.FUEL) ? currentSpeed : 0.65f; // if our priority for fuel is major and not cirticla it means that we should have enough to increase our speed to reach the found fuel faster
 

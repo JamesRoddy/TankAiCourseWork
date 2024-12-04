@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static CC_SmartTank;
-
+using static PriorityManager;
 
  public class PriorityHolder // each priority holder is repsobile for managing a single resource such as ammo or fuel 
 
