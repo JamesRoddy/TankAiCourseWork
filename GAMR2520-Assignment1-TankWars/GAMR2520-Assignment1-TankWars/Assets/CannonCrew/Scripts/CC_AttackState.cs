@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using static CC_SmartTank;
 public class CC_AttackState : BaseST
 {
     private CC_SmartTank Tank;
@@ -26,7 +26,7 @@ public class CC_AttackState : BaseST
             Tank.TurretFireAtPoint(EnemyTankPositionStore);
             return null;
         }
-        else if (!EnemyTankPositionStore.transform.position.Equals(Tank.enemyTank.transform.position) && !Tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL, CC_SmartTank.PRIORITIES.HEALTH))
+        else if (!EnemyTankPositionStore.transform.position.Equals(Tank.enemyTank.transform.position) && !Tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL,PRIORITIES.HEALTH))
         {
             return typeof(Chase);
         }
