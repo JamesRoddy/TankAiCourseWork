@@ -41,7 +41,11 @@ public class PriorityManager
     }
 
 
+    public   bool hasItems (queuePriority resource)
+    {
+        return priorityQueues[resource].Count > 0 ;
 
+    }
     public void Update()
     {
         foreach (PriorityHolder priority in prioritiesList)
@@ -85,36 +89,73 @@ public class PriorityManager
     }
 
     // check if the resource is in the a queue using the queue enum set to access the assoicated list 
-    public bool checkQueue(queuePriority queue, PRIORITIES resource)
-    {
 
-
-        if (priorityQueues[queue].Count > 0 && priorityQueues[queue].Contains(resource))// if it is 
+    public List<PRIORITIES> sweepQueues(List<queuePriority> queues) {
         {
-            return true;
+            List<PRIORITIES> listPriorities = new List<PRIORITIES>();
+            foreach (queuePriority queue in queues)
+            {
+                foreach (PRIORITIES priority in priorityQueues[queue])
+                {
+                    listPriorities.Add(priority);
+
+                }
+            }
+
+
+            return listPriorities;
 
 
         }
 
-
-        return false;
-
-    }
-
-    // check if the resource is in the safe queue using the SAFE enum to access the assoicated list 
-    public bool isResourceSafe(PRIORITIES resource) {
-        if (priorityQueues[queuePriority.SAFE].Count > 0 && priorityQueues[queuePriority.SAFE].Contains(resource)) // if it is 
+        }
+        public bool checkLow(PRIORITIES resource)
         {
-            return true;
 
+            if (priorityQueues[queuePriority.MAJOR].Count > 0 || priorityQueues[queuePriority.CRITICAL].Count > 0 )
+            {
+               return priorityQueues[queuePriority.MAJOR].Contains(resource) || priorityQueues[queuePriority.CRITICAL].Contains(resource);
+            }
+            return false;
+        }
+
+        public bool checkHigh(PRIORITIES resource) {
+            if (priorityQueues[queuePriority.SAFE].Count > 0 || priorityQueues[queuePriority.MINOR].Count > 0)
+            {
+                return priorityQueues[queuePriority.SAFE].Contains(resource) || priorityQueues[queuePriority.MINOR].Contains(resource);
+            }
+            return false;
+        }
+        public bool checkQueue(queuePriority queue, PRIORITIES resource)
+        {
+
+
+            if (priorityQueues[queue].Count > 0 && priorityQueues[queue].Contains(resource))// if it is 
+            {
+                return true;
+
+
+            }
+
+
+            return false;
 
         }
-        return false;
     
-    }
+        // check if the resource is in the safe queue using the SAFE enum to access the assoicated list 
+        public bool isResourceSafe(PRIORITIES resource) {
+            if (priorityQueues[queuePriority.SAFE].Count > 0 && priorityQueues[queuePriority.SAFE].Contains(resource)) // if it is 
+            {
+                return true;
 
 
+            }
+            return false;
 
+        }
+
+
+    
 
 
 

@@ -38,12 +38,8 @@ public class Retreat : BaseST
     {
         //Makes sure that none of the tank resources are in the major or critical states
         //If the tank is fine then we go back to the search state to go looking for the enemy tank
-        if(Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE,PRIORITIES.FUEL) || 
-           Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, PRIORITIES.FUEL) &&  
-           Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, PRIORITIES.HEALTH) ||
-           Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, PRIORITIES.HEALTH) &&
-           Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, PRIORITIES.AMMO) ||
-           Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, PRIORITIES.AMMO))
+        if(Tank.priorityManager.checkHigh(PRIORITIES.HEALTH) || 
+           Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             return typeof(SearchState);
         }
@@ -59,7 +55,7 @@ public class Retreat : BaseST
                 EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;//Store the position of the enemy tank
                 Tank.TurretFaceWorldPoint(EnemyTankPositionStore);//Make the turret face the enemy tank that way we know if we are being chased
                 EnemyTankPositionStore.transform.position = -EnemyTankPositionStore.transform.position; //Negate the position of the enemy tank
-                Tank.FollowPathToWorldPoint(EnemyTankPositionStore, fSpeed); //We go in the opposite direction of the enemy tank.
+                Tank.FollowPathToWorldPoint(Tank.currentBases[0], fSpeed); //We go in the opposite direction of the enemy tank.
                 //IF we can make the tank change direction at random intervals to make dodging better.
                 return null;
             }
@@ -75,7 +71,8 @@ public class Retreat : BaseST
                     {
                         //Travel to the that random point but whilst slowing down.
                         fSpeed = fSpeed / 0.05f;
-                        Tank.FollowPathToRandomWorldPoint(fSpeed);
+                        //Tank.FollowPathToRandomWorldPoint(fSpeed);
+                        Tank.FollowPathToWorldPoint(Tank.currentBases[0], fSpeed);
                     }
 
                     //Once we have slowed down to about half speed, we stop the tank. 

@@ -62,17 +62,15 @@ public class CC_SmartTank : AITank
     public GameObject consumable;
     public GameObject enemyTank;
     public GameObject enemyBase;
-
-
+    public List<GameObject> currentBases;
 
     PRIORITIES currentPriority;
     PRIORITIES currentWorkingPriority;
     
-    public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     /*!< <c>enemyTanksFound</c> stores all tanks that are visible within the tanks sensor. */
-    public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    /*!< <c>consumablesFound</c> stores all consumables that are visible within the tanks sensor. */
-    public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();     /*!< <c>enemyBasesFound</c> stores all enemybases that are visible within the tanks sensor. */
-    float t;    /*!< <c>t</c> stores timer value */
-    public HeuristicMode heuristicMode; /*!< <c>heuristicMode</c> Which heuristic used for find path. */
+    public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     // if the enenmy tank is visible it willl be first stored in this dicionary and cna be accessed through the first key
+    public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    // stores any consumables visible 
+    public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();     // stores any bases visible 
+    public HeuristicMode heuristicMode; // change the heuristic method whihc will determine how the tank will pathfind and calclate the distances between the neighbouring nodes(impacting the gcost and hcost for each node therefore changing the path) 
 
     // enums for prioirity these can be obtained through prioritites.name 
     private void Awake()
@@ -84,23 +82,49 @@ public class CC_SmartTank : AITank
         // calc maxiumum for resources 
      
     }
+    public Vector3 getBasePosition()
+    {
+        if (isBasesALive()){
+            
+            return currentBases[0].transform.position;
+
+
+        }
+        return Vector3.zero;
+    }
+    public bool isBasesALive()
+    {
+        if (currentBases.Count > 0)
+        {
+            return true;
+        }
+        return false;
+
+    }
     private void initStateMachine()
     {
 
-        Dictionary<Type,BaseST> states = new Dictionary<Type,BaseST>();
+        Dictionary<Type,BaseST> states = new Dictionary<Type, BaseST>
+        {
+            {typeof(SearchState),new SearchState(this)},
+        
+        };
 
 
-/*        GetComponent<CC_FSM>().setStates(states);
-*/
+        GetComponent<CC_FSM>().setStates(states);
+
 
     }
     public override void AITankStart()
     {
+        // store current bases 
+        currentBases = MyBases;
         /// lower thesh holds, higher thresh holds and max for each resource 
         
         maxHealth = a_GetHealthLevel;
         maxAmmo = a_GetAmmoLevel ;
         maxFuel = a_GetFuelLevel;
+        
 
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
         healthPriorityThresh = 30.0f;
@@ -123,7 +147,7 @@ public class CC_SmartTank : AITank
         {
              new PriorityHolder(PRIORITIES.FUEL, PriorityManager.queuePriority.SAFE, fuelValuesHolder) ,
              new PriorityHolder(PRIORITIES.HEALTH, PriorityManager.queuePriority.SAFE, healthValuesHolder) ,
-                new PriorityHolder(PRIORITIES.AMMO, PriorityManager.queuePriority.SAFE, ammoValuesHolder) ,
+             new PriorityHolder(PRIORITIES.AMMO, PriorityManager.queuePriority.SAFE, ammoValuesHolder) ,
         };
 
         // instantiate prriority manager using list of defined prioity holders  
@@ -136,8 +160,8 @@ public class CC_SmartTank : AITank
 
     }
 
-  
-    
+   
+   
    public override void AIOnCollisionEnter(Collision collision)
     {
 
@@ -154,10 +178,18 @@ public class CC_SmartTank : AITank
             enemyTank = enemyTanksFound.First().Key;
 
         }
+        else
+        {
+            enemyTank = null;
+        }
         if (enemyBasesFound.Count > 0 && enemyBasesFound.First().Key != null)
         {
             enemyBase = enemyBasesFound.First().Key;
 
+        }
+        else
+        {
+            enemyBase = null;
         }
 
         // updating current percent values for resources 

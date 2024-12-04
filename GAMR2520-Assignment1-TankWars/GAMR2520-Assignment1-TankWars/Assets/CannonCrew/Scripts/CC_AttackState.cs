@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using static CC_SmartTank;
 public class CC_AttackState : BaseST
 {
     private CC_SmartTank Tank;
@@ -30,11 +30,13 @@ public class CC_AttackState : BaseST
             // return null since the state doesn't change, we will continue attacking
             return null;
         }
+
         else if (!EnemyTankPositionStore.transform.position.Equals(Tank.enemyTank.transform.position) &&
             Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, CC_SmartTank.PRIORITIES.HEALTH) ||
             Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, CC_SmartTank.PRIORITIES.HEALTH) ||
             Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, CC_SmartTank.PRIORITIES.HEALTH)) 
             // else if the enemy position changed and our health is either in safe, minor or major priority
+
         {
             //store the enemies last position this might not be needed though so I'll ask later
             EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
