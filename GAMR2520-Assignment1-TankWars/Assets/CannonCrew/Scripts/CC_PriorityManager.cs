@@ -6,7 +6,14 @@ using static CC_SmartTank;
 
 public class PriorityManager
 {
+    public enum PRIORITIES
+    {
+        HEALTH,
+        AMMO,
+        FUEL,
+        NONE,
 
+    }
 
     List<PriorityHolder> prioritiesList;
     public enum queuePriority

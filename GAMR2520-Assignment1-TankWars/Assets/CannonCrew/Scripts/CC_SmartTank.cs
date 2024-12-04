@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using static AStar;
 using static CC_SmartTank;
-
+using static PriorityManager;
 
 
 
@@ -23,14 +23,7 @@ public class CC_SmartTank : AITank
 
     public PriorityManager priorityManager;
 
-    public enum PRIORITIES
-    {
-        HEALTH,
-        AMMO,
-        FUEL,
-        NONE,
-
-    }
+   
 
 
     // current percentages for tank resources
