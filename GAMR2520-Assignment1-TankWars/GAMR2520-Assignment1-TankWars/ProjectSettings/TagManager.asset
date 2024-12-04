@@ -12,6 +12,7 @@ TagManager:
   - Tank
   - ObstacleRock
   - UI
+  - Base
   layers:
   - Default
   - TransparentFX

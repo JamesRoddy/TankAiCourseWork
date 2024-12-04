@@ -41,7 +41,11 @@ public class GameController : MonoBehaviour
         uiControllerScript.winsText.text = "";
 
         consumable.Add(healthGameObject);
+        consumable.Add(healthGameObject);
+        consumable.Add(healthGameObject);
+        consumable.Add(ammoGameObject); 
         consumable.Add(ammoGameObject);
+        consumable.Add(fuelGameObject);
         consumable.Add(fuelGameObject);
 
 
@@ -103,7 +107,7 @@ public class GameController : MonoBehaviour
 
         int randCons = Random.Range(0, consumable.Count);
 
-        consumable[randCons].transform.position = new Vector3(consPos.x, 5, consPos.z) ;
+        consumable[randCons].transform.position = new Vector3(consPos.x, 3, consPos.z) ;
 
         yield return new WaitForSeconds(1f);
 

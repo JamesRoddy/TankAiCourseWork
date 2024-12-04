@@ -23,7 +23,13 @@ public class AStar : MonoBehaviour
     List<Node> path;
     bool pathFound;
     bool searching = false;
-    Vector3 rootNodePos, goalNodePos;
+    Vector3 rootNodePos, goalNodePos, rootNodePosHolder;
+    UIControllerScript uiContScript;
+    Node rootNode;
+    Node goalNode;
+
+
+
     public enum HeuristicMode
     {
         Euclidean, 
@@ -44,6 +50,8 @@ public class AStar : MonoBehaviour
         //layermark for obstacle search
         obstacleLayer = LayerMask.GetMask("Obstacle");
         baseLayer = LayerMask.GetMask("Base");
+
+        uiContScript = FindObjectOfType<UIControllerScript>();
 
         //Create grid function
         CreateGrid();
@@ -104,7 +112,7 @@ public class AStar : MonoBehaviour
                 //cheack for obstacles, is it traverable?
                 //Adjacancy Matrix could also be used to add traversability
                 if (Physics.CheckSphere(nodePos, nodeSize / 2, obstacleLayer) 
-                ||  Physics.CheckSphere(nodePos, nodeSize / 2, baseLayer)
+                //||  Physics.CheckSphere(nodePos, nodeSize / 2, baseLayer)
                 )
                 {
                     traversable = false;
@@ -152,6 +160,7 @@ public class AStar : MonoBehaviour
         currentNode = new Node(Vector3.zero, false, -1, -1);
         //store new move costs
         float newMoveCost;
+
 
         //While there are nodes in the open set and still searching for goal
         while (openSet.Count > 0 && searching)
@@ -319,7 +328,6 @@ public class AStar : MonoBehaviour
             }
         }
         return neighbours;
-
     }
 
     //returns distance between nodeA and nodeB based on heuristic class
@@ -358,45 +366,24 @@ public class AStar : MonoBehaviour
         return rValue;
     }
 
-
-
-
-    //private void OnDrawGizmos()
-    //{
-
-    //    if (grid != null)
-    //    {
-
-
-    //        foreach (Node node in grid)
-    //        {
-
-    //            if (node.traversable)
-    //            {
-    //            }
-    //            else
-    //            {
-    //                Gizmos.DrawCube(node.nodePos, new Vector3(nodeSize * 0.9f, 0.1f, nodeSize * 0.9f));
-
-    //                Gizmos.color = Color.red;
-    //            }
-
-
-    //            if (path != null && pathFound)
-    //            {
-    //                foreach (var item in path)
-    //                {
-    //                    if (item == node)
-    //                    {
-    //                        Gizmos.color = new Color(0, 0, 0.5f, 0.5f);
-    //                        Gizmos.DrawCube(node.nodePos, new Vector3(nodeSize * 0.9f, 0.1f, nodeSize * 0.9f));
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
-
-
-
+    private void OnDrawGizmos()
+    {
+        if (grid != null)
+        {
+            foreach (Node node in grid)
+            {
+                if (node.traversable)
+                {
+                }
+                else
+                {
+                    if(uiContScript.showObstacles)
+                    {
+                        Gizmos.DrawCube(node.nodePos, new Vector3(nodeSize * 0.9f, 0.1f, nodeSize * 0.9f));
+                        Gizmos.color = Color.red;
+                    }
+                }
+            }
+        }
+    }
 }

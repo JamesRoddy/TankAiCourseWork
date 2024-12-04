@@ -1,14 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static AStar;
+using static UnityEditor.PlayerSettings;
+using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// Class <c>AITank</c> handles the Tank functions. Must be used as base class for SmartTank/DumbTank classes.
 /// </summary>
 public abstract class AITank : MonoBehaviour
 {
+    float angle;
+    bool slowTurn;
+
     private float fuel = 100f;  /*!< Current fuel level */
     private float fuelMax = 125f; /*!< Max fual level */
     private int ammo; /*!< Current ammo */
@@ -40,8 +47,8 @@ public abstract class AITank : MonoBehaviour
     private float tankMaxSpeed = 22f; /*!< tank max speed */
     private float tankMaxSpeedHolder;
     //sensor
-    private float viewRadius = 57f; /*!< How far out sensor goes */
-    private float viewAngle = 158f; /*!< How how wide sensor is */
+    private float viewRadius = 52f; /*!< How far out sensor goes */
+    private float viewAngle = 150f; /*!< How how wide sensor is */
 
     private AudioSource engineSound;
     private AudioSource fireSound;
@@ -71,9 +78,13 @@ public abstract class AITank : MonoBehaviour
     private bool projectileHit;
     private bool collisionWithObstacleRock;
 
+    UIControllerScript uiContScript;
+
     // Start is called before the first frame update
     private void Start()
     {
+
+
         //References
         gameControllerScript = GameObject.Find("GameController - DO NOT MODIFY -").GetComponent<GameController>();
         TankExplosionParticle = GameObject.Find("GameController - DO NOT MODIFY -").transform.Find("TankExplosionParticle").GetComponent<ParticleSystem>();
@@ -91,9 +102,10 @@ public abstract class AITank : MonoBehaviour
         turretStartRot = turretObject.transform.localRotation;
         engineSound = GetComponent<AudioSource>();
         fireSound = transform.Find("FireSound").GetComponent<AudioSource>();
-  
+        uiContScript = FindObjectOfType<UIControllerScript>();
+
         //Search for friendly bases.
-        BaseState[] basesScript = transform.parent.GetComponentsInChildren<BaseState>();
+        BaseScript[] basesScript = transform.parent.GetComponentsInChildren<BaseScript>();
         //Store bases in a list. 
         foreach (var item in basesScript)
         {
@@ -121,8 +133,8 @@ public abstract class AITank : MonoBehaviour
         baseMask = LayerMask.GetMask("Base");
 
         //Search targets
-        StartCoroutine(TargetsFind(0.2f));        
-        
+        StartCoroutine(TargetsFind(0.2f));
+
         //Abstact Start Function, must be implemented in derived class. 
         AITankStart();
     }
@@ -136,7 +148,6 @@ public abstract class AITank : MonoBehaviour
         //Fuel depletion
         fuel -= Mathf.Abs(((rb.velocity.x + rb.velocity.y + rb.velocity.z) / 3f) * 0.002f);
         //Idle fuel depletion
-        /*fuel -= 0.004f;*/
         fuel -= 0.004f;
         //Fuel level sprite
         fuelSprite.size = new Vector2(fuelSprite.size.x, Mathf.Lerp(0, 1.7f, Mathf.InverseLerp(0, fuelMax, fuel)));
@@ -165,7 +176,7 @@ public abstract class AITank : MonoBehaviour
 
 
         //Tank movement sound
-        engineSound.pitch = Mathf.Abs(((Mathf.Abs(rb.velocity.x) + Mathf.Abs(rb.velocity.y) + Mathf.Abs(rb.velocity.z)) / 3f) * 0.12f + 0.3f); 
+        engineSound.pitch = Mathf.Abs(((Mathf.Abs(rb.velocity.x) + Mathf.Abs(rb.velocity.y) + Mathf.Abs(rb.velocity.z)) / 3f) * 0.12f + 0.3f);
 
         //Abstract Update Function
         AITankUpdate();
@@ -186,13 +197,13 @@ public abstract class AITank : MonoBehaviour
     /// </summary>
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Projectile")
-        {
-            if (projectileHit == false)
-            {
-                StartCoroutine(ProjectileHit(Vector3.Distance(collision.transform.position, this.gameObject.transform.position)));
-            }
-        }
+        //if (collision.gameObject.tag == "Projectile")
+        //{
+        //    if (projectileHit == false)
+        //    {
+        //        StartCoroutine(ProjectileHit(Vector3.Distance(collision.transform.position, this.gameObject.transform.position)));
+        //    }
+        //}
 
         if (collision.gameObject.tag == "Health")
         {
@@ -220,7 +231,15 @@ public abstract class AITank : MonoBehaviour
 
         if (collision.gameObject.tag == "Obstacle")
         {
-            if(collisionWithObstacle == false)
+            if (collisionWithObstacle == false)
+            {
+                StartCoroutine(CollisionWithObstacle());
+            }
+        }
+
+        if (collision.gameObject.tag == "Base")
+        {
+            if (collisionWithObstacle == false)
             {
                 StartCoroutine(CollisionWithObstacle());
             }
@@ -237,6 +256,16 @@ public abstract class AITank : MonoBehaviour
         AIOnCollisionEnter(collision);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Projectile")
+        {
+            if (projectileHit == false)
+            {
+                StartCoroutine(ProjectileHit(Vector3.Distance(other.transform.position, this.gameObject.transform.position)));
+            }
+        }
+    }
 
     private IEnumerator CollisionWithObstacle()
     {
@@ -251,16 +280,17 @@ public abstract class AITank : MonoBehaviour
         collisionWithObstacleRock = true;
         yield return new WaitForSeconds(2f);
         collisionWithObstacleRock = false;
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(5f);
     }
 
     private IEnumerator ProjectileHit(float hitAccuracy)
     {
 
-        float accuracy = Mathf.InverseLerp(2.3f, 3f, hitAccuracy);
+
+        float accuracy = Mathf.InverseLerp(2.5f, 3f, hitAccuracy);
         projectileHit = true;
         health -= Mathf.Lerp(15, 10, accuracy);
-        health = Mathf.Clamp(Mathf.Round(health), 0, healthMax); 
+        health = Mathf.Clamp(Mathf.Round(health), 0, healthMax);
         print(this.transform.parent.gameObject.name + " has been hit!");
         yield return new WaitForSeconds(0.5f);
         projectileHit = false;
@@ -348,7 +378,7 @@ public abstract class AITank : MonoBehaviour
         if (!firing && fuel > 0)
         {
             //If pointInWorld is not null.
-            if(pointInWorld != null)
+            if (pointInWorld != null)
             {
                 //Request Path to pointInWorld.
                 a_FindPathToPoint(pointInWorld);
@@ -360,7 +390,7 @@ public abstract class AITank : MonoBehaviour
                 //Move the tank over the path, at set speed.
                 MoveTank(pathFound, speed);
             }
-       
+
             if (pointInWorld != null)
             {
                 a_FaceTurretToPoint(pointInWorld);
@@ -434,7 +464,7 @@ public abstract class AITank : MonoBehaviour
         if (Vector3.Distance(transform.position, randomPoint.transform.position) < 14f)
         {
             randomNodeFound = true;
-        }    
+        }
     }
 
     /// <summary>
@@ -507,21 +537,25 @@ public abstract class AITank : MonoBehaviour
 
                 if (collisionWithObstacle || collisionWithObstacleRock)
                 {
-                    rb.AddRelativeForce(Vector3.back * speed, ForceMode.Impulse);
-                    rb.velocity = Vector3.ClampMagnitude(rb.velocity, tankMaxSpeed * 0.8f);           
+                    rb.AddRelativeForce((Vector3.back) * speed, ForceMode.Impulse);
+                    rb.velocity = Vector3.ClampMagnitude(rb.velocity, tankMaxSpeed * 0.8f);
                 }
                 else
                 {
                     rb.AddRelativeForce(new Vector3(0, 0, 1) * speed, ForceMode.Impulse);
-                    rb.velocity = Vector3.ClampMagnitude(rb.velocity, tankMaxSpeed);
+                    //rb.velocity = Vector3.ClampMagnitude(rb.velocity, tankMaxSpeed);
+
+                    rb.velocity = Vector3.ClampMagnitude(rb.velocity, Mathf.SmoothStep(tankMaxSpeed, 0, Mathf.Abs(rb.angularVelocity.x) - 0.75f));
                 }
+
+
 
             }
             else if (collisionWithObstacle || collisionWithObstacleRock)
             {
                 Vector3 centrePos = FindCentre(path);
 
-                rb.AddRelativeForce(Vector3.back * speed, ForceMode.Impulse);
+                rb.AddRelativeForce((Vector3.back) * speed, ForceMode.Impulse);
                 rb.velocity = Vector3.ClampMagnitude(rb.velocity, tankMaxSpeed * 1.5f);
                 TankLookAt(centrePos);
             }
@@ -531,6 +565,7 @@ public abstract class AITank : MonoBehaviour
                 rb.velocity = Vector3.ClampMagnitude(rb.velocity, tankMaxSpeed * 1.5f);
             }
         }
+
     }
 
     /// <summary>
@@ -538,7 +573,39 @@ public abstract class AITank : MonoBehaviour
     /// </summary>
     private void TankLookAt(Vector3 pos)
     {
-        transform.LookAt(Vector3.SmoothDamp(transform.position, pos, ref velocityRot, 1.7f));
+        Vector3 fwd = transform.forward;
+        Vector3 vec = pos - transform.position;
+        vec.Normalize();
+
+        angle = Mathf.Acos(Vector3.Dot(fwd, vec)) * Mathf.Rad2Deg;
+
+
+        if(angle > 100)
+        {
+            StartCoroutine(SlowTurn());
+        }
+
+        if (slowTurn && gameControllerScript.gameStarted)
+        {
+            transform.LookAt(Vector3.SmoothDamp(transform.position, pos, ref velocityRot, 2.8f));
+        }
+        else
+        {
+            transform.LookAt(Vector3.SmoothDamp(transform.position, pos, ref velocityRot, 1.7f));
+        }
+
+        //Quaternion target_rot = Quaternion.LookRotation(pos - transform.position);
+        //transform.rotation = Quaternion.Slerp(transform.rotation, target_rot, Time.deltaTime * 0.5f);
+
+
+
+    }
+
+    IEnumerator SlowTurn()
+    {
+        slowTurn = true;
+        yield return new WaitForSeconds(4);
+        slowTurn = false;
     }
 
     /// <summary>
@@ -564,10 +631,13 @@ public abstract class AITank : MonoBehaviour
     protected void a_FaceTurretToPoint(GameObject pointInWorld)
     {
         Vector3 faceTarget = new Vector3(pointInWorld.transform.position.x, pointInWorld.transform.position.y, pointInWorld.transform.position.z);
+        //faceTarget = Vector3.SmoothDamp(turretObject.transform.position, faceTarget, ref velocityTurretRot, turrentRotationSpeed);
+        //turretObject.transform.LookAt(faceTarget);
 
-        faceTarget = Vector3.SmoothDamp(turretObject.transform.position, faceTarget, ref velocityTurretRot, turrentRotationSpeed);
+        Quaternion target_rot = Quaternion.LookRotation(faceTarget - turretObject.transform.position);
+        turretObject.transform.rotation = Quaternion.Slerp(turretObject.transform.rotation, target_rot, Time.deltaTime * 5f);
 
-        turretObject.transform.LookAt(faceTarget);
+
     }
 
     /// <summary>
@@ -575,7 +645,9 @@ public abstract class AITank : MonoBehaviour
     /// </summary>
     protected void a_ResetTurret()
     {
-        turretObject.transform.localRotation = turretStartRot;
+        //turretObject.transform.localRotation = turretStartRot;
+
+        turretObject.transform.localRotation = Quaternion.Slerp(turretObject.transform.localRotation, turretStartRot, Time.deltaTime * 5f);
     }
 
     /// <summary>
@@ -595,7 +667,8 @@ public abstract class AITank : MonoBehaviour
             //Set firing to true.
             firing = true;
             //Start firing process.
-            StartCoroutine(Fire(pointInWorld));
+            StopCoroutine("Fire");
+            StartCoroutine("Fire", (pointInWorld));
         }
         else if (ammo <= 0)
         {
@@ -608,7 +681,7 @@ public abstract class AITank : MonoBehaviour
     /// Fire at pointInWorld (target)
     /// </summary>
     private IEnumerator Fire(GameObject target)
-    {    
+    {
         //Fire waiting time.
         float tWait = 2f;
 
@@ -620,7 +693,7 @@ public abstract class AITank : MonoBehaviour
             //decrement wait time.
             tWait -= Time.deltaTime;
             //if ammo is 0, break out of while loop.
-            if(ammo == 0)
+            if (ammo == 0)
             {
                 break;
             }
@@ -651,7 +724,7 @@ public abstract class AITank : MonoBehaviour
         bulletClone.isKinematic = false;
         //Add force to bullet projectile.
         bulletClone.AddRelativeForce(projectileForce, ForceMode.Impulse);
-        
+
         //Wait time set
         tWait = 1f;
 
@@ -792,55 +865,60 @@ public abstract class AITank : MonoBehaviour
     /// </summary>
     private void OnDrawGizmos()
     {
-        if (sensorPoint != null)
+        if (uiContScript != null)
         {
-            Handles.color = Color.white;
-
-            Vector3 sensorAngleA = DirectionFromAngle(-viewAngle / 2, false);
-            Vector3 sensorAngleB = DirectionFromAngle(viewAngle / 2, false);
-
-            Handles.DrawLine(sensorPoint.transform.position, sensorPoint.transform.position + sensorAngleA * viewRadius);
-            Handles.DrawLine(sensorPoint.transform.position, sensorPoint.transform.position + sensorAngleB * viewRadius);
-
-            Handles.color = Color.red;
-
-
-            foreach (KeyValuePair<GameObject, float> item in targetsFound)
+            if (sensorPoint != null && uiContScript.showSensor)
             {
-                if (item.Key != null)
+                Handles.color = Color.white;
+
+                Vector3 sensorAngleA = DirectionFromAngle(-viewAngle / 2, false);
+                Vector3 sensorAngleB = DirectionFromAngle(viewAngle / 2, false);
+
+                Handles.DrawLine(sensorPoint.transform.position, sensorPoint.transform.position + sensorAngleA * viewRadius);
+                Handles.DrawLine(sensorPoint.transform.position, sensorPoint.transform.position + sensorAngleB * viewRadius);
+
+                Handles.color = Color.red;
+
+
+                foreach (KeyValuePair<GameObject, float> item in targetsFound)
                 {
-                    Handles.DrawLine(sensorPoint.transform.position, item.Key.transform.position);
+                    if (item.Key != null)
+                    {
+                        Handles.DrawLine(sensorPoint.transform.position, item.Key.transform.position);
+                    }
+                }
+
+                Handles.color = Color.green;
+
+
+                foreach (KeyValuePair<GameObject, float> item in consumablesFound)
+                {
+                    if (item.Key != null)
+                    {
+                        Handles.DrawLine(sensorPoint.transform.position, item.Key.transform.position);
+                    }
+                }
+
+                Handles.color = Color.blue;
+
+
+                foreach (KeyValuePair<GameObject, float> item in basesFound)
+                {
+                    if (item.Key != null)
+                    {
+                        Handles.DrawLine(sensorPoint.transform.position, item.Key.transform.position);
+                    }
                 }
             }
 
-            Handles.color = Color.green;
-
-
-            foreach (KeyValuePair<GameObject, float> item in consumablesFound)
+            if (uiContScript.showPath)
             {
-                if (item.Key != null)
+                foreach (Vector3 node in pathFound)
                 {
-                    Handles.DrawLine(sensorPoint.transform.position, item.Key.transform.position);
+                    Gizmos.color = Color.black;
+                    Gizmos.DrawCube(node, new Vector3(3 * 0.9f, 0.1f, 3 * 0.9f));
                 }
             }
-
-            Handles.color = Color.blue;
-
-
-            foreach (KeyValuePair<GameObject, float> item in basesFound)
-            {
-                if (item.Key != null)
-                {
-                    Handles.DrawLine(sensorPoint.transform.position, item.Key.transform.position);
-                }
-            }
-        }
-
-        foreach (Vector3 node in pathFound)
-        {
-           
-            Gizmos.color = Color.black;
-            Gizmos.DrawCube(node, new Vector3(3 * 0.9f, 0.1f, 3 * 0.9f));
         }
     }
 

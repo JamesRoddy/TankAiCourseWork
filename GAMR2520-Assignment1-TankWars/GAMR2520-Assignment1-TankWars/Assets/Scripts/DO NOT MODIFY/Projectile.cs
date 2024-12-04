@@ -34,18 +34,32 @@ public class Projectile : MonoBehaviour
     /// <summary>
     /// Function <c>OnCollisionEnter</c> deals with projectile collision with any collider.
     /// </summary>
-    private void OnCollisionEnter(Collision collision)
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if(t < 0 && destroy == false)
+    //    {
+    //        explosionParticle.Play();
+    //        rb.isKinematic = true;
+    //        projectile.SetActive(false);
+    //        StartCoroutine(DestoryThis());
+    //        destroy = true;
+    //        explosionSound.Play();
+    //    }
+
+    //}
+
+    private void OnTriggerEnter(Collider other)
     {
-        if(t < 0 && destroy == false)
+        if (t < 0 && destroy == false)
         {
             explosionParticle.Play();
             rb.isKinematic = true;
             projectile.SetActive(false);
             StartCoroutine(DestoryThis());
             destroy = true;
+            explosionSound.pitch = Random.Range(0.3f,0.4f);
             explosionSound.Play();
         }
-
     }
 
     /// <summary>
