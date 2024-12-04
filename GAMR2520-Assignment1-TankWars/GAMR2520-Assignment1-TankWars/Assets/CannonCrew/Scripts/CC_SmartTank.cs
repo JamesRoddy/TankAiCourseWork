@@ -67,11 +67,10 @@ public class CC_SmartTank : AITank
     PRIORITIES currentPriority;
     PRIORITIES currentWorkingPriority;
     
-    public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     /*!< <c>enemyTanksFound</c> stores all tanks that are visible within the tanks sensor. */
-    public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    /*!< <c>consumablesFound</c> stores all consumables that are visible within the tanks sensor. */
-    public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();     /*!< <c>enemyBasesFound</c> stores all enemybases that are visible within the tanks sensor. */
-    float t;    /*!< <c>t</c> stores timer value */
-    public HeuristicMode heuristicMode; /*!< <c>heuristicMode</c> Which heuristic used for find path. */
+    public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     // if the enenmy tank is visible it willl be first stored in this dicionary and cna be accessed through the first key
+    public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    // stores any consumables visible 
+    public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();     // stores any bases visible 
+    public HeuristicMode heuristicMode; // change the heuristic method whihc will determine how the tank will pathfind and calclate the distances between the neighbouring nodes(impacting the gcost and hcost for each node therefore changing the path) 
 
     // enums for prioirity these can be obtained through prioritites.name 
     private void Awake()
@@ -105,11 +104,15 @@ public class CC_SmartTank : AITank
     private void initStateMachine()
     {
 
-        Dictionary<Type,BaseST> states = new Dictionary<Type,BaseST>();
+        Dictionary<Type,BaseST> states = new Dictionary<Type, BaseST>
+        {
+            {typeof(SearchState),new SearchState(this)},
+        
+        };
 
 
-/*        GetComponent<CC_FSM>().setStates(states);
-*/
+        GetComponent<CC_FSM>().setStates(states);
+
 
     }
     public override void AITankStart()

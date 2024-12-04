@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using UnityEngine;
-
+using static CC_SmartTank;
 public class Chase : BaseST
 {
 
@@ -30,7 +30,7 @@ public class Chase : BaseST
 
     public override Type Update()
     {
-        if (Tank != null && Tank.priorityManager.checkHigh(CC_SmartTank.PRIORITIES.FUEL))
+        if (Tank != null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;//Store the position of the enemy tank
             Tank.TurretFaceWorldPoint(EnemyTankPositionStore);//Make the turret face the enemy tank so that we keep it in our vision
@@ -38,7 +38,7 @@ public class Chase : BaseST
 
             //if our tank is less than 25 units away from the enemy and we are good on fuel, we go into the attack state
             if (Vector3.Distance(Tank.transform.position, EnemyTankPositionStore.transform.position) < 25f 
-                && Tank.priorityManager.checkHigh(CC_SmartTank.PRIORITIES.FUEL))
+                && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
             {
                 return typeof(CC_AttackState);
             }
