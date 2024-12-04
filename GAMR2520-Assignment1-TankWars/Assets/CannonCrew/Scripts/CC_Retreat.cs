@@ -70,36 +70,59 @@ public class Retreat : BaseST
                  //If we did see the enemy
                  if(bEnemySeen)
                  {
-                    Debug.Log("Going back to base");
-                     BasePositionStore.transform.position = Tank.getBasePosition();
-                     //We generate a new random point in the world
-                     //Tank.GenerateNewRandomWorldPoint();
-                     while (fSpeed > 0.5f)
-                     {
-                        Debug.Log("Speed while loop");
-                         //Travel to the that random point but whilst slowing down.
-                         fSpeed = fSpeed - 0.05f;
-                         //Tank.FollowPathToRandomWorldPoint(fSpeed);
+                    
+                    BasePositionStore.transform.position = Tank.getBasePosition();
+                    //We generate a new random point in the world
+                    //Tank.GenerateNewRandomWorldPoint();
 
-                         Tank.FollowPathToWorldPoint(BasePositionStore, fSpeed);
-                     }
 
-                     //Once we have slowed down to about half speed, we stop the tank. 
-                     Tank.TankStop();
-                     t += Time.deltaTime;
+                    //Travel to the that random point but whilst slowing down.
+                    //Tank.FollowPathToRandomWorldPoint(fSpeed);
+                    if (BasePositionStore != null)
+                    {
+                        Debug.Log("Going back to base");
+                        Tank.FollowPathToWorldPoint(BasePositionStore, fSpeed);
+                        //Tank.TurretFaceWorldPoint(EnemyTankPositionStore);
 
-                     //We then wait 3 seconds to pass to make sure that the enemy tank isn't anywhere near us.
-                     //If 3 seconds pass uninterrupted then we go back to the search state
-                     if (t >= 3f)
-                     {
-                         return typeof(SearchState);
-                     }
+                        //Once we have slowed down to about half speed, we stop the tank. 
+                        if (Tank.enemyTank == null && Vector3.Distance(Tank.transform.position, BasePositionStore.transform.position) < 50f)
+                        {
+                            Tank.TankStop();
+                            t += Time.deltaTime;
+                        }
 
-                     //Other wise we stay in the retreat state
-                     else
-                     {
-                         return null;
-                     }
+                        //We then wait 3 seconds to pass to make sure that the enemy tank isn't anywhere near us.
+                        //If 3 seconds pass uninterrupted then we go back to the search state
+                        if (t >= 3f)
+                        {
+                            return typeof(SearchState);
+                        }
+
+                        //Other wise we stay in the retreat state
+                        else
+                        {
+                            return null;
+                        }
+                    }
+
+                    else 
+                    {
+                        EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
+                        EnemyTankPositionStore.transform.position = -EnemyTankPositionStore.transform.position;
+                        Tank.FollowPathToWorldPoint(EnemyTankPositionStore, fSpeed);
+                        //Tank.TurretFaceWorldPoint(EnemyTankPositionStore);
+
+                        if (Tank.enemyTank == null && Vector3.Distance(Tank.transform.position, BasePositionStore.transform.position) < 15f)
+                        {
+                            return typeof(SearchState);
+                        }
+
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    
                  }
 
                  //If we never saw the enemy in the first place then we dont need to stop and wait. We just go back to the search state straight away.
