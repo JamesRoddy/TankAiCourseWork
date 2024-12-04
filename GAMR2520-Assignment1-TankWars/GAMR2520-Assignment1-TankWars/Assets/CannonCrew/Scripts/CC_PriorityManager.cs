@@ -112,10 +112,9 @@ public class PriorityManager
         public bool checkLow(PRIORITIES resource)
         {
 
-            if (priorityQueues[queuePriority.MAJOR].Count > 0 || priorityQueues[queuePriority.CRITICAL].Count > 0 &&
-                (priorityQueues[queuePriority.MAJOR].Contains(resource) || priorityQueues[queuePriority.CRITICAL].Contains(resource)))
+            if (priorityQueues[queuePriority.MAJOR].Count > 0 || priorityQueues[queuePriority.CRITICAL].Count > 0 )
             {
-                return true;
+               return priorityQueues[queuePriority.MAJOR].Contains(resource) || priorityQueues[queuePriority.CRITICAL].Contains(resource);
             }
             return false;
         }
