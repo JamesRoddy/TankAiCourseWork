@@ -55,6 +55,7 @@ public class CC_SmartTank : AITank
     public GameObject consumable;
     public GameObject enemyTank;
     public GameObject enemyBase;
+    public GameObject lastKnownEnemyPos;
     public List<GameObject> currentBases;
 
     PRIORITIES currentPriority;
@@ -180,7 +181,7 @@ public class CC_SmartTank : AITank
         if(enemyTanksFound.Count > 0 && enemyTanksFound.First().Key != null)
         {
             enemyTank = enemyTanksFound.First().Key;
-
+            lastKnownEnemyPos.transform.position = enemyTank.transform.position; ;
         }
         else
         {

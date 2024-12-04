@@ -43,18 +43,22 @@ public class CC_AttackState : BaseST
             }
         }
 
-        else if (
-            Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, PRIORITIES.HEALTH) ||
-            Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, PRIORITIES.HEALTH) ||
-
-            Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, PRIORITIES.HEALTH)) 
+        else if ( Tank.priorityManager.checkHigh(PRIORITIES.HEALTH)    
+                 || (Tank.priorityManager.checkQueue(queuePriority.MAJOR,PRIORITIES.HEALTH) 
+                 && Tank.priorityManager.isResourceSafe(PRIORITIES.FUEL )))
             // else if the enemy position changed and our health is either in safe, minor or major priority
 
         {
+
             //store the enemies last position this might not be needed though so I'll ask later
             //EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
             //and chase them
-            return typeof(Chase);
+            if (Vector3.Distance(Tank.transform.position, Tank.lastKnownEnemyPos.transform.position) >40.0f )
+            {
+                return typeof(Chase);
+
+            }
+            return null;
         }
         //otherwise if our health is low, retreat
         else if (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, PRIORITIES.HEALTH))
