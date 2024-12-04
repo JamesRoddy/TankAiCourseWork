@@ -34,6 +34,7 @@ public class CC_AttackState : BaseST
         else if (!EnemyTankPositionStore.transform.position.Equals(Tank.enemyTank.transform.position) &&
             Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, CC_SmartTank.PRIORITIES.HEALTH) ||
             Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, CC_SmartTank.PRIORITIES.HEALTH) ||
+
             Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, CC_SmartTank.PRIORITIES.HEALTH)) 
             // else if the enemy position changed and our health is either in safe, minor or major priority
 
@@ -48,7 +49,7 @@ public class CC_AttackState : BaseST
         {
             return typeof(Retreat);
         }
-
+        
         else 
         {
             return typeof(SearchState);

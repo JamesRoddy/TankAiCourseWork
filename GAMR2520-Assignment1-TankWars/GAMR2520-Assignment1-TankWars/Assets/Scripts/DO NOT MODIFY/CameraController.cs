@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// Class <c>CameraController</c> handles the camera in the scene. Handles following the tanks or top view mode.
@@ -12,7 +13,7 @@ public class CameraController : MonoBehaviour
 
     Vector3 cameraStartPos; /*!< <c>cameraStartPos</c> stores camera start position. */
     Quaternion cameraStartRot; /*!< <c>cameraStartRot</c> stores camera start rotation. */
-
+    float startFOV;
     Camera mainCam; /*!< <c>mainCam</c> stores reference to the camera in the scene. */
     public float distance; /*!< <c>distance</c> stores the distance away from the target tanks. */
     public float maxDriftRange; /*!< <c>maxDriftRange</c> stores how far are we allowed to drift from the target position. */
@@ -35,6 +36,7 @@ public class CameraController : MonoBehaviour
         RenderSettings.fog = false;
         cameraStartPos = transform.position;
         cameraStartRot = transform.localRotation;
+        startFOV = mainCam.fieldOfView;
         GameObject[] aiTanksTemp = GameObject.FindGameObjectsWithTag("Tank");
         for (int i = 0; i < aiTanksTemp.Length; i++)
         {
@@ -47,7 +49,7 @@ public class CameraController : MonoBehaviour
     /// </summary>
     void LateUpdate()
     {
-        if (currentlyVeiwing > 0)
+        if (currentlyVeiwing != 0 && currentlyVeiwing <= aiTanks.Count)
         {
             if(aiTanks[currentlyVeiwing-1] != null)
             {
@@ -62,19 +64,37 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            if(currentlyVeiwing < aiTanks.Count)
+
+            if(currentlyVeiwing == 0)
+            {
+                currentlyVeiwing = 1;
+                RenderSettings.fog = false;
+                mainCam.transform.position = cameraStartPos;
+                mainCam.transform.rotation = cameraStartRot;
+            }
+
+            else if(currentlyVeiwing < aiTanks.Count)
             {
                 currentlyVeiwing++;
                 RenderSettings.fog = true;
             }
-            else
+            else if (currentlyVeiwing == aiTanks.Count)
+            {
+                currentlyVeiwing = 3;
+                RenderSettings.fog = false;
+                mainCam.transform.position = cameraStartPos;
+                mainCam.transform.rotation = cameraStartRot;
+                mainCam.fieldOfView = startFOV;
+            }
+            else if (currentlyVeiwing == 3)
             {
                 currentlyVeiwing = 0;
-                RenderSettings.fog = false;
             }
         }
+
+
 
         CameraView();
     }
@@ -86,12 +106,34 @@ public class CameraController : MonoBehaviour
     {
         if(currentlyVeiwing == 0)
         {
-            mainCam.transform.position = cameraStartPos;
-            mainCam.transform.rotation = cameraStartRot;
+            tankTargets.Clear();
+            foreach (var ai in aiTanks)
+            {
+                if(ai != null)
+                {
+                    tankTargets.Add(ai.transform);
+                }
+            }
+
+            foreach (var cons in consTargets)
+            {
+                if(cons.activeInHierarchy)
+                {
+                    tankTargets.Add(cons.transform);
+                }
+            }
+
+            if (tankTargets.Count == 0)
+            {
+                return;
+            }
+            
+            Move();
+            Zoom();
 
             mapCam.SetActive(false);
         }
-        else
+        else if(currentlyVeiwing <= aiTanks.Count)
         {
             if (aiTanks[currentlyVeiwing - 1] != null)
             {
@@ -103,6 +145,13 @@ public class CameraController : MonoBehaviour
                 currentlyVeiwing = aiTanks.Count - 1;
             }
             mapCam.SetActive(true);
+
+        }
+        else
+        {
+            mainCam.transform.position = cameraStartPos;
+            mainCam.transform.rotation = cameraStartRot;
+            mapCam.SetActive(false);
 
         }
     }
@@ -156,4 +205,64 @@ public class CameraController : MonoBehaviour
         }
         return Vector3.zero;
     }
+
+
+
+    public List<Transform> tankTargets;
+    public List<GameObject> consTargets;
+
+
+    public Vector3 offset;
+    public float smoothTimeTargets = .5f;
+
+    public float minZoom = 40f;
+    public float maxZoom = 10f;
+    public float zoomLimiter = 50f;
+
+    private Vector3 velocityTargets;
+
+
+
+    void Zoom()
+    {
+        float newZoom = Mathf.Lerp(maxZoom, minZoom, GetGreatestDistance() / zoomLimiter);
+        mainCam.fieldOfView = Mathf.Lerp(mainCam.fieldOfView, newZoom, Time.deltaTime);
+    }
+
+    void Move()
+    {
+        Vector3 centerPoint = GetCenterPoint();
+        Vector3 newPosition = centerPoint + offset;
+        transform.position = Vector3.SmoothDamp(transform.position, newPosition, ref velocity, smoothTime);
+    }
+
+    float GetGreatestDistance()
+    {
+        var bounds = new Bounds(tankTargets[0].position, Vector3.zero);
+        for (int i = 0; i < tankTargets.Count; i++)
+        {
+
+            bounds.Encapsulate(tankTargets[i].position);
+        }
+        return bounds.size.x;
+    }
+
+    Vector3 GetCenterPoint()
+    {
+        if (tankTargets.Count == 1)
+        {
+            return tankTargets[0].position;
+        }
+
+        var bounds = new Bounds(tankTargets[0].position, Vector3.zero);
+        for (int i = 0; i < tankTargets.Count; i++)
+        {
+            bounds.Encapsulate(tankTargets[i].position);
+        }
+
+        return bounds.center;
+    }
+
+
 }
+
