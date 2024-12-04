@@ -14,9 +14,9 @@ public class SearchState : BaseST
     private List<GameObject> pointsOfInterest;
     float explorationTimer;
     private Type stateToReturn = null;
-    List<Vector3> priorityPositions;
+    List<Vector3> priorityPositions = new List<Vector3>();
     List<Vector3> visited;
-    Dictionary<PRIORITIES, GameObject> organisedConsumables;
+    Dictionary<PRIORITIES, GameObject> organisedConsumables = new Dictionary<PRIORITIES, GameObject>();
     private float currentSpeed;
     public SearchState(CC_SmartTank newTank )
     {
@@ -25,6 +25,8 @@ public class SearchState : BaseST
     }
     public override Type Entry()
     {
+        
+        
         return null;
     }
     public override Type Exit()
@@ -48,7 +50,7 @@ public class SearchState : BaseST
         if (tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             currentSpeed = 0.85f;
-
+           
 
         }
         else if(tank.priorityManager.checkLow(PRIORITIES.FUEL)) 
@@ -63,17 +65,17 @@ public class SearchState : BaseST
 
             foreach(KeyValuePair<GameObject,float> gameObject in tank.consumablesFound) // loop through consumable dictionary 
             {
-                if (gameObject.Key.CompareTag("ammo") && !tank.priorityManager.isResourceSafe(PRIORITIES.AMMO)) // if the tag relates to the associated priority and the priority is not currenlty safe 
+                if (gameObject.Key.CompareTag("Ammo") && !tank.priorityManager.isResourceSafe(PRIORITIES.AMMO)) // if the tag relates to the associated priority and the priority is not currenlty safe 
                 {
                     organisedConsumables[PRIORITIES.AMMO] = gameObject.Key;// use the priority enum as the key and insert the found game object into the organisedConsumables dicitionary 
 
                 }
-                else if (gameObject.Key.CompareTag("health") && !tank.priorityManager.isResourceSafe(PRIORITIES.HEALTH))
+                else if (gameObject.Key.CompareTag("Health") && !tank.priorityManager.isResourceSafe(PRIORITIES.HEALTH))
                 {
                     organisedConsumables[PRIORITIES.HEALTH] = gameObject.Key;
 
                 }
-                else if (gameObject.Key.CompareTag("fuel") && !tank.priorityManager.isResourceSafe(PRIORITIES.FUEL))
+                else if (gameObject.Key.CompareTag("Fuel") && !tank.priorityManager.isResourceSafe(PRIORITIES.FUEL))
                 {
                     organisedConsumables[PRIORITIES.FUEL] = gameObject.Key;
 
@@ -121,7 +123,7 @@ public class SearchState : BaseST
             if (explorationTimer > 12.0f)
             {
                 tank.GenerateNewRandomWorldPoint();
-
+                explorationTimer = 0;
             }
 
         }
@@ -137,6 +139,7 @@ public class SearchState : BaseST
 
         if(tank.enemyTank != null)
         {
+            Debug.Log("would exit");
 
             if (tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {
@@ -151,7 +154,7 @@ public class SearchState : BaseST
                 //stateToReturn = typeof(chaseState);
 
             }
-            return true;
+            return false;
 
 
         }
@@ -203,6 +206,7 @@ public class SearchState : BaseST
           while (count < priorityPositions.Count) 
           {
              if (checkStateTransitions()) break;
+
              target.transform.position = priorityPositions[count];
              tank.FollowPathToWorldPoint(target,currentSpeed);
              if(Vector3.Distance(tank.transform.position, target.transform.position) <= 1.0f)
