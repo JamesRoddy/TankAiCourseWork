@@ -109,6 +109,7 @@ public abstract class AITank : MonoBehaviour
         //Store bases in a list. 
         foreach (var item in basesScript)
         {
+            Debug.Log("Base Found");
             myBases.Add(item.gameObject);
         }
 
