@@ -159,7 +159,7 @@ public class SearchState : BaseST
             if (tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {
 
-/*                stateToReturn = typeof(Retreat);*/
+                stateToReturn = typeof(Retreat);
             }
             if( tank.priorityManager.checkHigh(PRIORITIES.HEALTH) 
                 && tank.priorityManager.checkHigh(PRIORITIES.HEALTH) 
@@ -167,10 +167,10 @@ public class SearchState : BaseST
             {
                 //chase
                 Debug.Log("Goto chase");
-               /* stateToReturn = typeof(Chase);*/
+                stateToReturn = typeof(Chase);
 
             }
-            return false;
+            return true;
 
 
         }
