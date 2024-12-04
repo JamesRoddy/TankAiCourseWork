@@ -7,7 +7,7 @@ public class CC_AttackState : BaseST
 {
     private CC_SmartTank Tank;
     //Game object to store enemy position
-    GameObject EnemyTankPositionStore;
+    GameObject EnemyTankPositionStore = new GameObject();
 
     public CC_AttackState(CC_SmartTank newTank)
     {
@@ -15,23 +15,34 @@ public class CC_AttackState : BaseST
     }
     public override Type Entry()
     {
+        Debug.Log("Attack Enter");
         return null;
     }
 
     public override Type Update()
     {
 
-        if (Tank.enemyTanksFound != null) // if we see the enemy tank
+        if (Tank.enemyTank != null) // if we see the enemy tank
         {
             // store enemy position
             EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
             //fire at the stored position
             Tank.TurretFireAtPoint(EnemyTankPositionStore);
             // return null since the state doesn't change, we will continue attacking
-            return null;
+
+            if (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, CC_SmartTank.PRIORITIES.HEALTH))
+            {
+                Debug.Log("Goto retreat");
+                return typeof(Retreat);
+            }
+
+            else
+            {
+                return null;
+            }
         }
 
-        else if (!EnemyTankPositionStore.transform.position.Equals(Tank.enemyTank.transform.position) &&
+        else if (
             Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, CC_SmartTank.PRIORITIES.HEALTH) ||
             Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, CC_SmartTank.PRIORITIES.HEALTH) ||
 
@@ -40,12 +51,12 @@ public class CC_AttackState : BaseST
 
         {
             //store the enemies last position this might not be needed though so I'll ask later
-            EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
+            //EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
             //and chase them
             return typeof(Chase);
         }
         //otherwise if our health is low, retreat
-        else if (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL, CC_SmartTank.PRIORITIES.HEALTH))
+        else if (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, CC_SmartTank.PRIORITIES.HEALTH))
         {
             return typeof(Retreat);
         }

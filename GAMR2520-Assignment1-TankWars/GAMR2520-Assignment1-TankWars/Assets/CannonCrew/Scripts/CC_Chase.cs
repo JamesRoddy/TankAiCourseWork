@@ -8,7 +8,7 @@ public class Chase : BaseST
 {
 
     private CC_SmartTank Tank;
-    GameObject EnemyTankPositionStore;
+    GameObject EnemyTankPositionStore = new GameObject();
     float fSpeed;
 
     public Chase(CC_SmartTank newtank)
@@ -18,6 +18,7 @@ public class Chase : BaseST
 
     public override Type Entry()
     {
+        Debug.Log("Entered Chase");
         fSpeed = 1f;
         return null;
     }
@@ -30,7 +31,8 @@ public class Chase : BaseST
 
     public override Type Update()
     {
-        if (Tank != null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
+        Debug.Log("In chase state");
+        if (Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;//Store the position of the enemy tank
             Tank.TurretFaceWorldPoint(EnemyTankPositionStore);//Make the turret face the enemy tank so that we keep it in our vision

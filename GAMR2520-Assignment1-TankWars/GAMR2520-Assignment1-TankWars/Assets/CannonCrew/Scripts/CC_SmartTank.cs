@@ -107,7 +107,9 @@ public class CC_SmartTank : AITank
         Dictionary<Type,BaseST> states = new Dictionary<Type, BaseST>
         {
             {typeof(SearchState),new SearchState(this)},
-        
+            {typeof(CC_AttackState),new CC_AttackState(this)},
+            {typeof(Retreat),new Retreat(this)},
+            {typeof(Chase),new Chase(this)},
         };
 
 
@@ -196,6 +198,7 @@ public class CC_SmartTank : AITank
         healthValuesHolder.CurrentPriorityVal = a_GetHealthLevel / maxHealth;
         ammoValuesHolder.CurrentPriorityVal = a_GetAmmoLevel / maxAmmo;
         fuelValuesHolder.CurrentPriorityVal = a_GetFuelLevel / maxFuel;
+        currentBases = MyBases;
 
         priorityManager.Update();// updating the priority queues of the priroity manager based on the percents above 
 

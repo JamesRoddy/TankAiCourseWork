@@ -25,8 +25,8 @@ public class SearchState : BaseST
     }
     public override Type Entry()
     {
-        
-        
+
+        Debug.Log("Entered Search");
         return null;
     }
     public override Type Exit()
@@ -139,7 +139,7 @@ public class SearchState : BaseST
 
         if(tank.enemyTank != null)
         {
-            Debug.Log("would exit");
+            //Debug.Log("would exit");
 
             if (tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {
@@ -151,10 +151,11 @@ public class SearchState : BaseST
                 && !tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL, PRIORITIES.AMMO))
             {
                 //chase
-                //stateToReturn = typeof(chaseState);
+                Debug.Log("Goto chase");
+                stateToReturn = typeof(Chase);
 
             }
-            return false;
+            return true;
 
 
         }

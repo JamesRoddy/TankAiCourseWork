@@ -8,7 +8,8 @@ public class Retreat : BaseST
 {
 
     private CC_SmartTank Tank;
-    GameObject EnemyTankPositionStore;
+    GameObject EnemyTankPositionStore = new GameObject();
+    GameObject BasePositionStore = new GameObject();    
     float t;
     float fSpeed;
     bool bEnemySeen;
@@ -20,6 +21,7 @@ public class Retreat : BaseST
 
     public override Type Entry()
     {
+        Debug.Log("Entered Retreat");
         t = 0;
         fSpeed = 1f;
         bEnemySeen = false;
@@ -38,7 +40,7 @@ public class Retreat : BaseST
     {
         //Makes sure that none of the tank resources are in the major or critical states
         //If the tank is fine then we go back to the search state to go looking for the enemy tank
-        if(Tank.priorityManager.checkHigh(PRIORITIES.HEALTH) || 
+        if(Tank.priorityManager.checkHigh(PRIORITIES.HEALTH) && 
            Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             return typeof(SearchState);
@@ -48,58 +50,67 @@ public class Retreat : BaseST
         else
         {
             //We check if we have seen the enemy tank.
-            if(Tank.enemyTank != null)
-            {
-                //Set this boolean to true
-                bEnemySeen = true;
-                EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;//Store the position of the enemy tank
-                Tank.TurretFaceWorldPoint(EnemyTankPositionStore);//Make the turret face the enemy tank that way we know if we are being chased
-                EnemyTankPositionStore.transform.position = -EnemyTankPositionStore.transform.position; //Negate the position of the enemy tank
-                Tank.FollowPathToWorldPoint(Tank.currentBases[0], fSpeed); //We go in the opposite direction of the enemy tank.
-                //IF we can make the tank change direction at random intervals to make dodging better.
-                return null;
-            }
+             if(Tank.enemyTank != null)
+             {
+                Debug.Log("Seen Tank");
+                 //Set this boolean to true
+                 bEnemySeen = true;
+                 BasePositionStore.transform.position = Tank.getBasePosition();
 
-            else
-            {
-                //If we did see the enemy
-                if(bEnemySeen)
-                {
-                    //We generate a new random point in the world
-                    Tank.GenerateNewRandomWorldPoint();
-                    while (fSpeed > 0.5f)
-                    {
-                        //Travel to the that random point but whilst slowing down.
-                        fSpeed = fSpeed / 0.05f;
-                        //Tank.FollowPathToRandomWorldPoint(fSpeed);
-                        Tank.FollowPathToWorldPoint(Tank.currentBases[0], fSpeed);
-                    }
+                Debug.Log(BasePositionStore.transform.position);
+                 EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;//Store the position of the enemy tank
+                 Tank.FollowPathToWorldPoint(BasePositionStore, fSpeed); //We go in the opposite direction of the enemy tank.
+                 Tank.TurretFaceWorldPoint(EnemyTankPositionStore);//Make the turret face the enemy tank that way we know if we are being chased
+                 //IF we can make the tank change direction at random intervals to make dodging better.
+                 return null;
+             }
 
-                    //Once we have slowed down to about half speed, we stop the tank. 
-                    Tank.TankStop();
-                    t += Time.deltaTime;
+             else
+             {
+                 //If we did see the enemy
+                 if(bEnemySeen)
+                 {
+                    Debug.Log("Going back to base");
+                     BasePositionStore.transform.position = Tank.getBasePosition();
+                     //We generate a new random point in the world
+                     //Tank.GenerateNewRandomWorldPoint();
+                     while (fSpeed > 0.5f)
+                     {
+                        Debug.Log("Speed while loop");
+                         //Travel to the that random point but whilst slowing down.
+                         fSpeed = fSpeed - 0.05f;
+                         //Tank.FollowPathToRandomWorldPoint(fSpeed);
 
-                    //We then wait 3 seconds to pass to make sure that the enemy tank isn't anywhere near us.
-                    //If 3 seconds pass uninterrupted then we go back to the search state
-                    if (t >= 3f)
-                    {
-                        return typeof(SearchState);
-                    }
+                         Tank.FollowPathToWorldPoint(BasePositionStore, fSpeed);
+                     }
 
-                    //Other wise we stay in the retreat state
-                    else
-                    {
-                        return null;
-                    }
-                }
+                     //Once we have slowed down to about half speed, we stop the tank. 
+                     Tank.TankStop();
+                     t += Time.deltaTime;
 
-                //If we never saw the enemy in the first place then we dont need to stop and wait. We just go back to the search state straight away.
-                else
-                {
-                    return typeof (SearchState);
-                }
-             
-            }
+                     //We then wait 3 seconds to pass to make sure that the enemy tank isn't anywhere near us.
+                     //If 3 seconds pass uninterrupted then we go back to the search state
+                     if (t >= 3f)
+                     {
+                         return typeof(SearchState);
+                     }
+
+                     //Other wise we stay in the retreat state
+                     else
+                     {
+                         return null;
+                     }
+                 }
+
+                 //If we never saw the enemy in the first place then we dont need to stop and wait. We just go back to the search state straight away.
+                 else
+                 {
+                     return typeof (SearchState);
+                 }
+
+             }
+
+            return null;
         }
     }
 
