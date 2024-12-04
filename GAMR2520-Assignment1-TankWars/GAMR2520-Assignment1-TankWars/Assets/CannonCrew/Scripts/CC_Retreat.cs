@@ -38,12 +38,8 @@ public class Retreat : BaseST
     {
         //Makes sure that none of the tank resources are in the major or critical states
         //If the tank is fine then we go back to the search state to go looking for the enemy tank
-        if(Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE,PRIORITIES.FUEL) || 
-           Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, PRIORITIES.FUEL) &&  
-           Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, PRIORITIES.HEALTH) ||
-           Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, PRIORITIES.HEALTH) &&
-           Tank.priorityManager.checkQueue(PriorityManager.queuePriority.SAFE, PRIORITIES.AMMO) ||
-           Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MINOR, PRIORITIES.AMMO))
+        if(Tank.priorityManager.checkHigh(PRIORITIES.HEALTH) || 
+           Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             return typeof(SearchState);
         }
