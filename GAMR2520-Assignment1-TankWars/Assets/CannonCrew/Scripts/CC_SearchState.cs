@@ -222,8 +222,7 @@ public class SearchState : BaseST
         else if(tank.enemyBase != null)
         {
             Debug.Log("Seen Enemy Base");
-            if (tank.priorityManager.checkHigh(PRIORITIES.HEALTH)
-               && tank.priorityManager.checkHigh(PRIORITIES.FUEL)
+            if (tank.priorityManager.checkHigh(PRIORITIES.FUEL)
                && !tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.AMMO))
             {
                 //chase

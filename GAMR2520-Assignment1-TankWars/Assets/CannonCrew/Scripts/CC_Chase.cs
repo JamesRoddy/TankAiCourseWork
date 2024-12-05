@@ -38,6 +38,7 @@ public class Chase : BaseST
     public override Type Update()
     {
        
+        //First we check for any enemy tanks in our vision
         if (Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
          /*   EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;//Store the position of the enemy tank*/
@@ -59,12 +60,14 @@ public class Chase : BaseST
 
         }
 
+        //If there are no enemy tnaks in our vision we check for enemy bases
         else if(Tank.enemyBase != null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
+            //Once we have seen the enemy tbase we travel towards it.
             Debug.Log("Chasing Enemy Bases");
             Tank.FollowPathToWorldPoint(Tank.enemyBase, fSpeed);
 
-            //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the attack state
+            //if our tank is between max and min units away from the enemy base and we are good on fuel, we go into the attack state
             if (Vector3.Distance(Tank.transform.position, Tank.enemyBase.transform.position) < Tank.BaseFiringDistance
                 && Vector3.Distance(Tank.transform.position, Tank.enemyBase.transform.position) > tankAttackMinThresh
                 && Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
@@ -79,6 +82,7 @@ public class Chase : BaseST
             
         }
 
+        //if we dont see any enemy bases we go back into the search state
         else if(Tank.enemyBase == null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             return typeof(SearchState);
