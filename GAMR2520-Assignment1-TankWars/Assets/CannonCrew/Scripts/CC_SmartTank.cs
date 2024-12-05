@@ -17,7 +17,7 @@ public class CC_SmartTank : AITank
     private float fuelMaxOffset = 25.0f;
     private float healthMaxOffset = 25.0f;
     private float tankFiringDistance = 40.0f;
-    private float enemyBaseFiringDistance = 40.0f;
+    private float enemyBaseFiringDistance = 30.0f;
 
     public PriorityValuesHolder healthValuesHolder;
     public PriorityValuesHolder fuelValuesHolder;

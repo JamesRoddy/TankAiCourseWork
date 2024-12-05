@@ -73,7 +73,7 @@ public class CC_AttackState : BaseST
             //store the enemies last position this might not be needed though so I'll ask later
             //EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
             //and chase them
-            if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > Tank.TankFiringDistance &&!Tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.AMMO))
+            if (Vector3.Distance(Tank.transform.position, Tank.EnemyBasePos.transform.position) > Tank.BaseFiringDistance &&!Tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.AMMO))
             {
                 Debug.Log("attack switch to chase tank out of firing range " + logCounter);
                 logCounter++;
