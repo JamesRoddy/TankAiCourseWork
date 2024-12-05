@@ -367,26 +367,27 @@ public class SearchState : BaseST
                         break;
                     }
             }
-           /// after potentially pushing fuel and health to the priority list of postions check if ammo 
-           /// is crticial and if we have it in the  dicitionary meaning we have seen it push the game objects position to the priority positions list
-            if (isAmmoMajor && organisedConsumables.ContainsKey(PRIORITIES.AMMO)) 
+
+
+
+        }
+        /// after potentially pushing fuel and health to the priority list of postions check if ammo 
+        /// is crticial and if we have it in the  dicitionary meaning we have seen it push the game objects position to the priority positions list
+        if (isAmmoMajor && organisedConsumables.ContainsKey(PRIORITIES.AMMO))
+        {
+            Vector3 ammoPos = organisedConsumables[PRIORITIES.AMMO].transform.position; ;
+            priorityPositions.Add(ammoPos);
+
+
+        }
+        // sweep the remaining queues where resources would be of less of concern(minor/safe priority and see if any game resources were sighted that relate to that priority)
+        foreach (PRIORITIES priority in tank.priorityManager.sweepQueues(new List<queuePriority> { queuePriority.MINOR, queuePriority.SAFE }))
+        {
+            if (organisedConsumables.ContainsKey(priority) && !priorityPositions.Contains(organisedConsumables[priority].transform.position))
             {
-                Vector3 ammoPos = organisedConsumables[PRIORITIES.AMMO].transform.position; ;
-                priorityPositions.Add(ammoPos);
-
-
+                Debug.Log("added minor/safe priority " + priority + " in to priority position list");
+                priorityPositions.Add(organisedConsumables[priority].transform.position);
             }
-            // sweep the remaining queues where resources would be of less of concern(minor/safe priority and see if any game resources were sighted that relate to that priority)
-            foreach(PRIORITIES priority in tank.priorityManager.sweepQueues(new List<queuePriority> { queuePriority.MINOR ,queuePriority.SAFE}))
-            {
-                if (organisedConsumables.ContainsKey(priority) && !priorityPositions.Contains(organisedConsumables[priority].transform.position))
-                {
-                    Debug.Log("added minor/safe priority " + priority + " in to priority position list");
-                    priorityPositions.Add(organisedConsumables[priority].transform.position);
-                }
-            }
-
-
         }
 
 
