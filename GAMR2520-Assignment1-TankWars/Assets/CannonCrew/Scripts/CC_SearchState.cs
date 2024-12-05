@@ -182,7 +182,7 @@ public class SearchState : BaseST
         {
             //Debug.Log("would exit");
             Debug.Log("Seen Enemey Tank");
-            if (tank.priorityManager.checkLow(PRIORITIES.HEALTH)  )
+            if (tank.priorityManager.checkLow(PRIORITIES.HEALTH) && tank.enemyBase == null)
             {
                 Debug.Log("search switch to retreat low health "+logCounter);
                 logCounter++;
@@ -211,9 +211,11 @@ public class SearchState : BaseST
                 }
                 logCounter++;
 
-            }
+                return true;
 
-            return true;
+            }
+            Debug.Log("No Transition from search");
+            return false;
 
 
         }
@@ -226,7 +228,6 @@ public class SearchState : BaseST
             {
                 //chase
                 Debug.Log("search switch to attack or chase high on health and fuel ammo not major " + logCounter);
-
 
                 if (tank.getDistanceToEnemyBase() < tank.BaseFiringDistance)
                 {
@@ -242,14 +243,12 @@ public class SearchState : BaseST
                 }
                 logCounter++;
 
+                return true;
             }
-            else
-            {
-                return false;
-            }
-            return true;
-        }
 
+                return false;
+
+        }
 
         return false;
 

@@ -26,81 +26,75 @@ public class CC_AttackState : BaseST
 
         if (Tank.enemyTank != null) // if we see the enemy tank
         {
-            // store enemy position
-            EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
+           
+            if (Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.HEALTH))
+            {
+                // Debug.Log("attack switch to retreat low health " + logCounter);
+                logCounter++;
+                return typeof(Retreat);
+            }
+
+            if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))
+            {
+                if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > Tank.TankFiringDistance
+                   && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+                {
+                    Debug.Log("attack switch to chase tank out of firing range " + logCounter);
+                    logCounter++;
+                    return typeof(Chase);
+
+                }
+            }
             //fire at the stored position
             Tank.TurretFireAtPoint(Tank.LastKnownEPos);
             // return null since the state doesn't change, we will continue attacking
-
-            if (Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.HEALTH))
-            {
-                Debug.Log("attack switch to retreat low health " + logCounter);
-                logCounter++;
-                return typeof(Retreat);
-            }
-
-            else
-            {
-                return null;
-            }
+            return null;
+            
         }
 
-        else if(Tank.enemyBase != null)
+
+
+
+
+
+        if (Tank.enemyBase != null && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
         {
-            Debug.Log("Attacking enemy base");
-            Tank.TurretFireAtPoint(Tank.enemyBase);
-
-            if (Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.HEALTH))
-            {
-                Debug.Log("attack switch to retreat low health " + logCounter);
-                logCounter++;
-                return typeof(Retreat);
-            }
-
-            else
-            {
-                return null;
-            }
-        }
-
-        else if (Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
-            // else if the enemy position changed and our health is either in safe, minor or major priority
-
-        {
-
             //store the enemies last position this might not be needed though so I'll ask later
             //EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
             //and chase them
-            if (Vector3.Distance(Tank.transform.position, Tank.EnemyBasePos.transform.position) > Tank.BaseFiringDistance &&!Tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.AMMO))
+            if (Vector3.Distance(Tank.transform.position, Tank.EnemyBasePos.transform.position) > Tank.BaseFiringDistance)
             {
-                Debug.Log("attack switch to chase tank out of firing range " + logCounter);
+                Debug.Log("Switch Base attack to chase ");
                 logCounter++;
                 return typeof(Chase);
 
             }
             else
             {
-                Debug.Log("attack switch to search low on ammo " + logCounter);
-                logCounter++;
-                return typeof(SearchState);
+                Debug.Log("Attacking enemy base");
+                Tank.TurretFireAtPoint(Tank.EnemyBasePos);
+                return null;
             }
-          
-          
-        }
-        //otherwise if our health is low, retreat
-        else if (Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.HEALTH))
-        {
-            Debug.Log("attack switch to retreat health low " + logCounter);
 
-            return typeof(Retreat);
+
         }
+
+       
+       
+         Debug.Log("attack switch to search no condtion was hit " + logCounter);
+         return typeof(SearchState);
         
-        else 
-        {
-            Debug.Log("attack switch to search no condtion was hit " + logCounter);
 
-            return typeof(SearchState);
-        }
+
+
+        /*  Debug.Log("attack switch to search low on res " + logCounter);
+          logCounter++;
+          return typeof(SearchState);*/
+
+
+
+
+
     }
 
     public override Type Exit()

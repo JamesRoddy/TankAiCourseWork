@@ -22,7 +22,7 @@ public class Retreat : BaseST
     float retreatToBaseViableDistance = 30.0f;
     float t;
     float fSpeed;
-    bool bEnemySeen = true;
+    bool bEnemySeen = false;
     int logCounter = 0;
     public Retreat(CC_SmartTank newtank)
     {
@@ -70,7 +70,6 @@ public class Retreat : BaseST
         //We check if we have seen the enemy tank and that we still have bases alive.
         if (Tank.enemyTank != null)
         {
-            Debug.Log("Seen Tank ");
             //Set this boolean to true
 
 
@@ -133,7 +132,6 @@ public class Retreat : BaseST
                     t += Time.deltaTime;
 
                     Debug.Log("Going back to base ");
-                    Debug.Log("retreat time " + t);
                     Tank.FollowPathToWorldPoint(BasePositionStore, fSpeed);
 
                     if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > retreatCheckDistance)
@@ -159,7 +157,7 @@ public class Retreat : BaseST
             //If we cant see the tank but know we need to retreat
             if (Tank.enemyTank == null && !bEnemySeen)
             {
-                Debug.Log(Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position));
+                //Debug.Log(Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position));
                 if (Tank.stopAndCheckPos(Tank.LastKnownEPos, 2.0f, Tank.enemyTank))
                 {
                     // We then wait 2 seconds to pass to make sure that the enemy tank isn't anywhere near us.
@@ -184,7 +182,7 @@ public class Retreat : BaseST
                     t += Time.deltaTime;
 
                     Debug.Log("Going back to inverted pos " + t);
-                    Debug.Log("retreat time " + t);
+                    //Debug.Log("retreat time " + t);
                     Tank.FollowPathToWorldPoint(safetySpot, fSpeed);
 
                     if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > retreatCheckDistance)
