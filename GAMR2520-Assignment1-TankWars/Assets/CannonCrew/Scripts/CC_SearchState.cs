@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.XR;
 using UnityEngine;
 using static CC_SmartTank;
@@ -177,10 +178,10 @@ public class SearchState : BaseST
 
         }*/
 
-        if (tank.enemyTank != null )
+        if (tank.enemyTank != null)
         {
             //Debug.Log("would exit");
-
+            Debug.Log("Seen Enemey Tank");
             if (tank.priorityManager.checkLow(PRIORITIES.HEALTH)  )
             {
                 Debug.Log("search switch to retreat low health "+logCounter);
@@ -195,8 +196,10 @@ public class SearchState : BaseST
                 //chase
                 Debug.Log("search switch to attack or chase high on health and fuel ammo not major " +logCounter);
               
+
                 if (tank.getDistanceToEnemy() < tank.TankFiringDistance)
                 {
+                    Debug.Log(tank.getDistanceToEnemy());
                     Debug.Log("  search switch to attack in firing distance  " + tank.TankFiringDistance+" "+logCounter);
                     stateToReturn = typeof(CC_AttackState);
                 }
@@ -214,15 +217,44 @@ public class SearchState : BaseST
 
 
         }
+
+       
+        else if(tank.enemyBase != null)
+        {
+            Debug.Log("Seen Enemy Base");
+            if (tank.priorityManager.checkHigh(PRIORITIES.HEALTH)
+               && tank.priorityManager.checkHigh(PRIORITIES.FUEL)
+               && !tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.AMMO))
+            {
+                //chase
+                Debug.Log("search switch to attack or chase high on health and fuel ammo not major " + logCounter);
+
+
+                if (tank.getDistanceToEnemyBase() < tank.BaseFiringDistance)
+                {
+                    Debug.Log(tank.getDistanceToEnemyBase());
+                    Debug.Log("  search switch to attack in firing distance  " + tank.TankFiringDistance + " " + logCounter);
+                    stateToReturn = typeof(CC_AttackState);
+                }
+                else
+                {
+
+                    Debug.Log(" search switch to chase not in firing distance  " + tank.TankFiringDistance + " " + logCounter);
+                    stateToReturn = typeof(Chase);
+                }
+                logCounter++;
+
+            }
+
+            return true;
+        }
+
+
         return false;
 
-
-
-
-
-
-
     }
+
+   
 
     private void rushConsumable()
     {
