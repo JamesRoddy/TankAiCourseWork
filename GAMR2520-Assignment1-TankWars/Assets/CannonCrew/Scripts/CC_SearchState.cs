@@ -19,6 +19,7 @@ public class SearchState : BaseST
     GameObject priorityPosition = new GameObject();
     Dictionary<PRIORITIES, GameObject> organisedConsumables = new Dictionary<PRIORITIES, GameObject>();
     private float currentSpeed = 0.85f;
+    int logCounter = 0;
     public SearchState(CC_SmartTank newTank )
     {
         tank = newTank;
@@ -29,11 +30,14 @@ public class SearchState : BaseST
         currentSpeed = 0.85f;
         priorityPosition = new GameObject();
 
-        Debug.Log("Entered Search");
+        Debug.Log("Entered Search " + logCounter);
+        logCounter++;
         return null;
     }
     public override Type Exit()
     {
+        Debug.Log("Search Exit " + logCounter);
+        logCounter++;
         stateToReturn = null;
         priorityPositions.Clear();
         organisedConsumables.Clear();
@@ -60,7 +64,7 @@ public class SearchState : BaseST
         }
         else if(tank.priorityManager.checkLow(PRIORITIES.FUEL)) 
         {
-            currentSpeed = 0.6f;
+            currentSpeed = 0.5f;
         }
 
         if (tank.consumablesFound.Count > 0)
@@ -70,21 +74,26 @@ public class SearchState : BaseST
 
             foreach (KeyValuePair<GameObject,float> gameObject in tank.consumablesFound) // loop through consumable dictionary 
             {
-                if (gameObject.Key.CompareTag("Ammo") && !tank.priorityManager.isResourceSafe(PRIORITIES.AMMO) && !priorityPositions.Contains(gameObject.Key.transform.position)) // if the tag relates to the associated priority and the priority is not currenlty safe 
+                if (!priorityPositions.Contains(gameObject.Key.transform.position))
                 {
-                    organisedConsumables[PRIORITIES.AMMO] = gameObject.Key;// use the priority enum as the key and insert the found game object into the organisedConsumables dicitionary 
+                    if (gameObject.Key.CompareTag("Ammo") ) // if the tag relates to the associated priority and the priority is not currenlty safe 
+                    {
+                        organisedConsumables[PRIORITIES.AMMO] = gameObject.Key;// use the priority enum as the key and insert the found game object into the organisedConsumables dicitionary 
+
+                    }
+                    else if (gameObject.Key.CompareTag("Health") )
+                    {
+                        organisedConsumables[PRIORITIES.HEALTH] = gameObject.Key;
+
+                    }
+                    else if (gameObject.Key.CompareTag("Fuel") )
+                    {
+                        organisedConsumables[PRIORITIES.FUEL] = gameObject.Key;
+
+                    }
 
                 }
-                else if (gameObject.Key.CompareTag("Health") && !tank.priorityManager.isResourceSafe(PRIORITIES.HEALTH) && !priorityPositions.Contains(gameObject.Key.transform.position))
-                {
-                    organisedConsumables[PRIORITIES.HEALTH] = gameObject.Key;
 
-                }
-                else if (gameObject.Key.CompareTag("Fuel") && !tank.priorityManager.isResourceSafe(PRIORITIES.FUEL) && !priorityPositions.Contains(gameObject.Key.transform.position))
-                {
-                    organisedConsumables[PRIORITIES.FUEL] = gameObject.Key;
-
-                }
 
             }
 
@@ -150,26 +159,57 @@ public class SearchState : BaseST
 
     public bool checkStateTransitions()
     {
+        /*if (priorityPositions.Count > 0 && tank.enemyTank != null)
+        {
 
 
-        if(tank.enemyTank != null)
+
+
+            if (
+                (Vector3.Dot(tank.enemyTank.transform.forward, tank.transform.forward) <= 0 
+                && tank.compareDistanceBetwenPoints(priorityPositions[0],tank.enemyTank.transform.position))
+                )
+            {
+                    Debug.Log("search state not switching behind enemy potential consumable available " + Vector3.Dot(tank.enemyTank.transform.forward, tank.transform.forward));
+                    return false;
+
+            }
+
+        }*/
+
+        if (tank.enemyTank != null )
         {
             //Debug.Log("would exit");
 
-            if (tank.priorityManager.checkLow(PRIORITIES.HEALTH))
+            if (tank.priorityManager.checkLow(PRIORITIES.HEALTH)  )
             {
-
+                Debug.Log("search switch to retreat low health "+logCounter);
+                logCounter++;
                 stateToReturn = typeof(Retreat);
             }
+
             if( tank.priorityManager.checkHigh(PRIORITIES.HEALTH) 
-                && tank.priorityManager.checkHigh(PRIORITIES.HEALTH) 
-                && !tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL, PRIORITIES.AMMO))
+                && tank.priorityManager.checkHigh(PRIORITIES.FUEL) 
+                && !tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.AMMO))
             {
                 //chase
-                Debug.Log("Goto chase");
-                stateToReturn = typeof(Chase);
+                Debug.Log("search switch to attack or chase high on health and fuel ammo not major " +logCounter);
+              
+                if (tank.getDistanceToEnemy() < tank.TankFiringDistance)
+                {
+                    Debug.Log("  search switch to attack in firing distance  " + tank.TankFiringDistance+" "+logCounter);
+                    stateToReturn = typeof(CC_AttackState);
+                }
+                else
+                {
+
+                    Debug.Log(" search switch to chase not in firing distance  " + tank.TankFiringDistance + " " + logCounter);
+                    stateToReturn = typeof(Chase);
+                }
+                logCounter++;
 
             }
+
             return true;
 
 
@@ -241,7 +281,7 @@ public class SearchState : BaseST
 
         bool isHealthMajor = tank.priorityManager.checkLow(PRIORITIES.HEALTH);
         bool isFuelMajor = tank.priorityManager.checkLow(PRIORITIES.FUEL); // check if current priority of fuel is low
-        bool isAmmoCritcial = tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL, PRIORITIES.AMMO);
+        bool isAmmoMajor = tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.AMMO);
         if (isFuelMajor || isHealthMajor) // if either was low
         {
             int getHealthOrFuel = Convert.ToInt32(organisedConsumables.ContainsKey(PRIORITIES.HEALTH)) - Convert.ToInt32(organisedConsumables.ContainsKey(PRIORITIES.FUEL));
@@ -267,11 +307,11 @@ public class SearchState : BaseST
                     if (organisedConsumables.ContainsKey(PRIORITIES.HEALTH))// if health was true that means a case of 0 means that both health and fuel were found in the orgainse items dictionary  
                     { 
 
-                       currentSpeed = tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL, PRIORITIES.FUEL) ? currentSpeed : 0.65f; // in this case we also check if speed can be increased
+                       currentSpeed = tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.FUEL) ? currentSpeed : 0.65f; // in this case we also check if speed can be increased
                        Vector3 posHealth = organisedConsumables[PRIORITIES.HEALTH].transform.position;
                        Vector3 posFuel = organisedConsumables[PRIORITIES.FUEL].transform.position;
                        float distanceDifference = tank.consumablesFound[organisedConsumables[PRIORITIES.HEALTH]] - tank.consumablesFound[organisedConsumables[PRIORITIES.FUEL]];
-                       if (distanceDifference < 0 && !tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL,PRIORITIES.FUEL)) 
+                       if (distanceDifference < 0 && !tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.FUEL)) 
                        {
                          // check which pick up is closer if they are both major
                          // but in the situation where fuel is critcial it should alaways be pushed first to the priority points list
@@ -296,27 +336,22 @@ public class SearchState : BaseST
             }
            /// after potentially pushing fuel and health to the priority list of postions check if ammo 
            /// is crticial and if we have it in the  dicitionary meaning we have seen it push the game objects position to the priority positions list
-            if (isAmmoCritcial && organisedConsumables.ContainsKey(PRIORITIES.AMMO)) 
+            if (isAmmoMajor && organisedConsumables.ContainsKey(PRIORITIES.AMMO)) 
             {
                 Vector3 ammoPos = organisedConsumables[PRIORITIES.AMMO].transform.position; ;
                 priorityPositions.Add(ammoPos);
 
 
             }
-            // sweep the remaining queue where resources would be of concern(minor priority and see if any game resources were sighted that relate to that priority)
-            foreach(PRIORITIES priority in tank.priorityManager.sweepQueues(new List<PriorityManager.queuePriority> { PriorityManager.queuePriority.MINOR }))
+            // sweep the remaining queues where resources would be of less of concern(minor/safe priority and see if any game resources were sighted that relate to that priority)
+            foreach(PRIORITIES priority in tank.priorityManager.sweepQueues(new List<queuePriority> { queuePriority.MINOR ,queuePriority.SAFE}))
             {
-                if (organisedConsumables.ContainsKey(priority))
+                if (organisedConsumables.ContainsKey(priority) && !priorityPositions.Contains(organisedConsumables[priority].transform.position))
                 {
+                    Debug.Log("added minor/safe priority " + priority + " in to priority position list");
                     priorityPositions.Add(organisedConsumables[priority].transform.position);
                 }
             }
-
-           
-
-
-
-
 
 
         }
@@ -326,7 +361,7 @@ public class SearchState : BaseST
     public void checkFuelSpeed() 
     {
 
-        currentSpeed = tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL, PRIORITIES.FUEL) ? currentSpeed : 0.65f; // if our priority for fuel is major and not cirticla it means that we should have enough to increase our speed to reach the found fuel faster
+        currentSpeed = tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.FUEL) ? currentSpeed : 0.65f; // if our priority for fuel is major and not cirticla it means that we should have enough to increase our speed to reach the found fuel faster
 
     }
 
