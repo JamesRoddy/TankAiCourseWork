@@ -40,7 +40,7 @@ public class PriorityManager
         {
 
             priorityQueues[prioritiesList[i].CurrentClassification].Add(prioritiesList[i].Name);
-            Debug.Log("safe "+prioritiesList[i].checkSafe());
+           
             Debug.Log("current class " + prioritiesList[i].CurrentClassification);
             Debug.Log("prev class " + prioritiesList[i].PreviousClassification);
 
@@ -136,28 +136,16 @@ public class PriorityManager
         public bool checkQueue(queuePriority queue, PRIORITIES resource)
         {
 
+         return priorityQueues[queue].Count > 0 && priorityQueues[queue].Contains(resource);// if the resource is in the priority state being checked
 
-            if (priorityQueues[queue].Count > 0 && priorityQueues[queue].Contains(resource))// if it is 
-            {
-                return true;
-
-
-            }
-
-
-            return false;
 
         }
     
         // check if the resource is in the safe queue using the SAFE enum to access the assoicated list 
         public bool isResourceSafe(PRIORITIES resource) {
-            if (priorityQueues[queuePriority.SAFE].Count > 0 && priorityQueues[queuePriority.SAFE].Contains(resource)) // if it is 
-            {
-                return true;
 
+                return priorityQueues[queuePriority.SAFE].Count > 0 && priorityQueues[queuePriority.SAFE].Contains(resource);
 
-            }
-            return false;
 
         }
 

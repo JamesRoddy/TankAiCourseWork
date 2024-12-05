@@ -9,14 +9,15 @@ public class CC_AttackState : BaseST
     private CC_SmartTank Tank;
     //Game object to store enemy position
     GameObject EnemyTankPositionStore = new GameObject();
-
+    int logCounter = 0;
     public CC_AttackState(CC_SmartTank newTank)
     {
         Tank = newTank;
     }
     public override Type Entry()
     {
-        Debug.Log("Attack Enter");
+        Debug.Log("Attack Enter " + logCounter);
+        logCounter++;
         return null;
     }
 
@@ -28,12 +29,13 @@ public class CC_AttackState : BaseST
             // store enemy position
             EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
             //fire at the stored position
-            Tank.TurretFireAtPoint(EnemyTankPositionStore);
+            Tank.TurretFireAtPoint(Tank.LastKnownEPos);
             // return null since the state doesn't change, we will continue attacking
 
-            if (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, PRIORITIES.HEALTH))
+            if (Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.HEALTH))
             {
-                Debug.Log("Goto retreat");
+                Debug.Log("attack switch to retreat low health " + logCounter);
+                logCounter++;
                 return typeof(Retreat);
             }
 
@@ -53,27 +55,42 @@ public class CC_AttackState : BaseST
             //store the enemies last position this might not be needed though so I'll ask later
             //EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
             //and chase them
-            if (Vector3.Distance(Tank.transform.position, Tank.lastKnownEnemyPos.transform.position) >40.0f )
+            if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > Tank.TankFiringDistance &&!Tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.AMMO))
             {
+                Debug.Log("attack switch to chase tank out of firing range " + logCounter);
+                logCounter++;
                 return typeof(Chase);
 
             }
-            return null;
+            else
+            {
+                Debug.Log("attack switch to search low on ammo " + logCounter);
+                logCounter++;
+                return typeof(SearchState);
+            }
+          
+          
         }
         //otherwise if our health is low, retreat
-        else if (Tank.priorityManager.checkQueue(PriorityManager.queuePriority.MAJOR, PRIORITIES.HEALTH))
+        else if (Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.HEALTH))
         {
+            Debug.Log("attack switch to retreat health low " + logCounter);
+
             return typeof(Retreat);
         }
         
         else 
         {
+            Debug.Log("attack switch to search no condtion was hit " + logCounter);
+
             return typeof(SearchState);
         }
     }
 
     public override Type Exit()
     {
+        Debug.Log("Attack Exit "+ logCounter);
+        logCounter++;
         return null;
     }
 }

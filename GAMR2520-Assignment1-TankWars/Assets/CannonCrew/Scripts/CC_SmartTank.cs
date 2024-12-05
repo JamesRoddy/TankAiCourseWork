@@ -16,7 +16,8 @@ public class CC_SmartTank : AITank
     private float ammoMaxOffset = 5.0f;
     private float fuelMaxOffset = 25.0f;
     private float healthMaxOffset = 25.0f;
-
+    private float tankFiringDistance = 40.0f; 
+    
     public PriorityValuesHolder healthValuesHolder;
     public PriorityValuesHolder fuelValuesHolder;
     public PriorityValuesHolder ammoValuesHolder;
@@ -55,7 +56,8 @@ public class CC_SmartTank : AITank
     public GameObject consumable;
     public GameObject enemyTank;
     public GameObject enemyBase;
-    public GameObject lastKnownEnemyPos;
+    private float tankWaitTime =0.0f;
+    private GameObject lastKnownEnemyPos;
     public List<GameObject> currentBases;
 
     PRIORITIES currentPriority;
@@ -120,6 +122,11 @@ public class CC_SmartTank : AITank
 
 
     }
+
+
+  
+
+
     public override void AITankStart()
     {
         // store current bases 
@@ -130,10 +137,10 @@ public class CC_SmartTank : AITank
         maxAmmo = a_GetAmmoLevel ;
         maxFuel = a_GetFuelLevel;
         
-
+        lastKnownEnemyPos =  new GameObject();
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
-        healthPriorityThresh = 30.0f;
-        healthSafteyThresh = 50.0f;
+        healthPriorityThresh = 40.0f;
+        healthSafteyThresh = 55.0f;
 
         ammoPriorityThresh = 4.0f;
         ammoSafteyThresh = 10.0f;
@@ -164,13 +171,13 @@ public class CC_SmartTank : AITank
 
 
     }
-
-   
-   
-   public override void AIOnCollisionEnter(Collision collision)
+    public override void AIOnCollisionEnter(Collision collision)
     {
 
     }
+
+
+
     public override void AITankUpdate()
     {
         // checking for any targets/consumables
@@ -265,6 +272,52 @@ public class CC_SmartTank : AITank
 
     }
    
+    public bool stopAndCheckPos(GameObject position,float waitTime, GameObject checkFor)
+    {
+       Debug.Log("tank stopping and checking position wait time: " + waitTime);
+      
+
+        if (tankWaitTime < waitTime)
+        {
+            tankWaitTime += Time.deltaTime;
+            if (checkFor != null) {
+                Debug.Log("wait interupted object found at wait time : " + tankWaitTime);
+                tankWaitTime = waitTime;
+                return true;
+            };
+            Debug.Log("waiting for " + tankWaitTime);
+            a_FaceTurretToPoint(position);
+            return false;
+        }
+        tankWaitTime = 0.0f;
+        Debug.Log("wait finished tank wait time  " + tankWaitTime);
+        return true;
+      
+        
+     
+
+
+
+    }
+
+    public bool compareDistanceBetwenPoints(Vector3 pointToCheck, Vector3 pointToCompareTo)
+    {
+        return Vector3.Distance(pointToCheck, transform.position)< Vector3.Distance(pointToCheck,pointToCompareTo) ; 
+
+    }
+    public float getDistanceToEnemy()
+    {
+         
+        if(enemyTank != null)
+        {
+            return Vector3.Distance(lastKnownEnemyPos.transform.position, transform.position);
+
+        }
+
+        Debug.Log("tried to get distance to enemy tank but was null returned 0.0f");
+        return 0.0f;
+  
+    }
     // allows for manual assignment of currentPrioity
     public PRIORITIES setCurrentPriority{
 
@@ -294,6 +347,15 @@ public class CC_SmartTank : AITank
 
             currentWorkingPriority = value;
         }
+    }
+
+    public float TankFiringDistance
+    {
+        get { return tankFiringDistance; }
+    }
+    public GameObject LastKnownEPos
+    {
+        get { return lastKnownEnemyPos; }
     }
 
     /// <summary>
