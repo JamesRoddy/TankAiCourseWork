@@ -63,9 +63,7 @@ public class CC_AttackState : BaseST
             }
         }
 
-        else if ( Tank.priorityManager.checkHigh(PRIORITIES.HEALTH)    
-                 || (Tank.priorityManager.checkQueue(queuePriority.MAJOR,PRIORITIES.HEALTH) 
-                 && Tank.priorityManager.isResourceSafe(PRIORITIES.FUEL )))
+        else if (Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
             // else if the enemy position changed and our health is either in safe, minor or major priority
 
         {

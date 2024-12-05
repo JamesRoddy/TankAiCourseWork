@@ -65,7 +65,8 @@ public class Chase : BaseST
         {
             //Once we have seen the enemy tbase we travel towards it.
             Debug.Log("Chasing Enemy Bases");
-            Tank.FollowPathToWorldPoint(Tank.enemyBase, fSpeed);
+            Tank.TurretFaceWorldPoint(Tank.EnemyBasePos);
+            Tank.FollowPathToWorldPoint(Tank.EnemyBasePos, fSpeed);
 
             //if our tank is between max and min units away from the enemy base and we are good on fuel, we go into the attack state
             if (Vector3.Distance(Tank.transform.position, Tank.enemyBase.transform.position) < Tank.BaseFiringDistance
