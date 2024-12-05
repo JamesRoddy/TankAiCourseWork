@@ -59,6 +59,31 @@ public class Chase : BaseST
 
         }
 
+        else if(Tank.enemyBase != null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
+        {
+            Debug.Log("Chasing Enemy Bases");
+            Tank.FollowPathToWorldPoint(Tank.enemyBase, fSpeed);
+
+            //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the attack state
+            if (Vector3.Distance(Tank.transform.position, Tank.enemyBase.transform.position) < Tank.BaseFiringDistance
+                && Vector3.Distance(Tank.transform.position, Tank.enemyBase.transform.position) > tankAttackMinThresh
+                && Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+            {
+                Debug.Log("Base switch attack: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
+                logCounter++;
+                return typeof(CC_AttackState);
+            }
+
+           
+             return null;
+            
+        }
+
+        else if(Tank.enemyBase == null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
+        {
+            return typeof(SearchState);
+        }
+
         else if(Tank.enemyTank == null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision

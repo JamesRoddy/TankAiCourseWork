@@ -16,8 +16,9 @@ public class CC_SmartTank : AITank
     private float ammoMaxOffset = 5.0f;
     private float fuelMaxOffset = 25.0f;
     private float healthMaxOffset = 25.0f;
-    private float tankFiringDistance = 40.0f; 
-    
+    private float tankFiringDistance = 40.0f;
+    private float enemyBaseFiringDistance = 30.0f;
+
     public PriorityValuesHolder healthValuesHolder;
     public PriorityValuesHolder fuelValuesHolder;
     public PriorityValuesHolder ammoValuesHolder;
@@ -58,6 +59,7 @@ public class CC_SmartTank : AITank
     public GameObject enemyBase;
     private float tankWaitTime =0.0f;
     private GameObject lastKnownEnemyPos;
+    private GameObject enemyBasePosition;
     public List<GameObject> currentBases;
 
     PRIORITIES currentPriority;
@@ -138,6 +140,7 @@ public class CC_SmartTank : AITank
         maxFuel = a_GetFuelLevel;
         
         lastKnownEnemyPos =  new GameObject();
+        enemyBasePosition = new GameObject();
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
         healthPriorityThresh = 40.0f;
         healthSafteyThresh = 55.0f;
@@ -197,7 +200,7 @@ public class CC_SmartTank : AITank
         if (enemyBasesFound.Count > 0 && enemyBasesFound.First().Key != null)
         {
             enemyBase = enemyBasesFound.First().Key;
-
+            enemyBasePosition.transform.position = enemyBase.transform.position;
         }
         else
         {
@@ -318,6 +321,18 @@ public class CC_SmartTank : AITank
         return 0.0f;
   
     }
+
+    public float getDistanceToEnemyBase()
+    {
+        if(enemyBase != null)
+        {
+            return Vector3.Distance(enemyBasePosition.transform.position, transform.position);
+        }
+
+        return 0.0f;
+    }
+
+
     // allows for manual assignment of currentPrioity
     public PRIORITIES setCurrentPriority{
 
@@ -353,9 +368,20 @@ public class CC_SmartTank : AITank
     {
         get { return tankFiringDistance; }
     }
+    
+    public float BaseFiringDistance
+    {
+        get { return enemyBaseFiringDistance; }
+    }
+
     public GameObject LastKnownEPos
     {
         get { return lastKnownEnemyPos; }
+    }
+
+    public GameObject EnemyBasePos
+    {
+        get { return enemyBasePosition; }
     }
 
     /// <summary>
