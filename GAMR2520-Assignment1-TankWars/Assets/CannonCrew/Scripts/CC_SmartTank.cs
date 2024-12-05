@@ -28,9 +28,9 @@ public class CC_SmartTank : AITank
 
 
     // current percentages for tank resources
-    private float healthPercentage;
-    private float fuelPercentage;
-    private float ammoPercentage;
+    public float healthPercentage;
+    public float fuelPercentage;
+    public float ammoPercentage;
 
 
 
@@ -43,12 +43,12 @@ public class CC_SmartTank : AITank
 
 
     // default thresholds for resources becoming a priority 
-    float healthPriorityThresh;
-    float ammoPriorityThresh;
-    float fuelPriorityThresh;
-    float healthSafteyThresh;
-    float ammoSafteyThresh;
-    float fuelSafteyThresh;
+  public float healthPriorityThresh;
+  public float ammoPriorityThresh;
+  public float fuelPriorityThresh;
+  public float healthSafteyThresh;
+  public float ammoSafteyThresh;
+  public float fuelSafteyThresh;
 
 
 
@@ -109,6 +109,7 @@ public class CC_SmartTank : AITank
     private void initStateMachine()
     {
 
+
         Dictionary<Type,BaseST> states = new Dictionary<Type, BaseST>
         {
             {typeof(SearchState),new SearchState(this)},
@@ -117,8 +118,12 @@ public class CC_SmartTank : AITank
             {typeof(Chase),new Chase(this)},
         };
 
-
-        GetComponent<CC_FSM>().setStates(states);
+          if(!TryGetComponent(out CC_SmartTankRBS rules)){
+            Debug.Log("found did not find RBS ");
+            GetComponent<CC_FSM>().setStates(states);
+        }
+            
+        
 
 
     }
