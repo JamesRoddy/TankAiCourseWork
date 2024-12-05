@@ -282,7 +282,7 @@ public class CC_SmartTank : AITank
             tankWaitTime += Time.deltaTime;
             if (checkFor != null) {
                 Debug.Log("wait interupted object found at wait time : " + tankWaitTime);
-                tankWaitTime = waitTime;
+                tankWaitTime = 0.0f;
                 return true;
             };
             Debug.Log("waiting for " + tankWaitTime);

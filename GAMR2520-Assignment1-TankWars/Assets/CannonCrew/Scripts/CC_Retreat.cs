@@ -15,6 +15,7 @@ public class Retreat : BaseST
     GameObject BasePositionStore = new GameObject();
     GameObject safetySpot = new GameObject();
     float runTime = 10.0f;
+    
     float safteySpotDistThresh = 5.0f;
     float safteySpotTimer = 0.0f;
     float retreatCheckDistance = 40.0f;
@@ -105,7 +106,7 @@ public class Retreat : BaseST
         {
 
             //If we cant see the tank and we are close to the base
-            if (Tank.enemyTank == null && !bEnemySeen)
+            if (Tank.enemyTank == null && !bEnemySeen )
             {
                 Debug.Log(Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position));
                 if (Tank.stopAndCheckPos(Tank.LastKnownEPos, 2.0f, Tank.enemyTank))
@@ -154,7 +155,8 @@ public class Retreat : BaseST
         else if (Tank.getBasePosition() == Vector3.zero)
         {
             findInversionToETank(Tank.LastKnownEPos.transform.position);
-            //If we cant see the tank and we are close to the base
+            Debug.Log("saftey spot " + safetySpot);
+            //If we cant see the tank but know we need to retreat
             if (Tank.enemyTank == null && !bEnemySeen)
             {
                 Debug.Log(Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position));
@@ -172,13 +174,7 @@ public class Retreat : BaseST
                     bEnemySeen = true;
                     t = 0;
 
-                    /*//Other wise we stay in the retreat state and run to a random point on the map.
-                      else
-                      {
-                        Tank.GenerateNewRandomWorldPoint();
-                        Tank.FollowPathToRandomWorldPoint(fSpeed);
-                        return null;
-                      }*/
+
 
                 }
                 else if ((Tank.enemyTank != null || bEnemySeen)
@@ -187,7 +183,7 @@ public class Retreat : BaseST
 
                     t += Time.deltaTime;
 
-                    Debug.Log("Going back to base ");
+                    Debug.Log("Going back to inverted pos " + t);
                     Debug.Log("retreat time " + t);
                     Tank.FollowPathToWorldPoint(safetySpot, fSpeed);
 
