@@ -10,6 +10,11 @@ public class CC_AttackState : BaseST
     //Game object to store enemy position
     GameObject EnemyTankPositionStore = new GameObject();
     int logCounter = 0;
+    float fshootTimeLimit = 2f;
+    float fkiteTime = 10f;
+    float fSpeed = 0.8f;
+    float fshootT;
+    
     public CC_AttackState(CC_SmartTank newTank)
     {
         Tank = newTank;
@@ -45,16 +50,15 @@ public class CC_AttackState : BaseST
 
                 }
             }
+
+           
             //fire at the stored position
             Tank.TurretFireAtPoint(Tank.LastKnownEPos);
             // return null since the state doesn't change, we will continue attacking
             return null;
-            
+
+
         }
-
-
-
-
 
 
         if (Tank.enemyBase != null && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
@@ -78,13 +82,9 @@ public class CC_AttackState : BaseST
 
 
         }
-
-       
-       
+  
          Debug.Log("attack switch to search no condtion was hit " + logCounter);
          return typeof(SearchState);
-        
-
 
 
         /*  Debug.Log("attack switch to search low on res " + logCounter);
@@ -92,14 +92,18 @@ public class CC_AttackState : BaseST
           return typeof(SearchState);*/
 
 
-
-
-
     }
 
     public override Type Exit()
     {
+        /*if(bCalc == false)
+        {
+            kitePath.transform.position = new Vector3(Mathf.Sin(Time.realtimeSinceStartup) * fkiteRadius, 0.0f, Mathf.Cos(Time.realtimeSinceStartup) * fkiteRadius);
+            kiteTankPosition.transform.position = Tank.LastKnownEPos.transform.position + kitePath.transform.position;
+            bCalc = true;
+        }*/
         Debug.Log("Attack Exit "+ logCounter);
+        fshootT = 0f;
         logCounter++;
         return null;
     }
