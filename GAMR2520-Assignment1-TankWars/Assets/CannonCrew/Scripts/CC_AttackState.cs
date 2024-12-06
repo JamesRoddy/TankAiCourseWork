@@ -81,7 +81,7 @@ public class CC_AttackState : BaseST
 
        
        
-         Debug.Log("attack switch to search no condtion was hit " + logCounter);
+         Debug.Log("attack switch to search no condtion was hit bool for ammo was: "  +!Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO)+" " + logCounter);
          return typeof(SearchState);
         
 

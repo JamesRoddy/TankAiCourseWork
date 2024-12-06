@@ -29,9 +29,9 @@ public class CC_SmartTank : AITank
 
 
     // current percentages for tank resources
-    public float healthPercentage;
-    public float fuelPercentage;
-    public float ammoPercentage;
+    protected float healthPercentage;
+    protected float fuelPercentage;
+    protected float ammoPercentage;
 
 
 
@@ -44,12 +44,12 @@ public class CC_SmartTank : AITank
 
 
     // default thresholds for resources becoming a priority 
-  public float healthPriorityThresh;
-  public float ammoPriorityThresh;
-  public float fuelPriorityThresh;
-  public float healthSafteyThresh;
-  public float ammoSafteyThresh;
-  public float fuelSafteyThresh;
+  protected float healthPriorityThresh;
+  protected float ammoPriorityThresh;
+  protected float fuelPriorityThresh;
+  protected float healthSafteyThresh;
+  protected float ammoSafteyThresh;
+  protected float fuelSafteyThresh;
 
 
 
@@ -61,6 +61,7 @@ public class CC_SmartTank : AITank
     private GameObject lastKnownEnemyPos;
     private GameObject enemyBasePosition;
     public List<GameObject> currentBases;
+    private GameObject basePositionHolder;
 
     PRIORITIES currentPriority;
     PRIORITIES currentWorkingPriority;
@@ -147,7 +148,7 @@ public class CC_SmartTank : AITank
         lastKnownEnemyPos =  new GameObject();
         enemyBasePosition = new GameObject();
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
-        healthPriorityThresh = 30.0f;
+        healthPriorityThresh = 40.0f;
         healthSafteyThresh = 55.0f;
 
         ammoPriorityThresh = 4.0f;
@@ -169,6 +170,12 @@ public class CC_SmartTank : AITank
              new PriorityHolder(PRIORITIES.HEALTH, PriorityManager.queuePriority.SAFE, healthValuesHolder) ,
              new PriorityHolder(PRIORITIES.AMMO, PriorityManager.queuePriority.SAFE, ammoValuesHolder) ,
         };
+
+        basePositionHolder = new GameObject();
+
+        basePositionHolder.transform.position = a_GetMyBases[0].transform.position;
+
+
 
         // instantiate prriority manager using list of defined prioity holders  
         priorityManager = new PriorityManager(currentPriorites);
@@ -369,6 +376,10 @@ public class CC_SmartTank : AITank
         }
     }
 
+    public Vector3 BasePositionStore
+    {
+        get { return basePositionHolder.transform.position; }
+    }
     public float TankFiringDistance
     {
         get { return tankFiringDistance; }
