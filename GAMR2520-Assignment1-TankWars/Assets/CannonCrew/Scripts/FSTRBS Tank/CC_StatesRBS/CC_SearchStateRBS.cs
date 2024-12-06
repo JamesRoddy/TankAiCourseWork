@@ -61,6 +61,14 @@ public class SearchStateRBS : BaseST
     public override Type Update()
     {
         tank.SetEnemySeen();
+        tank.checkAmmo();
+        tank.CheckFuel();
+        tank.CheckHealth();
+        tank.IsWithinRange();
+        tank.CheckCanAttack();
+        tank.CheckShouldRetreat();
+        tank.CheckShouldChase();
+
 
         foreach (var item in  tank.rules.GetRules) // iterates through the rules
         {
@@ -89,6 +97,7 @@ public class SearchStateRBS : BaseST
 
         if (tank.consumablesFound.Count > 0)
         {
+
             // form a dicitionary that catergorises  each resource currently in view 
             Debug.Log("consumables reset " + organisedConsumables.Count);
 
@@ -205,14 +214,12 @@ public class SearchStateRBS : BaseST
             {
                 Debug.Log("search switch to retreat low health " + logCounter);
                 logCounter++;
-                stateToReturn = typeof(Retreat);
+                stateToReturn = typeof(RetreatRBS);
             }
 
 
 
-            if (tank.stats["highHealth"] == true
-                && tank.stats["highFuel"] == true
-                && !tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.AMMO))
+            if (tank.stats["canAttack"] == true)
             {
                 //chase
                 Debug.Log("search switch to attack or chase high on health and fuel ammo not major " + logCounter);
@@ -220,13 +227,13 @@ public class SearchStateRBS : BaseST
                 if (tank.stats["withinRange"] == true)
                 {
                     Debug.Log("  search switch to attack in firing distance  " + tank.TankFiringDistance + " " + logCounter);
-                    stateToReturn = typeof(CC_AttackState);
+                    stateToReturn = typeof(CC_AttackStateRBS);
                 }
                 else
                 {
 
                     Debug.Log(" search switch to chase not in firing distance  " + tank.TankFiringDistance + " " + logCounter);
-                    stateToReturn = typeof(Chase);
+                    stateToReturn = typeof(ChaseRBS);
                 }
                 logCounter++;
 

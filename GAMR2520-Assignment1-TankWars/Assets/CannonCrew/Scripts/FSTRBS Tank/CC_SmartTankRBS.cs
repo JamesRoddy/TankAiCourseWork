@@ -40,14 +40,22 @@ public class CC_SmartTankRBS : CC_SmartTank
         stats.Add("highHealth", false); // our health is high                                     
         stats.Add("highFuel", false); // our fuel is high                                         
         stats.Add("highAmmo", false); // our ammo is high                                         
-        stats.Add("enemySeen", false); // we see the enemy tank                                   
-      //  stats.Add("ammoNotMajor", false); // our ammo is not a major priority                   
-        stats.Add("withinRange", false); // we are within the firing range of the enemy           
+        stats.Add("enemySeen", false); // we see the enemy tank                                                      
+        stats.Add("withinRange", false); // we are within the firing range of the enemy
+        stats.Add("canAttack", false); // a fact to combine other facts like enemy seen, high fuel and high ammo into 1
+        stats.Add("shouldRetreat", false); // combining the enemySeen and lowHealth facts into one fact
+        stats.Add("shouldChase", false); // we should retreat because we see the enemy, our health is low and we aren't retreating already
     }
 
-    public void InitiliseRules()
+    public void InitiliseRules()  
     {
-        rules.addRule(new Rule("enemySeen", "lowHealth", typeof(RetreatRBS), Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
+        rules.addRule(new Rule("shouldRetreat", "attackState", typeof(RetreatRBS), Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
+        rules.addRule(new Rule("shouldRetreat", "searchState", typeof(RetreatRBS), Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
+        rules.addRule(new Rule("shouldRetreat", "chaseState", typeof(RetreatRBS), Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
+        rules.addRule(new Rule("canAttack", "withinRange", typeof(CC_AttackStateRBS), Rule.Predicate.And));// if we are able to attack(our health and fuel are high and ammo isn't a major priority) we should go into the attack state
+        rules.addRule(new Rule("shouldChase", "searchState", typeof(ChaseRBS), Rule.Predicate.And)); // if we are in the search state and we can attack, then chase the enemy
+        rules.addRule(new Rule("shouldChase", "attackState", typeof(ChaseRBS), Rule.Predicate.And)); // if we are in the attack state
+     //   rules.addRule(new Rule("shouldRetreat", "searchState", typeof(SearchStateRBS), Rule.Predicate.nAnd)); // If we shouldn't retreat (we don't see the enemy or we aren't on low health) and we aren't in search state then go to search state
     }
     public void CheckHealth()
     {
@@ -105,23 +113,71 @@ public class CC_SmartTankRBS : CC_SmartTank
     {
         if (enemyTank != null)
         {
+            Debug.Log("enemySeen is true");
             stats["enemySeen"] = true;
         }
         else
         {
+            Debug.Log("enemySeen is false");
             stats["enemySeen"] = false;
         }
     }
 
     public void IsWithinRange()
     {
-        if(getDistanceToEnemy() < TankFiringDistance)
+        if (stats["enemySeen"] == true)
         {
-            stats["withinRange"] = true;
+            if (getDistanceToEnemy() < TankFiringDistance)
+            {
+                stats["withinRange"] = true;
+            }
         }
         else
         {
             stats["withinRange"] = false;
+        }
+    }
+
+    public void CheckCanAttack()
+    {
+        if (   priorityManager.checkHigh(PRIORITIES.HEALTH)
+            && priorityManager.checkHigh(PRIORITIES.FUEL)
+            && !priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.AMMO)
+            && stats["attackState"] == false
+            && stats["shouldRetreat"] == false)
+            {
+                stats["canAttack"] = true;
+                Debug.Log("canAttack is true ");
+            }
+
+            else
+            {
+                stats["canAttack"] = false;
+                Debug.Log("canAttack is false");
+            }
+    }
+
+    public void CheckShouldRetreat()
+    {
+        if (stats["lowHealth"] == true && stats["enemySeen"] == true && stats["retreatState"] == false)
+        {
+            Debug.Log("shouldRetreat is true ");
+            stats["shouldRetreat"] = true;
+        }
+        else
+        {
+            stats["shouldRetreat"] = false;
+        }
+    }
+    public void CheckShouldChase()
+    {
+        if (stats["enemySeen"] == true && stats["canAttack"] == true && stats["chaseState"] == false)
+        {
+            stats["shouldChase"] = true;
+        }
+        else 
+        {
+            stats["shouldChase"] = false;
         }
     }
     private void initStateMachine()
