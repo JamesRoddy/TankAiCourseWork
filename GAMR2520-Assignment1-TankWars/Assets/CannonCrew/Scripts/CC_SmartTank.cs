@@ -118,6 +118,7 @@ public class CC_SmartTank : AITank
             {typeof(CC_AttackState),new CC_AttackState(this)},
             {typeof(Retreat),new Retreat(this)},
             {typeof(Chase),new Chase(this)},
+            {typeof(DodgeState),new DodgeState(this)},
         };
 
           if(!TryGetComponent(out CC_SmartTankRBS rules)){

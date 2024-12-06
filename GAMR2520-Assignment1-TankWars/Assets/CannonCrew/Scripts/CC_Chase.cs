@@ -11,7 +11,7 @@ public class Chase : BaseST
     private CC_SmartTank Tank;
     GameObject EnemyTankPositionStore = new GameObject();
     float fSpeed;
-    float tankAttackMinThresh = 10.0f;
+    float tankAttackMinThresh = 20.0f;
     float chaseTime = 2.0f;
     float t = 0.0f;
     int logCounter = 0;
@@ -49,15 +49,15 @@ public class Chase : BaseST
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
 
-          
 
-            //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the attack state
-            if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < Tank.TankFiringDistance
+
+            //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the kite state
+             if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
                 && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
-            {
+             {
                 Debug.Log("switch attack: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
                 logCounter++;
-                return typeof(CC_AttackState);
+                return typeof(DodgeState);
             }
 
             if (Tank.priorityManager.checkLow(PRIORITIES.FUEL) || Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
@@ -66,13 +66,9 @@ public class Chase : BaseST
                 logCounter++;
                 return typeof(Retreat);
             }
-
-
-            return null;
-
         }
 
-        if (t < chaseTime && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) >= tankAttackMinThresh && Tank.enemyTank == null && Tank.enemyBase == null)
+        if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
         {
             Debug.Log("Chasing with timer ");
             t += Time.deltaTime;
