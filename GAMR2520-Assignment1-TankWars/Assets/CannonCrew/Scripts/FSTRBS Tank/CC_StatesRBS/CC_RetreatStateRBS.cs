@@ -10,7 +10,7 @@ using static UnityEngine.EventSystems.EventTrigger;
 public class RetreatRBS : BaseST
 {
 
-    private CC_SmartTank Tank;
+    private CC_SmartTankRBS Tank;
     GameObject EnemyTankPositionStore = new GameObject();
     GameObject BasePositionStore = new GameObject();
     GameObject safetySpot = new GameObject();
@@ -23,13 +23,14 @@ public class RetreatRBS : BaseST
     float fSpeed;
     bool bEnemySeen = true;
     int logCounter = 0;
-    public RetreatRBS(CC_SmartTank newtank)
+    public RetreatRBS(CC_SmartTankRBS newtank)
     {
         Tank = newtank;
     }
 
     public override Type Entry()
     {
+        Tank.stats["retreatState"] = true;
         safetySpot.transform.position = Vector3.zero;
         Debug.Log("Entered Retreat " + logCounter);
         logCounter++;
@@ -41,6 +42,7 @@ public class RetreatRBS : BaseST
 
     public override Type Exit()
     {
+        Tank.stats["retreatState"] = false;
         Debug.Log("Retreat Exit " + logCounter);
         logCounter++;
         safetySpot.transform.position = Vector3.zero;
@@ -54,6 +56,26 @@ public class RetreatRBS : BaseST
 
     public override Type Update()
     {
+
+        Tank.SetEnemySeen();
+        Tank.checkAmmo();
+        Tank.CheckFuel();
+        Tank.CheckHealth();
+        Tank.IsWithinRange();
+        Tank.CheckCanAttack();
+        Tank.CheckShouldRetreat();
+        Tank.CheckShouldChase();
+
+
+        foreach (var item in Tank.rules.GetRules) // iterates through the rules
+        {
+            if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
+            {
+                return item.CheckRule(Tank.stats); // return the state
+            }
+        }
+
+
         BasePositionStore.transform.position = Tank.getBasePosition();
         //Makes sure that none of the tank resources are in the major or critical states
         //If the tank is fine then we go back to the search state to go looking for the enemy tank
@@ -62,7 +84,7 @@ public class RetreatRBS : BaseST
         {
             Debug.Log("retreat switch to search high on fuel and health" + logCounter);
             logCounter++;
-            return typeof(SearchState);
+            return typeof(SearchStateRBS);
         }
 
         //If we are low on a certain resource
@@ -117,7 +139,7 @@ public class RetreatRBS : BaseST
                     {
                         Debug.Log("retreat switch to search based on timer " + logCounter);
                         logCounter++;
-                        return typeof(SearchState);
+                        return typeof(SearchStateRBS);
                     }
                     bEnemySeen = true;
                     t = 0;
@@ -171,7 +193,7 @@ public class RetreatRBS : BaseST
             }
 
             //Otherwise we go to the search state
-            else if (Tank.enemyTank == null && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > retreatCheckDistance)
+           /* else if (Tank.enemyTank == null && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > retreatCheckDistance)
             {
                 if (Tank.stopAndCheckPos(Tank.LastKnownEPos, 3.5f, Tank.enemyTank))
                 {
@@ -184,7 +206,7 @@ public class RetreatRBS : BaseST
                     }
                     return null;
                 }
-            }
+            }*/
 
             /* else
              { 
@@ -201,7 +223,7 @@ public class RetreatRBS : BaseST
             // no condtion was hit in retreat moving to search 
             Debug.Log("no condtion was hit in retreat moving to search " + logCounter);
             logCounter++;
-            return typeof(SearchState);
+            return typeof(SearchStateRBS);
         }
 
     }

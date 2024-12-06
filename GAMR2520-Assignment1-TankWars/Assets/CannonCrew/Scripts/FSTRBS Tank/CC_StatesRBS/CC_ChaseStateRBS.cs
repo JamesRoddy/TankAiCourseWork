@@ -8,18 +8,19 @@ using static PriorityManager;
 public class ChaseRBS : BaseST
 {
 
-    private CC_SmartTank Tank;
+    private CC_SmartTankRBS Tank;
     GameObject EnemyTankPositionStore = new GameObject();
     float fSpeed;
     float tankAttackMinThresh = 10.0f;
     int logCounter = 0;
-    public ChaseRBS(CC_SmartTank newtank)
+    public ChaseRBS(CC_SmartTankRBS newtank)
     {
         Tank = newtank;
     }
 
     public override Type Entry()
     {
+        Tank.stats["chaseState"] = true;
         Debug.Log("Entered Chase " + logCounter);
         logCounter++;
         fSpeed = 1f;
@@ -28,6 +29,7 @@ public class ChaseRBS : BaseST
 
     public override Type Exit()
     {
+        Tank.stats["chaseState"] = true;
         Debug.Log("Chase Exit " + logCounter);
         logCounter++;
 
@@ -37,6 +39,23 @@ public class ChaseRBS : BaseST
 
     public override Type Update()
     {
+        Tank.SetEnemySeen();
+        Tank.checkAmmo();
+        Tank.CheckFuel();
+        Tank.CheckHealth();
+        Tank.IsWithinRange();
+        Tank.CheckCanAttack();
+        Tank.CheckShouldRetreat();
+        Tank.CheckShouldChase();
+
+
+        foreach (var item in Tank.rules.GetRules) // iterates through the rules
+        {
+            if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
+            {
+                return item.CheckRule(Tank.stats); // return the state
+            }
+        }
 
         if (Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
@@ -51,7 +70,7 @@ public class ChaseRBS : BaseST
             {
                 Debug.Log("switch attack: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
                 logCounter++;
-                return typeof(CC_AttackState);
+                //return typeof(CC_AttackStateRBS);
             }
 
 
@@ -68,7 +87,7 @@ public class ChaseRBS : BaseST
             {
                 Debug.Log("switch search tank no longer visible after moving to last known pos " + logCounter);
                 logCounter++;
-                return typeof(SearchState);
+                return typeof(SearchStateRBS);
             }
             return null;
         }
@@ -77,14 +96,14 @@ public class ChaseRBS : BaseST
         {
             Debug.Log(" switch retreat due to fuel priority " + logCounter);
             logCounter++;
-            return typeof(Retreat);
+            return typeof(RetreatRBS);
         }
 
         else
         {
             Debug.Log("switch search no condtion met in chase " + logCounter);
             logCounter++;
-            return typeof(SearchState);
+            return typeof(SearchStateRBS);
         }
 
     }
