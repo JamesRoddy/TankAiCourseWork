@@ -14,6 +14,7 @@ public class Chase : BaseST
     float tankAttackMinThresh = 20.0f;
     float chaseTime = 2.0f;
     float t = 0.0f;
+    bool hasSeenBase = false;
     int logCounter = 0;
     public Chase(CC_SmartTank newtank)
     {
@@ -49,7 +50,7 @@ public class Chase : BaseST
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
 
-
+          
 
             //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the kite state
              if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
@@ -68,7 +69,50 @@ public class Chase : BaseST
             }
         }
 
-        if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
+  
+
+        //If there are no enemy tnaks in our vision we check for enemy bases
+        if (Tank.enemyBase != null || hasSeenBase   )
+        {
+            hasSeenBase = true;
+
+            //Once we have seen the enemy the base we travel towards it.
+            Debug.Log("Chasing Enemy Bases");
+            if(Tank.enemyBase != null)// ensure base doesnt slip out of vision
+            {
+                Tank.FollowPathToWorldPoint(Tank.enemyBase, fSpeed);
+            }
+            else
+            {
+                Tank.FollowPathToWorldPoint(Tank.EnemyBasePos, fSpeed);
+            }
+
+            //if our tank is between  min units away from the enemy base and we are good on ammo, we go into the attack state
+            if (!Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+            {
+                if (Vector3.Distance(Tank.transform.position, Tank.EnemyBasePos.transform.position) < Tank.BaseFiringDistance
+               && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+                {
+                    Debug.Log("Base switch attack: greater than min attack dist and smaller than max attack dist and ammo " + logCounter);
+                    logCounter++;
+                    hasSeenBase = false;
+                    return typeof(CC_AttackState);
+                }
+            }
+            else if(Tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.AMMO))
+            {
+                Debug.Log("chase switch to search chasing base no ammo");
+                return typeof(SearchState);
+            }
+           
+
+            return null;
+
+            
+
+               
+        }
+        else if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null )
         {
             Debug.Log("Chasing with timer ");
             t += Time.deltaTime;
@@ -80,30 +124,8 @@ public class Chase : BaseST
             return null;
         }
 
-        //If there are no enemy tnaks in our vision we check for enemy bases
-        if (Tank.enemyBase != null )
-        {
-            //Once we have seen the enemy tbase we travel towards it.
-            Debug.Log("Chasing Enemy Bases");
-            Tank.TurretFaceWorldPoint(Tank.EnemyBasePos);
-            Tank.FollowPathToWorldPoint(Tank.EnemyBasePos, fSpeed);
-
-            //if our tank is between max and min units away from the enemy base and we are good on fuel, we go into the attack state
-            if (Vector3.Distance(Tank.transform.position, Tank.EnemyBasePos.transform.position) < Tank.BaseFiringDistance
-                && Vector3.Distance(Tank.transform.position, Tank.EnemyBasePos.transform.position) > tankAttackMinThresh
-                && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
-            {
-                Debug.Log("Base switch attack: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
-                logCounter++;
-                return typeof(CC_AttackState);
-            }
-
-             return null;  
-        }
-
-
         //Chase the enemy tank once it gets outside of our range
-        if(Tank.enemyTank == null)
+        if (Tank.enemyTank == null)
         {
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot

@@ -14,12 +14,14 @@ public class SearchState : BaseST
     private CC_SmartTank tank;
     private List<GameObject> pointsOfInterest;
     float explorationTimer;
+    GameObject behind = new GameObject();
     private Type stateToReturn = null;
     List<Vector3> priorityPositions = new List<Vector3>();
     List<Vector3> visited;
     GameObject priorityPosition = new GameObject();
     Dictionary<PRIORITIES, GameObject> organisedConsumables = new Dictionary<PRIORITIES, GameObject>();
     private float currentSpeed = 0.85f;
+    float checkBehindWaitTime = 0.0f;
     int logCounter = 0;
     public SearchState(CC_SmartTank newTank)
     {
@@ -80,9 +82,24 @@ public class SearchState : BaseST
 
             }
         }
-
-        if (priorityPositions.Count > 0)
+        if (tank.WasHit && tank.enemyTank == null)
         {
+            behind.transform.position = new Vector3(tank.transform.position.x, 0, -tank.transform.forward.z) ;
+            tank.stopAndCheckPos(behind, 2.0f, tank.enemyTank,ref checkBehindWaitTime);
+
+            Debug.Log("tank checking behind as was hit in search and enemy tank is null");
+
+            return null;
+
+        }
+        
+        if (priorityPositions.Count > 0 )
+        {
+            currentSpeed = 0.95f;
+            if(organisedConsumables.Count == 0)
+            {
+                priorityPositions.Clear();
+            }
             MoveToPriorityPositions();
         }
         else
@@ -153,6 +170,9 @@ public class SearchState : BaseST
     public void checkStateTransitions()
     {
 
+
+
+
         if (tank.enemyTank != null)
         {
             //Debug.Log("would exit");
@@ -196,23 +216,24 @@ public class SearchState : BaseST
     private bool canAttackOrChaseEBaseFromSearch()
     {
 
+        Debug.Log("enemy base null in search "+(tank.enemyBase==null));
 
         Debug.Log("Seen Enemy Base");
-        if (!tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+        if (!tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO) && tank.enemyBase != null)
         {
             //chase
-            Debug.Log("search switch to attack or chase high on health and fuel ammo not major " + logCounter);
-
-            if (tank.getDistanceToEnemyBase() < tank.BaseFiringDistance)
+            Debug.Log("search switch to attack base  ammo not crticial " + logCounter);
+            tank.TurretFaceWorldPoint(tank.enemyBase);
+            if (tank.getDistanceToEnemyBase() < tank.BaseFiringDistance && tank.enemyBase != null)
             {
                 Debug.Log(tank.getDistanceToEnemyBase());
-                Debug.Log("  search switch to attack in firing distance  " + tank.TankFiringDistance + " " + logCounter);
+                Debug.Log("  search switch to attack in firing distance  " + tank.BaseFiringDistance + " " + logCounter);
                 stateToReturn = typeof(CC_AttackState);
             }
-            else
+            else if(tank.enemyBase != null && tank.getDistanceToEnemyBase()>tank.BaseFiringDistance)
             {
 
-                Debug.Log(" search switch to chase not in firing distance  " + tank.TankFiringDistance + " " + logCounter);
+                Debug.Log(" search switch to chase not in firing distance  " + tank.BaseFiringDistance + " " + logCounter);
                 stateToReturn = typeof(Chase);
             }
             logCounter++;
