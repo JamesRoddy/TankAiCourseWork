@@ -60,7 +60,7 @@ public class CC_SmartTank : AITank
     public GameObject enemyBase;
     private GameObject basePositionHolder;
     private float tankWaitTime = 0.0f;
-    private GameObject lastKnownEnemyPos;
+    private GameObject lastKnownEnemyData;
     private GameObject enemyBasePosition;
     public List<GameObject> currentBases;
 
@@ -144,7 +144,7 @@ public class CC_SmartTank : AITank
         maxAmmo = a_GetAmmoLevel;
         maxFuel = a_GetFuelLevel;
 
-        lastKnownEnemyPos = new GameObject();
+        lastKnownEnemyData = new GameObject();
         enemyBasePosition = new GameObject();
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
         healthPriorityThresh = 40.0f;
@@ -214,7 +214,8 @@ public class CC_SmartTank : AITank
         if (enemyTanksFound.Count > 0 && enemyTanksFound.First().Key != null)
         {
             enemyTank = enemyTanksFound.First().Key;
-            lastKnownEnemyPos.transform.position = enemyTank.transform.position; ;
+            lastKnownEnemyData.transform.position = enemyTank.transform.position; ;
+            lastKnownEnemyData.transform.forward = enemyTank.transform.forward;
         }
         else
         {
@@ -229,7 +230,7 @@ public class CC_SmartTank : AITank
         {
             enemyBase = null;
         }
-
+        
         // updating current percent values for resources 
         healthValuesHolder.CurrentPriorityVal = a_GetHealthLevel / maxHealth;
         ammoValuesHolder.CurrentPriorityVal = a_GetAmmoLevel / maxAmmo;
@@ -284,7 +285,7 @@ public class CC_SmartTank : AITank
 
         if (enemyTank != null)
         {
-            return Vector3.Distance(lastKnownEnemyPos.transform.position, transform.position);
+            return Vector3.Distance(lastKnownEnemyData.transform.position, transform.position);
 
         }
 
@@ -303,6 +304,10 @@ public class CC_SmartTank : AITank
         return 0.0f;
     }
 
+    public Vector3 EtankLastKnownTransformForward
+    {
+        get { return lastKnownEnemyData.transform.forward;  }
+    }
     public Vector3 urrentSafteySpot{
 
         set { currentSafteySpot = value; }
@@ -326,7 +331,7 @@ public class CC_SmartTank : AITank
 
     public GameObject LastKnownEPos
     {
-        get { return lastKnownEnemyPos; }
+        get { return lastKnownEnemyData; }
     }
 
     public GameObject EnemyBasePos
