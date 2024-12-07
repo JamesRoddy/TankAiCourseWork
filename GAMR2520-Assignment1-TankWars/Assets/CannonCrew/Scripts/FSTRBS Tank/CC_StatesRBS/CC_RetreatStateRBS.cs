@@ -14,6 +14,7 @@ public class RetreatRBS : BaseST
     GameObject EnemyTankPositionStore = new GameObject();
     GameObject BasePositionStore = new GameObject();
     GameObject safetySpot = new GameObject();
+    float waitTime;
     float runTime = 10.0f;
     float safteySpotDistThresh = 5.0f;
     float safteySpotTimer = 0.0f;
@@ -108,7 +109,7 @@ public class RetreatRBS : BaseST
             if (Tank.enemyTank == null && !bEnemySeen)
             {
                 Debug.Log(Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position));
-                if (Tank.stopAndCheckPos(Tank.LastKnownEPos, 2.0f, Tank.enemyTank))
+                if (Tank.stopAndCheckPos(Tank.LastKnownEPos, 2.0f, Tank.enemyTank, ref waitTime))
                 {
                     // We then wait 2 seconds to pass to make sure that the enemy tank isn't anywhere near us.
                     //If 2 seconds pass uninterrupted then we go back to the search state
@@ -173,7 +174,7 @@ public class RetreatRBS : BaseST
             //Otherwise we go to the search state
             else if (Tank.enemyTank == null && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > retreatCheckDistance)
             {
-                if (Tank.stopAndCheckPos(Tank.LastKnownEPos, 3.5f, Tank.enemyTank))
+                if (Tank.stopAndCheckPos(Tank.LastKnownEPos, 3.5f, Tank.enemyTank, ref waitTime))
                 {
                     if (Tank.enemyTank == null)
                     {
