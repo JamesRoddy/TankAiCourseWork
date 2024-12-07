@@ -14,6 +14,7 @@ public class SearchState : BaseST
     private CC_SmartTank tank;
     private List<GameObject> pointsOfInterest;
     float explorationTimer;
+    float searchTimer;
     private Type stateToReturn = null;
     List<Vector3> priorityPositions = new List<Vector3>();
     List<Vector3> visited;
@@ -44,6 +45,7 @@ public class SearchState : BaseST
         organisedConsumables.Clear();
         currentSpeed = 0.85f;
         explorationTimer = 0.0f;
+        searchTimer = 0.0f;
         priorityPosition = new GameObject();
 
         return null;
@@ -137,6 +139,7 @@ public class SearchState : BaseST
         tank.FollowPathToRandomWorldPoint(currentSpeed);
 
         explorationTimer += Time.deltaTime;
+        
         if (explorationTimer > 12.0f)
         {
             tank.GenerateNewRandomWorldPoint();
@@ -176,9 +179,24 @@ public class SearchState : BaseST
 
 
         }
+
+        else
+        {
+            if(shouldStartCamping()) return;
+        }
         stateToReturn = null;
 
+    }
 
+    private bool shouldStartCamping()
+    {
+        searchTimer += Time.deltaTime;
+
+        if(searchTimer > 15f)
+        {
+            stateToReturn = typeof(Camping);
+        }
+        return stateToReturn != null;
     }
 
     private bool shouldRetreatFromSearch()
