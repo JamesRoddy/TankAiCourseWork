@@ -11,7 +11,7 @@ public class Guard : BaseST
     GameObject OffsetPos = new GameObject();
     Vector3 zOffset = Vector3.zero;
     Vector3 xOffset = Vector3.zero;
-    Vector3 Distance = new Vector3(0, 0, 10);
+    Vector3 Distance = new Vector3(0, 0, 15);
     float fSpeed = 1f;
     float t;
     float fTime = 5f;
@@ -44,7 +44,9 @@ public class Guard : BaseST
         }
 
         Debug.Log("Offset Position: " + OffsetPos.transform.position);
+      
         Tank.FollowPathToWorldPoint(OffsetPos, fSpeed, AStar.HeuristicMode.Euclidean);
+         
         
         if (Tank.enemyTank != null)
         {
@@ -76,7 +78,7 @@ public class Guard : BaseST
     public override Type Entry()
     {
         Debug.Log("Entered Guard State");
-        BasePos.transform.position = Tank.BasePositionStore;
+        BasePos.transform.position = Tank.BasePositionStore - Distance;
         t = 0f;
         return null;
     }
