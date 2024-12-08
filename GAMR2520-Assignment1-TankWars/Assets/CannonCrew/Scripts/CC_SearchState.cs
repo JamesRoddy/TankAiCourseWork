@@ -194,7 +194,7 @@ public class SearchState : BaseST
 
         if(searchTimer > 15f)
         {
-            stateToReturn = typeof(Camping);
+            stateToReturn = typeof(Ambush);
         }
         return stateToReturn != null;
     }

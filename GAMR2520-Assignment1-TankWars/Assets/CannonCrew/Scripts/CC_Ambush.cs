@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static PriorityManager;
 
-public class Camping : BaseST
+public class Ambush : BaseST
 {
     CC_SmartTank Tank;
     float fTimeLimit = 15.0f;
@@ -17,7 +17,7 @@ public class Camping : BaseST
     //This state is for when we havent seen anything important for 15 seconds.
     //So what it does is stop the tank, saving our precious fuel, and constantly rotate the turret in circles for 15 seconds lying in wait to ambush.
     //Once the enemy tank comes into proximity we ATTACK unless on of our resources is far too low.
-    public Camping(CC_SmartTank newtank)
+    public Ambush(CC_SmartTank newtank)
     {
         Tank = newtank;
     }

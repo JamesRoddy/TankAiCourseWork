@@ -119,7 +119,7 @@ public class CC_SmartTank : AITank
             {typeof(Retreat),new Retreat(this)},
             {typeof(Chase),new Chase(this)},
             {typeof(DodgeState),new DodgeState(this)},
-            {typeof(Camping),new Camping(this)},
+            {typeof(Ambush),new Ambush(this)},
         };
 
           if(!TryGetComponent(out CC_SmartTankRBS rules)){
