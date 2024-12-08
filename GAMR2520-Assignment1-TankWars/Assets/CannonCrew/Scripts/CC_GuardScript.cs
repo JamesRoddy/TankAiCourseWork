@@ -11,10 +11,10 @@ public class Guard : BaseST
     GameObject OffsetPos = new GameObject();
     Vector3 zOffset = Vector3.zero;
     Vector3 xOffset = Vector3.zero;
-    Vector3 Distance = new Vector3(0,0,10);
+    Vector3 Distance = new Vector3(0, 0, 10);
     float fSpeed = 1f;
     float t;
-    float fTime = 8f;
+    float fTime = 5f;
     bool bGen = false;
     bool bStop = false;
     int iCount = 0;
@@ -26,59 +26,57 @@ public class Guard : BaseST
 
     public override Type Update()
     {
+
+        if (!bStop)
+        {
+            //Debug.LogError("Going to base");
+            bStop = baseDistanceCheck();
+        }
+
         
-        if(Vector3.Distance(Tank.transform.position, BasePos.transform.position) > 50f)
+
+        t += Time.deltaTime;
+        if (bStop && t > fTime)
         {
-            Debug.Log("Moving to base");
-           
-            Tank.FollowPathToWorldPoint(BasePos, fSpeed, AStar.HeuristicMode.Manhattan);
+            Debug.Log("bStop: " + bStop + " t: " + t);
+            genOffSets();
+            t = 0;
         }
 
-        else
+        Debug.Log("Offset Position: " + OffsetPos.transform.position);
+        Tank.FollowPathToWorldPoint(OffsetPos, fSpeed, AStar.HeuristicMode.Euclidean);
+        
+        if (Tank.enemyTank != null)
         {
-            bStop = true;
-
-            t += Time.deltaTime;
-
-            if (t < fTime)
-            {
-               
-                Debug.Log("Guarding with timer");
-                //if (Vector3.Distance(Tank.transform.position, OffsetPos.transform.position) > 10f)
-                //{
-
-                    Tank.GeneratePathToWorldPoint(OffsetPos);
-                    Tank.FollowPathToWorldPoint(OffsetPos, fSpeed, AStar.HeuristicMode.Euclidean);
-
-                    Debug.Log("Made it to offset");
-                //}
-
-            }
-
-            //else
-            //{
-                genOffsets();
-            //}
-            
-          
+            return typeof(Chase);
         }
-       
+
         return null;
     }
 
-    private void genOffsets()
+    private void genOffSets()
     {
-        zOffset.z = UnityEngine.Random.Range(1f, 100f);
+        Debug.Log("Generate offsets");
+        zOffset.z = UnityEngine.Random.Range(20f, 100f);
         xOffset.x = UnityEngine.Random.Range(-100f, 100f);
         OffsetPos.transform.position = BasePos.transform.position + xOffset + zOffset;
-        bGen = true;
+    }
+
+    private bool baseDistanceCheck()
+    {
+        if(Vector3.Distance(BasePos.transform.position, Tank.transform.position) < 20f)
+        {
+            return true;
+        }
+
+        Tank.FollowPathToWorldPoint(BasePos, fSpeed, AStar.HeuristicMode.Manhattan);
+        return false;
     }
 
     public override Type Entry()
     {
         Debug.Log("Entered Guard State");
         BasePos.transform.position = Tank.BasePositionStore;
-        genOffsets();
         t = 0f;
         return null;
     }
