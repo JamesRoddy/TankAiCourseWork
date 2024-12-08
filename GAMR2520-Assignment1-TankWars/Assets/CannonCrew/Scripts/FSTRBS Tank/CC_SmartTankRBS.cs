@@ -53,6 +53,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         stats.Add("fuelMajor", false);
         stats.Add("healthMajor", false);
         stats.Add("attackEnemyBase", false);
+        stats.Add("enemyBaseWithinRange", false);
     }
 
     public void InitiliseRules()  
@@ -63,7 +64,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         rules.addRule(new Rule("shouldChase", "searchState", typeof(ChaseRBS), Rule.Predicate.And)); // if we are in the search state and we can attack, then chase the enemy
         rules.addRule(new Rule("shouldChase", "attackState", typeof(ChaseRBS), Rule.Predicate.And)); // if we are in the attack state
         rules.addRule(new Rule("canAttack", "withinRange", typeof(CC_AttackStateRBS), Rule.Predicate.And));// if we are able to attack(our health and fuel are high and ammo isn't a major priority) we should go into the attack state
-        rules.addRule(new Rule("attackEnemyBase", "withinRange", typeof(CC_AttackStateRBS), Rule.Predicate.And));
+        rules.addRule(new Rule("enemyBaseSeen", "attackEnemyBase", typeof(CC_AttackStateRBS), Rule.Predicate.And));
     }
 
     public void CheckSpeed()
@@ -267,15 +268,29 @@ public class CC_SmartTankRBS : CC_SmartTank
 
     public void AttackEnemyBase()
     {
-        if (  stats["enemyBaseSeen"] == true
-            && stats["canAttack"] == true
-            && stats["chaseState"] == false)
+        if (stats["ammoCritical"] == false
+            && stats["attackState"] == false)
         {
             stats["attackEnemyBase"] = true;
         }
         else
         {
             stats["attackEnemyBase"] = false;
+        }
+    }
+
+    public void enemyBaseWithinRange()
+    {
+        if (stats["enemyBaseSeen"] == true)
+        {
+            if(getDistanceToEnemyBase() > BaseFiringDistance)
+            {
+                stats["enemyBaseWithinRange"] = true;
+            }
+            else
+            {
+                stats["enemyBaseWithinRange"] = false;
+            }
         }
     }
     private void initStateMachine()

@@ -96,6 +96,10 @@ public class RetreatRBS : BaseST
         Tank.CheckCanAttack();
         Tank.CheckShouldRetreat();
         Tank.CheckShouldChase();
+        Tank.SetEnemyBaseSeen();
+        Tank.CheckSpeed();
+        Tank.AttackEnemyBase();
+        Tank.enemyBaseWithinRange();
 
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {

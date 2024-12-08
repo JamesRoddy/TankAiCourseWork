@@ -57,6 +57,10 @@ public class ChaseRBS : BaseST
         Tank.CheckCanAttack();
         Tank.CheckShouldRetreat();
         Tank.CheckShouldChase();
+        Tank.SetEnemyBaseSeen();
+        Tank.CheckSpeed();
+        Tank.AttackEnemyBase();
+        Tank.enemyBaseWithinRange();
 
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
@@ -124,7 +128,7 @@ public class ChaseRBS : BaseST
             else if (Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
             {
                 Debug.Log("chase switch to search chasing base no ammo");
-                return null;
+                return typeof(SearchStateRBS);
             }
 
 

@@ -34,8 +34,6 @@ public class CC_AttackStateRBS : BaseST
     public override Type Update()
     {
 
-
-
         Tank.SetEnemySeen();
         Tank.checkAmmo();
         Tank.CheckFuel();
@@ -44,6 +42,10 @@ public class CC_AttackStateRBS : BaseST
         Tank.CheckCanAttack();
         Tank.CheckShouldRetreat();
         Tank.CheckShouldChase();
+        Tank.SetEnemyBaseSeen();
+        Tank.CheckSpeed();
+        Tank.AttackEnemyBase();
+        Tank.enemyBaseWithinRange();
 
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
@@ -72,7 +74,7 @@ public class CC_AttackStateRBS : BaseST
                 {
                     Debug.Log("attack switch to chase tank out of firing range " + logCounter);
                     logCounter++;
-                    return null;
+                    return typeof(ChaseRBS);
 
                 }
             }
@@ -119,7 +121,7 @@ public class CC_AttackStateRBS : BaseST
 
             Debug.Log("go into search after firing at base preventing chase with timer bug");
 
-            return null;
+            return null; ;
         }
 
         Debug.Log("is enemy base null");

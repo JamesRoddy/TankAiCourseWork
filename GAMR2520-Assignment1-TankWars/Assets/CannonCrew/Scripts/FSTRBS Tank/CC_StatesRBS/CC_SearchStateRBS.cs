@@ -69,10 +69,9 @@ public class SearchStateRBS : BaseST
         tank.CheckShouldChase();
         tank.SetEnemyBaseSeen();
         tank.CheckSpeed();
-        /*Debug.Log("Am in Search State");
-        Debug.Log(tank.currentSpeed + "currentSpeed");
-        Debug.Log(tank.stats["searchState"] + "is searchState True");
-*/
+        tank.AttackEnemyBase();
+        tank.enemyBaseWithinRange();
+
         foreach (var item in tank.rules.GetRules) // iterates through the rules
         {
             if (item.CheckRule(tank.stats) != null) // if a rule doesn't return null
