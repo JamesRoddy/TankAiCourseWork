@@ -12,9 +12,11 @@ public class CC_AttackState : BaseST
     int logCounter = 0;
     float fshootTimeLimit = 2f;
     float fkiteTime = 10f;
+    float baseDeadTimer = 2.20f;
+    float t;
     float fSpeed = 0.8f;
     float fshootT;
-    
+    bool isFiringAtBase = false;
     public CC_AttackState(CC_SmartTank newTank)
     {
         Tank = newTank;
@@ -41,6 +43,7 @@ public class CC_AttackState : BaseST
 
             if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))
             {
+                Debug.Log("priorities hit to chase ");
                 if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > Tank.TankFiringDistance
                    && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
                 {
@@ -61,28 +64,42 @@ public class CC_AttackState : BaseST
         }
 
 
-        if (Tank.enemyBase != null && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+        if (Tank.enemyBase != null  && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
         {
-            //store the enemies last position this might not be needed though so I'll ask later
-            //EnemyTankPositionStore.transform.position = Tank.enemyTank.transform.position;
-            //and chase them
-            if (Vector3.Distance(Tank.transform.position, Tank.EnemyBasePos.transform.position) > Tank.BaseFiringDistance)
+
+            t += Time.deltaTime;
+            if(baseDeadTimer<t  )
             {
-                Debug.Log("Switch Base attack to chase ");
-                logCounter++;
-                return typeof(Chase);
-
+                Debug.Log("base dead");
+                isFiringAtBase = false;
+                t = 0.0f;
             }
-            else
-            {
-                Debug.Log("Attacking enemy base");
-                Tank.TurretFireAtPoint(Tank.EnemyBasePos);
-                return null;
-            }
+            //Potential to do 
+         /*   GameObject inverseEnemeyBase = new GameObject();
+            inverseEnemeyBase.transform.position = new Vector3(Tank.transform.forward.x , 0, Tank.transform.position.z + -Tank.transform.forward.z*5.0f);
+            */
+            /*if (Tank.stopAndCheckPos(inverseEnemeyBase, 2.5f,Tank.enemyTank)) {*/
+                
+               /* if(Tank.enemyTank != null)
+                {
+                    Debug.Log("saw enemy tank before attacking base ");
+                    return null;
+                }*/
+                 Debug.Log("Attacking enemy base");
+                 if(isFiringAtBase != true)
+                 {
+                   Tank.TurretFireAtPoint(Tank.EnemyBasePos);
+                   isFiringAtBase = true; 
+                 }
+                
+                 
+                  
+                Debug.Log("go into search after firing at base preventing chase with timer bug");
 
-
+            return null;
         }
-  
+        
+        Debug.Log("is enemy base null");
          Debug.Log("attack switch to search no condtion was hit " + logCounter);
          return typeof(SearchState);
 
@@ -104,6 +121,8 @@ public class CC_AttackState : BaseST
         }*/
         Debug.Log("Attack Exit "+ logCounter);
         fshootT = 0f;
+        isFiringAtBase = false;
+        t = 0.0f;
         logCounter++;
         return null;
     }

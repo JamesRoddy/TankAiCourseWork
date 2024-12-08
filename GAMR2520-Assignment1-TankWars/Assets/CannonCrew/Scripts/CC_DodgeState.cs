@@ -12,7 +12,10 @@ public class DodgeState : BaseST
     float orbitRadius = 25f;
     float fSpeed = 0.6f;
     float t;
+    float cantSeeTankTimer;
+    float cantSeeTankTimerThresh = 2.0f;
     float fTimeLimit = 6.25f;
+    float waitTime = 0.0f;
     GameObject enemyTarget = new GameObject();
     GameObject tankPosition = new GameObject();
     GameObject orbitPath = new GameObject();
@@ -44,9 +47,10 @@ public class DodgeState : BaseST
     {
         //Check the posititon of the enemy tank
         enemyTarget = Tank.LastKnownEPos;
-        Tank.stopAndCheckPos(enemyTarget, 0.3f,Tank.enemyTank);
+        Tank.stopAndCheckPos(enemyTarget, 0.5f,Tank.enemyTank,ref waitTime);
         if (Tank.enemyTank == null)
         {
+            
             Debug.Log("Cant see tank");
         }
 
