@@ -14,6 +14,7 @@ public class SearchState : BaseST
     private CC_SmartTank tank;
     private List<GameObject> pointsOfInterest;
     float explorationTimer;
+    float searchTimer;
     GameObject behind = new GameObject();
     private Type stateToReturn = null;
     List<Vector3> priorityPositions = new List<Vector3>();
@@ -46,6 +47,7 @@ public class SearchState : BaseST
         organisedConsumables.Clear();
         currentSpeed = 0.85f;
         explorationTimer = 0.0f;
+        searchTimer = 0.0f;
         priorityPosition = new GameObject();
 
         return null;
@@ -196,10 +198,29 @@ public class SearchState : BaseST
 
 
         }
+
+
+        else
+        {
+            if (shouldStartCamping()) return;
+        }
+
         stateToReturn = null;
 
 
     }
+
+    private bool shouldStartCamping()
+    {
+        searchTimer += Time.deltaTime;
+
+        if (searchTimer > 15f)
+        {
+            stateToReturn = typeof(Ambush);
+        }
+        return stateToReturn != null;
+    }
+
 
     private bool shouldRetreatFromSearch()
     {
