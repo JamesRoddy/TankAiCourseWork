@@ -35,7 +35,7 @@ public class Camping : BaseST
             fRotate += Time.deltaTime;
             //Rotates the turret over a period of time
             //Need to find a way to adjust the speed.
-            orbitPath.transform.position = new Vector3(Mathf.Sin(fRotate), 0.0f, Mathf.Cos(fRotate) * 5);
+            orbitPath.transform.position = new Vector3(Mathf.Sin(fRotate), 0.0f, Mathf.Cos(fRotate) * 10f);
             tankPosition.transform.position = tankPosition.transform.position + orbitPath.transform.position;
 
             Tank.TurretFaceWorldPoint(tankPosition);
