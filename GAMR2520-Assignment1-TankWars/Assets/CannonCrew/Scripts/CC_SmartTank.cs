@@ -128,7 +128,7 @@ public class CC_SmartTank : AITank
 
        
       
-        if (!TryGetComponent(out CC_SmartTankRBS rules)) {
+        if (!TryGetComponent(out CC_SmartTankRBS rules) && !TryGetComponent(out CC_SmartTankBTFSM behaviourTree)){
             Debug.Log("found did not find RBS ");
             GetComponent<CC_FSM>().setStates(states);
         }
