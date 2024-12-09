@@ -119,6 +119,7 @@ public class CC_SmartTank : AITank
             {typeof(Chase),new Chase(this)},
             {typeof(DodgeState),new DodgeState(this)},
             {typeof(Ambush),new Ambush(this)},
+            {typeof(Guard),new Guard(this)},
         };
 
         if (!TryGetComponent(out CC_SmartTankRBS rules)) {

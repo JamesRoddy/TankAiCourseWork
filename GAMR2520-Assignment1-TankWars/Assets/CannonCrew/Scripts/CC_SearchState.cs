@@ -206,6 +206,7 @@ public class SearchState : BaseST
         }
 
         stateToReturn = null;
+        //stateToReturn = typeof(Guard);
 
 
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using UnityEngine;
 using static PriorityManager;
 
@@ -12,7 +13,8 @@ public class Ambush : BaseST
     float fRotate;
     GameObject tankPosition = new GameObject();
     GameObject orbitPath = new GameObject();
-    Vector3 offset = new Vector3();
+    GameObject origin = new GameObject();
+    
 
     //This state is for when we havent seen anything important for 15 seconds.
     //So what it does is stop the tank, saving our precious fuel, and constantly rotate the turret in circles for 15 seconds lying in wait to ambush.
@@ -26,8 +28,8 @@ public class Ambush : BaseST
     {
 
         Tank.TankStop();
-
         t += Time.deltaTime;
+
 
         if (t <= fTimeLimit)
         {
@@ -35,7 +37,7 @@ public class Ambush : BaseST
             fRotate += Time.deltaTime;
             //Rotates the turret over a period of time
             //Need to find a way to adjust the speed.
-            orbitPath.transform.position = new Vector3(Mathf.Sin(fRotate), 0.0f, Mathf.Cos(fRotate) * 10f);
+            orbitPath.transform.position = new Vector3(Mathf.Sin(fRotate), 0.0f, Mathf.Cos(fRotate) * 20f);
             tankPosition.transform.position = tankPosition.transform.position + orbitPath.transform.position;
 
             Tank.TurretFaceWorldPoint(tankPosition);
@@ -57,6 +59,8 @@ public class Ambush : BaseST
         Debug.Log("Entered Camping");
         orbitPath.transform.position = Vector3.zero;
         tankPosition.transform.position = Vector3.zero;
+        origin.transform.position = Vector3.zero;
+        Tank.TurretReset();
         fRotate = 0.0f;
         t = 0.0f;
         return null;
@@ -67,6 +71,8 @@ public class Ambush : BaseST
         Debug.Log("Exited Camping");
         orbitPath.transform.position = Vector3.zero;
         tankPosition.transform.position = Vector3.zero;
+        origin.transform.position = Vector3.zero;
+        Tank.TurretReset();
         fRotate = 0.0f;
         t = 0.0f;
         return null ;
