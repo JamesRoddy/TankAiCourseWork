@@ -87,19 +87,19 @@ public class RetreatRBS : BaseST
 
     public override Type Update()
     {
-
         Tank.SetEnemySeen();
         Tank.checkAmmo();
         Tank.CheckFuel();
         Tank.CheckHealth();
         Tank.IsWithinRange();
-        Tank.CheckCanAttack();
         Tank.CheckShouldRetreat();
-        Tank.CheckShouldChase();
         Tank.SetEnemyBaseSeen();
         Tank.CheckSpeed();
         Tank.AttackEnemyBase();
+        Tank.CheckCanAttack();
         Tank.enemyBaseWithinRange();
+        Tank.CheckShouldChase();
+        Tank.ChaseEnemy();
 
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {

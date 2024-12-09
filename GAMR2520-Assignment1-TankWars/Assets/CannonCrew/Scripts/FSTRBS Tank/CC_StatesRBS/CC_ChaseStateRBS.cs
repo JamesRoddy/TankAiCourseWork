@@ -48,19 +48,20 @@ public class ChaseRBS : BaseST
 
     public override Type Update()
     {
-
         Tank.SetEnemySeen();
         Tank.checkAmmo();
         Tank.CheckFuel();
         Tank.CheckHealth();
         Tank.IsWithinRange();
-        Tank.CheckCanAttack();
         Tank.CheckShouldRetreat();
-        Tank.CheckShouldChase();
         Tank.SetEnemyBaseSeen();
         Tank.CheckSpeed();
         Tank.AttackEnemyBase();
+        Tank.CheckCanAttack();
         Tank.enemyBaseWithinRange();
+        Tank.CheckShouldChase();
+        Tank.ChaseEnemy();
+
 
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
@@ -76,16 +77,14 @@ public class ChaseRBS : BaseST
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
 
-
-
             //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the kite state
-/*            if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
-               && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
-            {
-                Debug.Log("switch attack: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
-                logCounter++;
-                return typeof(DodgeState);
-            }*/
+            /*            if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
+                           && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
+                        {
+                            Debug.Log("switch attack: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
+                            logCounter++;
+                            return typeof(DodgeState);
+                        }*/
 
             if (Tank.stats["lowFuel"] == true || Tank.stats["lowHealth"] == true)
             {
@@ -138,7 +137,7 @@ public class ChaseRBS : BaseST
 
 
         }
-        else if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
+/*        else if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
         {
             Debug.Log("Chasing with timer ");
             t += Time.deltaTime;
@@ -148,7 +147,7 @@ public class ChaseRBS : BaseST
 
 
             return null;
-        }
+        }*/
 
         //Chase the enemy tank once it gets outside of our range
         if (Tank.enemyTank == null)

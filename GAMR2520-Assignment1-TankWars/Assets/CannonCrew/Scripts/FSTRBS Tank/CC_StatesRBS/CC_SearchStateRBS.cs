@@ -64,13 +64,14 @@ public class SearchStateRBS : BaseST
         tank.CheckFuel();
         tank.CheckHealth();
         tank.IsWithinRange();
-        tank.CheckCanAttack();
         tank.CheckShouldRetreat();
-        tank.CheckShouldChase();
         tank.SetEnemyBaseSeen();
         tank.CheckSpeed();
         tank.AttackEnemyBase();
+        tank.CheckCanAttack();
         tank.enemyBaseWithinRange();
+        tank.CheckShouldChase();
+        tank.ChaseEnemy();
 
         foreach (var item in tank.rules.GetRules) // iterates through the rules
         {

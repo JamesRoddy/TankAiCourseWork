@@ -39,13 +39,14 @@ public class CC_AttackStateRBS : BaseST
         Tank.CheckFuel();
         Tank.CheckHealth();
         Tank.IsWithinRange();
-        Tank.CheckCanAttack();
         Tank.CheckShouldRetreat();
-        Tank.CheckShouldChase();
         Tank.SetEnemyBaseSeen();
         Tank.CheckSpeed();
         Tank.AttackEnemyBase();
+        Tank.CheckCanAttack();
         Tank.enemyBaseWithinRange();
+        Tank.CheckShouldChase();
+        Tank.ChaseEnemy();
 
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
@@ -56,29 +57,8 @@ public class CC_AttackStateRBS : BaseST
         }
 
 
-        if (Tank.enemyTank != null) // if we see the enemy tank
+        if (Tank.stats["enemySeen"] == true) // if we see the enemy tank
         {
-
-            if (Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.HEALTH))
-            {
-                // Debug.Log("attack switch to retreat low health " + logCounter);
-                logCounter++;
-                return null;
-            }
-
-            if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))
-            {
-                Debug.Log("priorities hit to chase ");
-                if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > Tank.TankFiringDistance
-                   && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
-                {
-                    Debug.Log("attack switch to chase tank out of firing range " + logCounter);
-                    logCounter++;
-                    return typeof(ChaseRBS);
-
-                }
-            }
-
 
             //fire at the stored position
             Tank.TurretFireAtPoint(Tank.LastKnownEPos);
