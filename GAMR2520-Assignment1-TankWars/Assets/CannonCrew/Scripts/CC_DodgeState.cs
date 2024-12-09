@@ -54,6 +54,8 @@ public class DodgeState : BaseST
             Debug.Log("Cant see tank");
         }
 
+        //TO DO FIX BROKEN TRANSITION BETWEEN DODGE AND CHASE WE CAN END UP REPEATELDY SWITCHING BETWEEN THE TWO 
+
         if (Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position) > Tank.TankFiringDistance)
         {
             return typeof(Chase);
