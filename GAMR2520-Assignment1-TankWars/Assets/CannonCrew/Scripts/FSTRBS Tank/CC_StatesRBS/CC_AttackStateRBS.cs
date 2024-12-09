@@ -16,6 +16,7 @@ public class CC_AttackStateRBS : BaseST
     }
     public override Type Entry()
     {
+        Tank.stats["attackState"] = true;
         Debug.Log("Attack Enter " + logCounter);
         logCounter++;
         return null;
@@ -24,6 +25,13 @@ public class CC_AttackStateRBS : BaseST
     public override Type Update()
     {
         Tank.SetEnemySeen();
+        Tank.checkAmmo();
+        Tank.CheckFuel();
+        Tank.CheckHealth();
+        Tank.IsWithinRange();
+        Tank.CheckCanAttack();
+        Tank.CheckShouldRetreat();
+        Tank.CheckShouldChase();
 
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
@@ -45,7 +53,7 @@ public class CC_AttackStateRBS : BaseST
             {
                 Debug.Log("attack switch to retreat low health " + logCounter);
                 logCounter++;
-               return typeof(Retreat);
+               return typeof(RetreatRBS);
            }
 
             else
@@ -68,36 +76,37 @@ public class CC_AttackStateRBS : BaseST
             {
                 Debug.Log("attack switch to chase tank out of firing range " + logCounter);
                 logCounter++;
-                return typeof(Chase);
+                return typeof(ChaseRBS);
 
             }
             else
             {
                 Debug.Log("attack switch to search low on ammo " + logCounter);
                 logCounter++;
-                return typeof(SearchState);
+                return typeof(SearchStateRBS);
             }
 
 
         }
         //otherwise if our health is low, retreat
-        else if (Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.HEALTH))
+/*        else if (Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.HEALTH))
         {
             Debug.Log("attack switch to retreat health low " + logCounter);
 
             return typeof(Retreat);
-        }
+        }*/
 
         else
         {
             Debug.Log("attack switch to search no condtion was hit " + logCounter);
 
-            return typeof(SearchState);
+            return typeof(SearchStateRBS);
         }
     }
 
     public override Type Exit()
     {
+        Tank.stats["attackState"] = false;
         Debug.Log("Attack Exit " + logCounter);
         logCounter++;
         return null;

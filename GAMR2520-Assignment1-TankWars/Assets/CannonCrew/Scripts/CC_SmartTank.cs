@@ -122,6 +122,8 @@ public class CC_SmartTank : AITank
             {typeof(WaitState),new WaitState(GetComponent<CC_FSM>(),this)},
             {typeof(Chase),new Chase(this)},
             {typeof(DodgeState),new DodgeState(this)},
+            {typeof(Ambush),new Ambush(this)},
+            {typeof(Guard),new Guard(this)},
         };
 
        

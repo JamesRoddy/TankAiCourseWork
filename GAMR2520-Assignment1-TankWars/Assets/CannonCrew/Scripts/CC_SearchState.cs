@@ -14,6 +14,7 @@ public class SearchState : BaseST
     private CC_SmartTank tank;
     private List<GameObject> pointsOfInterest;
     float explorationTimer;
+    float searchTimer;
     GameObject behind = new GameObject();
     private Type stateToReturn = null;
     List<Vector3> priorityPositions = new List<Vector3>();
@@ -46,6 +47,7 @@ public class SearchState : BaseST
         organisedConsumables.Clear();
         currentSpeed = 0.85f;
         explorationTimer = 0.0f;
+        searchTimer = 0.0f;
         priorityPosition = new GameObject();
 
         return null;
@@ -88,6 +90,7 @@ public class SearchState : BaseST
         }
         if (organisedConsumables.Count == 0)
         {
+
             priorityPositions.Clear();
         }
 
@@ -95,6 +98,7 @@ public class SearchState : BaseST
         {
          
            
+
             MoveToPriorityPositions();
           
         }
@@ -192,10 +196,30 @@ public class SearchState : BaseST
 
 
         }
+
+
+        else
+        {
+            if (shouldStartCamping()) return;
+        }
+
         stateToReturn = null;
+        //stateToReturn = typeof(Guard);
 
 
     }
+
+    private bool shouldStartCamping()
+    {
+        searchTimer += Time.deltaTime;
+
+        if (searchTimer > 15f)
+        {
+            stateToReturn = typeof(Ambush);
+        }
+        return stateToReturn != null;
+    }
+
 
     private bool shouldRetreatFromSearch()
     {
@@ -212,7 +236,7 @@ public class SearchState : BaseST
     private bool canAttackOrChaseEBaseFromSearch()
     {
 
-        Debug.Log("enemy base null in search "+(tank.enemyBase==null));
+        Debug.Log("enemy base null in search " + (tank.enemyBase == null));
 
         Debug.Log("Seen Enemy Base");
         if (!tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO) && tank.enemyBase != null)
@@ -226,7 +250,7 @@ public class SearchState : BaseST
                 Debug.Log("  search switch to attack in firing distance  " + tank.BaseFiringDistance + " " + logCounter);
                 stateToReturn = typeof(CC_AttackState);
             }
-            else if(tank.enemyBase != null && tank.getDistanceToEnemyBase()>tank.BaseFiringDistance)
+            else if (tank.enemyBase != null && tank.getDistanceToEnemyBase() > tank.BaseFiringDistance)
             {
 
                 Debug.Log(" search switch to chase not in firing distance  " + tank.BaseFiringDistance + " " + logCounter);
