@@ -60,7 +60,7 @@ public class Ambush : BaseST
         orbitPath.transform.position = Vector3.zero;
         tankPosition.transform.position = Vector3.zero;
         origin.transform.position = Vector3.zero;
-        Tank.TurretFaceWorldPoint(origin);
+        Tank.TurretReset();
         fRotate = 0.0f;
         t = 0.0f;
         return null;
@@ -72,7 +72,7 @@ public class Ambush : BaseST
         orbitPath.transform.position = Vector3.zero;
         tankPosition.transform.position = Vector3.zero;
         origin.transform.position = Vector3.zero;
-        Tank.TurretFaceWorldPoint(origin);
+        Tank.TurretReset();
         fRotate = 0.0f;
         t = 0.0f;
         return null ;
