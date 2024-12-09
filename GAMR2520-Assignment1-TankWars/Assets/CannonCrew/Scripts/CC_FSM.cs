@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CC_FSM:MonoBehaviour
+public class CC_FSM:BaseAIBehaviourModel
 {
 
+    
 
     Dictionary<Type, BaseST> states; // dicitionary that will store all of the states available to the
    // state machine with the key for a particualr state being a type associated with one of
    // the child classes of the abstract  base class 
     BaseST currentState; // the current state of the state machine 
+  
     public BaseST CState // getter and setter for current state
     {
         get
@@ -26,13 +28,12 @@ public class CC_FSM:MonoBehaviour
 
     } 
 
+    
     public void setStates(Dictionary<Type, BaseST> newStates)
     {
+        
         states = newStates;
     }
-
-
-
 
     private void Update()
     {
@@ -61,7 +62,10 @@ public class CC_FSM:MonoBehaviour
     {
 
         CState.Exit();// when switching states we call the exit function for the current state before switching 
+        PreviousBehaviour = CState; // define previous state 
 
+        Debug.Log("set previous state "+( PreviousBehaviourStateType == CState.GetType()));
+        Debug.Log("previous state == wait " + (CState.GetType()  ));
         CState = states[next];//  key into the states dictionary in order to get the state being transitioned to using the type of the next state
 
 

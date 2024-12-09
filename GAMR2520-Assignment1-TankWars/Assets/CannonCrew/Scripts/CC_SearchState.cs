@@ -65,9 +65,13 @@ public class SearchState : BaseST
 
 
         }
-        else if (tank.priorityManager.checkLow(PRIORITIES.FUEL))
+         if (tank.priorityManager.checkLow(PRIORITIES.FUEL))
         {
-            currentSpeed = 0.5f;
+            currentSpeed = 0.6f;
+        }
+        if (tank.consumablesFound.Count > 0) {
+            currentSpeed = 1.0f;
+          
         }
 
         if (tank.consumablesFound.Count > 0)
@@ -82,25 +86,17 @@ public class SearchState : BaseST
 
             }
         }
-        if (tank.WasHit && tank.enemyTank == null)
+        if (organisedConsumables.Count == 0)
         {
-            behind.transform.position = new Vector3(tank.transform.position.x, 0, -tank.transform.forward.z) ;
-            tank.stopAndCheckPos(behind, 2.0f, tank.enemyTank,ref checkBehindWaitTime);
-
-            Debug.Log("tank checking behind as was hit in search and enemy tank is null");
-
-            return null;
-
+            priorityPositions.Clear();
         }
-        
+
         if (priorityPositions.Count > 0 )
         {
-            currentSpeed = 0.95f;
-            if(organisedConsumables.Count == 0)
-            {
-                priorityPositions.Clear();
-            }
+         
+           
             MoveToPriorityPositions();
+          
         }
         else
         {

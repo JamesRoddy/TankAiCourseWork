@@ -23,7 +23,7 @@ public class CC_SmartTank : AITank
     public PriorityValuesHolder healthValuesHolder;
     public PriorityValuesHolder fuelValuesHolder;
     public PriorityValuesHolder ammoValuesHolder;
-
+    private Type stateToReturn = null;
     public PriorityManager priorityManager;
     private Vector3 currentSafteySpot;
 
@@ -110,16 +110,22 @@ public class CC_SmartTank : AITank
     private void initStateMachine()
     {
 
-
+        // the state machine being passed into certain constructors will get casted to BaseAIBehaviour which gives a
+        // transition context to certain states like the retreat state and wait state allowing the
+        // states to set and adjust their values based on the previous state only this does not mean every single state is aware of every state or the state machine
+        // simply that they have some kind of AI behaviour that has a global context they can access via their previous state or themselves
         Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>
         {
             {typeof(SearchState),new SearchState(this)},
             {typeof(CC_AttackState),new CC_AttackState(this)},
-            {typeof(Retreat),new Retreat(this)},
+            {typeof(Retreat),new Retreat(this,GetComponent<CC_FSM>())},
+            {typeof(WaitState),new WaitState(GetComponent<CC_FSM>(),this)},
             {typeof(Chase),new Chase(this)},
             {typeof(DodgeState),new DodgeState(this)},
         };
 
+       
+      
         if (!TryGetComponent(out CC_SmartTankRBS rules)) {
             Debug.Log("found did not find RBS ");
             GetComponent<CC_FSM>().setStates(states);
@@ -147,8 +153,8 @@ public class CC_SmartTank : AITank
         lastKnownEnemyData = new GameObject();
         enemyBasePosition = new GameObject();
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
-        healthPriorityThresh = 40.0f;
-        healthSafteyThresh = 55.0f;
+        healthPriorityThresh = 70.0f;
+        healthSafteyThresh = 80.0f;
 
         ammoPriorityThresh = 4.0f;
         ammoSafteyThresh = 10.0f;
@@ -246,19 +252,19 @@ public class CC_SmartTank : AITank
 
     public bool stopAndCheckPos(GameObject position, float waitTime, GameObject checkFor, ref float timer)
     {
-        Debug.Log("tank stopping and checking position wait time: " + waitTime);
+        
 
-        if (checkFor != null)
-        {
-            Debug.Log("wait interupted object found at wait time : " + tankWaitTime);
-            timer = 0.0f;
-            return true;
-        }
-
-        if (timer <= waitTime)
+        if (timer < waitTime)
         {
             timer += Time.deltaTime;
-          
+            Debug.Log("tank stopping and checking position wait time: " + waitTime);
+
+            if (checkFor != null)
+            {
+                Debug.Log("wait interupted object found at wait time : " + tankWaitTime);
+                timer = 0.0f;
+                return true;
+            }
 
             Debug.Log("waiting for " + timer);
             a_FaceTurretToPoint(position);
