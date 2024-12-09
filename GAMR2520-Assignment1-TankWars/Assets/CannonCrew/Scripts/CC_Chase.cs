@@ -47,6 +47,13 @@ public class Chase : BaseST
         //First we check for any enemy tanks in our vision
         if (Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
+
+            if (Tank.priorityManager.checkLow(PRIORITIES.FUEL) || Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
+            {
+                Debug.Log(" switch retreat due to fuel priority " + logCounter);
+                logCounter++;
+                return typeof(Retreat);
+            }
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
 
@@ -61,12 +68,7 @@ public class Chase : BaseST
                 return typeof(DodgeState);
             }
 
-            if (Tank.priorityManager.checkLow(PRIORITIES.FUEL) || Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
-            {
-                Debug.Log(" switch retreat due to fuel priority " + logCounter);
-                logCounter++;
-                return typeof(Retreat);
-            }
+          
         }
 
   
