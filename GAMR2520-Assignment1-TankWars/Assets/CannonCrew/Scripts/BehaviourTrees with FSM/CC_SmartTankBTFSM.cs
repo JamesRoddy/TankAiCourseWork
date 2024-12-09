@@ -30,13 +30,8 @@ public class CC_SmartTankBTFSM : CC_SmartTank
     {
 
         initStateMachine();
-        InitialiseBT();
+        //InitialiseBT();
 
-    }
-
-    private void Start()
-    {
-        
     }
 
     private void initStateMachine()
@@ -47,17 +42,18 @@ public class CC_SmartTankBTFSM : CC_SmartTank
         {
             {typeof(SearchState),new SearchState(this)},
             {typeof(CC_AttackState),new CC_AttackState(this)},
-            {typeof(Retreat),new Retreat(this)},
+            {typeof(Retreat),new Retreat(this,GetComponent<CC_FSM>())},
+            {typeof(WaitState),new WaitState(GetComponent<CC_FSM>(),this)},
             {typeof(Chase),new Chase(this)},
             {typeof(DodgeState),new DodgeState(this)},
             {typeof(Ambush),new Ambush(this)},
             {typeof(Guard),new Guard(this)},
         };
 
-        if (!TryGetComponent(out CC_SmartTankRBS rules)) {
+
             Debug.Log("found did not find RBS ");
             GetComponent<CC_FSM>().setStates(states);
-        }
+        
 
 
 
