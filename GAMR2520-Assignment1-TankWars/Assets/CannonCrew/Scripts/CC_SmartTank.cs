@@ -52,7 +52,7 @@ public class CC_SmartTank : AITank
     public float ammoSafteyThresh;
     public float fuelSafteyThresh;
 
-
+    
 
     // keep track of the current targets for the tank
     public GameObject consumable;
@@ -69,6 +69,8 @@ public class CC_SmartTank : AITank
     public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     // if the enenmy tank is visible it willl be first stored in this dicionary and cna be accessed through the first key
     public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    // stores any consumables visible 
     public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();     // stores any bases visible 
+
+    public PRIORITIES resourceFoundWhileWaiting = PRIORITIES.NONE; // when we make the tank stop to sweep an area we will use this to communicate back if it found any consumables during the sweep
     public HeuristicMode heuristicMode; // change the heuristic method whihc will determine how the tank will pathfind and calclate the distances between the neighbouring nodes(impacting the gcost and hcost for each node therefore changing the path) 
 
     // enums for prioirity these can be obtained through prioritites.name 
@@ -122,12 +124,12 @@ public class CC_SmartTank : AITank
             {typeof(WaitState),new WaitState(GetComponent<CC_FSM>(),this)},
             {typeof(Chase),new Chase(this)},
             {typeof(DodgeState),new DodgeState(this)},
-            {typeof(Ambush),new Ambush(this)},
+            {typeof(Ambush),new Ambush(this,GetComponent<CC_FSM>())},
             {typeof(Guard),new Guard(this)},
         };
 
        
-      
+      // prevent behaviour clash 
         if (!TryGetComponent(out CC_SmartTankRBS rules) && !TryGetComponent(out CC_SmartTankBTFSM behaviourTree)){
             Debug.Log("found did not find RBS ");
             GetComponent<CC_FSM>().setStates(states);
@@ -155,8 +157,8 @@ public class CC_SmartTank : AITank
         lastKnownEnemyData = new GameObject();
         enemyBasePosition = new GameObject();
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
-        healthPriorityThresh = 70.0f;
-        healthSafteyThresh = 80.0f;
+        healthPriorityThresh = 85.0f;
+        healthSafteyThresh = 90.0f;
 
         ammoPriorityThresh = 4.0f;
         ammoSafteyThresh = 10.0f;
@@ -250,7 +252,29 @@ public class CC_SmartTank : AITank
     }
 
 
+    public bool stopAndCheckPos(GameObject position, float waitTime, ref float timer)
+    {
 
+
+        if (timer < waitTime)
+        {
+            timer += Time.deltaTime;
+            Debug.Log("tank stopping and checking position wait time: " + waitTime);
+
+            Debug.Log("waiting for " + timer);
+            a_FaceTurretToPoint(position);
+            return false;
+        }
+        timer = 0.0f;
+        Debug.Log("wait finished tank wait time  " + timer);
+        return true;
+
+
+
+
+
+
+    }
 
     public bool stopAndCheckPos(GameObject position, float waitTime, GameObject checkFor, ref float timer)
     {
@@ -311,7 +335,53 @@ public class CC_SmartTank : AITank
 
         return 0.0f;
     }
+    public GameObject checkConsumablesWhileWaiting()
+    {
 
+        // used to check for consumables while waitiing 
+        GameObject location = new GameObject();
+        if (consumablesFound.Count > 0)
+        {
+            Debug.Log("consuambles found");
+            // consumables are assigned in order to priority so if we see a consumable that is of higher prioiryt during the ambush state than another as we are set checking around 
+            // we could see multiple consumables during this 
+            location = consumablesFound.First().Key;
+            if (priorityManager.sweepQueues(new List<queuePriority> { queuePriority.MAJOR, queuePriority.CRITICAL }).Count > 0) // if we have any resources of critcial or major priority we check for them indivudally so if we see ammo and its of low prioiryt but then we see health and its of high priority we go to health
+            {
+                foreach (KeyValuePair<GameObject, float> gameObject in consumablesFound)
+                {
+                    if (gameObject.Key.CompareTag("Ammo") && priorityManager.checkLow(PRIORITIES.AMMO))
+                    {
+
+                        resourceFoundWhileWaiting = PRIORITIES.AMMO; // set the prioiryt resource found 
+                        return gameObject.Key; ;
+                    }
+                    else if (gameObject.Key.CompareTag("Fuel") && priorityManager.checkLow(PRIORITIES.HEALTH))
+                    {
+                        resourceFoundWhileWaiting = PRIORITIES.HEALTH;
+
+                        return gameObject.Key;
+                    }
+                    else if (gameObject.Key.CompareTag("Health") && priorityManager.checkLow(PRIORITIES.FUEL))
+                    {
+                        resourceFoundWhileWaiting = PRIORITIES.FUEL;
+
+                        return gameObject.Key;
+                    }
+
+                }
+            }
+
+
+        }
+
+
+
+
+        return location;
+
+
+    }
     public Vector3 EtankLastKnownTransformForward
     {
         get { return lastKnownEnemyData.transform.forward;  }

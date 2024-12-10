@@ -34,6 +34,7 @@ public class PriorityManager
             {queuePriority.MAJOR,new List<PRIORITIES>(prioritiesCount)},
             {queuePriority.MINOR,new List<PRIORITIES>(prioritiesCount)},
             {queuePriority.SAFE,new List<PRIORITIES>(prioritiesCount)},
+           
         };
 
         for (int i = 0; i<prioritiesList.Count; i++)
@@ -59,7 +60,7 @@ public class PriorityManager
         {
            /* Debug.Log(priority.CurrentValue);*/
 
-            if (priority.CurrentClassification != queuePriority.SAFE &&  priority.checkSafe() ) /// if resource prriority becomes safe and isnt safe already 
+            if ((priority.CurrentClassification != queuePriority.SAFE &&  priority.checkSafe() )) /// if resource prriority becomes safe and isnt safe already 
             { 
                  Debug.Log(" resource: " + priority.Name + " now safe :prev classification: " + priority.PreviousClassification + " :saftey threshHold: " + priority.SafetyThreshHold + " :currentThreshHold: " + priority.CurrentValue);
 

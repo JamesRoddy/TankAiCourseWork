@@ -60,10 +60,11 @@ public class Chase : BaseST
           
 
             //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the kite state
-             if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
-                && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
+             if ((Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
+                && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh) || 
+                ( Tank.enemyTank != null && Vector3.Dot(Tank.EtankLastKnownTransformForward,Tank.transform.forward) < 0.0f  ))
              {
-                Debug.Log("switch attack: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
+                Debug.Log("switch dodge: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
                 logCounter++;
                 return typeof(DodgeState);
             }

@@ -44,7 +44,7 @@ public class Retreat : BaseST
     {
 
         retreatCheckComplete = transitionContext.wasInState(typeof(WaitState));
-        transitionContext.SetWaitStateGlobalContext(Tank.enemyTank, tankCheckBehindTime);
+        transitionContext.SetWaitStateGlobalContext(Tank.enemyTank, tankCheckBehindTime,true);
         if (retreatCheckComplete)
         {
             UnityEngine.Debug.Log("retreat check complete");
@@ -112,7 +112,7 @@ public class Retreat : BaseST
         {
             UnityEngine.Debug.Log("trasnitioning to wait state ");
 
-            transitionContext.GlobalObjectPositionForWait = Tank.LastKnownEPos;
+           
             return stateToReturn; // return new state to be switched to 
         }
 
@@ -127,9 +127,12 @@ public class Retreat : BaseST
         }
         else if((Tank.enemyTank == null  ) && (retreatCheckComplete ) ) // if we didnt see the enemy during the wait state(knwon through the transistion context)
         {
-
             UnityEngine.Debug.Log("check complete tank not  seen returing to search ");
-          
+            hasPositionReference = true;
+            retreatCheckComplete = false;
+            bEnemySeen = true;
+            hasPositionReference = true; /// new postition reference 
+            t = runTime;
             return typeof(SearchState);
             
         }
@@ -174,7 +177,7 @@ public class Retreat : BaseST
             UnityEngine.Debug.Log(Vector3.Distance(Tank.BasePositionStore, Tank.transform.position));
 
             safetySpot.transform.position = Tank.BasePositionStore; // if the base last known pos is viable to retreat to we use the base postion as the retareat spot as that is a known position
-         /*   if (Tank.transform.position.z < 0.0f &&Tank.transform.position.x<0.0f )
+          /*if (Tank.transform.position.z < 0.0f &&Tank.transform.position.x<0.0f )
             {
                 safetySpot.transform.position =new Vector3( Tank.transform.position.x*-1.0f,0.0f,0.0f);
             }*/
@@ -278,7 +281,7 @@ public class Retreat : BaseST
         {
             if (checkGreaterZDir && checkGreaterZpos) // if we are in the top left and we chose to go behind us
             {
-                safetySpot.transform.position = new Vector3(Tank.transform.position.x, 0.0f, -Tank.transform.position.z); // go in a straight line from the inverted position 
+                safetySpot.transform.position = new Vector3(-Tank.transform.position.x, 0.0f, Tank.transform.position.z); // go in a straight line from the inverted position 
 
             }
             else if (!checkGreaterZDir && !checkGreaterZpos)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml.Serialization;
 using UnityEditor.Experimental.GraphView;
@@ -13,6 +14,7 @@ public class SearchState : BaseST
 
     private CC_SmartTank tank;
     private List<GameObject> pointsOfInterest;
+
     float explorationTimer;
     float searchTimer;
     GameObject behind = new GameObject();
@@ -22,7 +24,7 @@ public class SearchState : BaseST
     GameObject priorityPosition = new GameObject();
     Dictionary<PRIORITIES, GameObject> organisedConsumables = new Dictionary<PRIORITIES, GameObject>();
     private float currentSpeed = 0.85f;
-    float checkBehindWaitTime = 0.0f;
+
     int logCounter = 0;
     public SearchState(CC_SmartTank newTank)
     {
@@ -31,16 +33,17 @@ public class SearchState : BaseST
     }
     public override Type Entry()
     {
+        explorationTimer = 0.0f;
         currentSpeed = 0.85f;
         priorityPosition = new GameObject();
         stateToReturn = null;
-        Debug.Log("Entered Search " + logCounter);
+        UnityEngine.Debug.Log("Entered Search " + logCounter);
         logCounter++;
         return null;
     }
     public override Type Exit()
     {
-        Debug.Log("Search Exit " + logCounter);
+        UnityEngine.Debug.Log("Search Exit " + logCounter);
         logCounter++;
         stateToReturn = null;
         priorityPositions.Clear();
@@ -54,26 +57,32 @@ public class SearchState : BaseST
     }
     public override Type Update()
     {
-        checkStateTransitions();
+      
         if (stateToReturn != null)
         {
 
             return stateToReturn;
 
         }
+
+        // moudlate speed based on what we saw and fuel priority
         if (tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             currentSpeed = 0.85f;
-
+            UnityEngine.Debug.Log("high fuel speed " + currentSpeed);
 
         }
          if (tank.priorityManager.checkLow(PRIORITIES.FUEL))
         {
             currentSpeed = 0.6f;
+            UnityEngine.Debug.Log("low fuel speed "+currentSpeed);
+
         }
         if (tank.consumablesFound.Count > 0) {
             currentSpeed = 1.0f;
-          
+            UnityEngine.Debug.Log("seen consumable speed "+currentSpeed);
+
+
         }
 
         if (tank.consumablesFound.Count > 0)
@@ -81,33 +90,34 @@ public class SearchState : BaseST
             organiseConsumables();
             if (organisedConsumables.Count > 0) // if we saw any items 
             {
-                Debug.Log("number of consumables found " + organisedConsumables.Count);
+                UnityEngine.Debug.Log("number of consumables found " + organisedConsumables.Count);
 
-                EvaluatePriorityPositions();
+                EvaluatePriorityPositions(); // eveulate the items in order of prioiorty with the consuambales with the hihgest priority being pushed first to the priority position list 
 
 
             }
         }
-        if (organisedConsumables.Count == 0)
-        {
-
-            priorityPositions.Clear();
-        }
+     
 
         if (priorityPositions.Count > 0 )
         {
-         
-           
+            if (organisedConsumables.Count == 0)
+            {
+                explorationTimer = 0.0f;
+                priorityPositions.Clear(); // clear the items found ready for next call to update(as we may not see any or items may disappear)
+            }
 
-            MoveToPriorityPositions();
+
+            MoveToPriorityPositions(); // move to any priority positions found 
           
         }
         else
         {
-            searching();
+            searching(); // other wise we will search for the enemy tank or consumables 
         }
         organisedConsumables.Clear();
 
+        checkStateTransitions();
         return null;
 
     }
@@ -118,13 +128,14 @@ public class SearchState : BaseST
     private void organiseConsumables()
     {
         // form a dicitionary that catergorises  each resource currently in view 
-        Debug.Log("consumables reset " + organisedConsumables.Count);
+        UnityEngine.Debug.Log("consumables reset " + organisedConsumables.Count);
 
         foreach (KeyValuePair<GameObject, float> gameObject in tank.consumablesFound) // loop through consumable dictionary 
         {
             if (!priorityPositions.Contains(gameObject.Key.transform.position))
             {
-                if (gameObject.Key.CompareTag("Ammo")) // if the tag relates to the associated priority and the priority is not currenlty safe 
+                UnityEngine.Debug.Log("found consumable");
+                if (gameObject.Key.CompareTag("Ammo") ) // if the tag relates to the associated priority and the priority is not currenlty safe 
                 {
                     organisedConsumables[PRIORITIES.AMMO] = gameObject.Key;// use the priority enum as the key and insert the found game object into the organisedConsumables dicitionary 
 
@@ -170,33 +181,29 @@ public class SearchState : BaseST
     public void checkStateTransitions()
     {
 
-
-
-
         if (tank.enemyTank != null)
         {
             //Debug.Log("would exit");
-            Debug.Log("Seen Enemey Tank");
+            UnityEngine.Debug.Log("Seen Enemey Tank");
             if (shouldRetreatFromSearch()) return;
-            Debug.Log("no switch to retreat from search");
+            UnityEngine.Debug.Log("no switch to retreat from search");
             if (canAttackOrChaseETankFromSearch()) return;
-            Debug.Log("no switch to attack from search due to ammo");
+            UnityEngine.Debug.Log("no switch to attack from search ");
             logCounter++;
-            Debug.Log("No Transition from search");
+            UnityEngine.Debug.Log("No Transition from search");
 
 
 
         }
         else if (tank.enemyBase != null)
         {
-            Debug.Log("Seen Enemey base");
+            UnityEngine.Debug.Log("Seen Enemey base");
 
             if (canAttackOrChaseEBaseFromSearch()) return;
-            Debug.Log("No Transition from search");
+            UnityEngine.Debug.Log("No Transition from search");
 
 
         }
-
 
         else
         {
@@ -212,9 +219,10 @@ public class SearchState : BaseST
     private bool shouldStartCamping()
     {
         searchTimer += Time.deltaTime;
-
+        UnityEngine.Debug.Log("ambush timer " + searchTimer);
         if (searchTimer > 15f)
         {
+            UnityEngine.Debug.Log("start ambush " + searchTimer);
             stateToReturn = typeof(Ambush);
         }
         return stateToReturn != null;
@@ -223,9 +231,9 @@ public class SearchState : BaseST
 
     private bool shouldRetreatFromSearch()
     {
-        if (tank.priorityManager.checkLow(PRIORITIES.HEALTH) && tank.enemyBase == null)
+        if (tank.priorityManager.checkLow(PRIORITIES.HEALTH) && tank.enemyTank!=null)
         {
-            Debug.Log("search switch to retreat low health " + logCounter);
+            UnityEngine.Debug.Log("search switch to retreat low health " + logCounter);
             logCounter++;
             stateToReturn = typeof(Retreat);
         }
@@ -236,24 +244,24 @@ public class SearchState : BaseST
     private bool canAttackOrChaseEBaseFromSearch()
     {
 
-        Debug.Log("enemy base null in search " + (tank.enemyBase == null));
+        UnityEngine.Debug.Log("enemy base null in search " + (tank.enemyBase == null));
 
-        Debug.Log("Seen Enemy Base");
+        UnityEngine.Debug.Log("Seen Enemy Base");
         if (!tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO) && tank.enemyBase != null)
         {
             //chase
-            Debug.Log("search switch to attack base  ammo not crticial " + logCounter);
+             UnityEngine.Debug.Log("search switch to attack base  ammo not crticial " + logCounter);
             tank.TurretFaceWorldPoint(tank.enemyBase);
             if (tank.getDistanceToEnemyBase() < tank.BaseFiringDistance && tank.enemyBase != null)
             {
-                Debug.Log(tank.getDistanceToEnemyBase());
-                Debug.Log("  search switch to attack in firing distance  " + tank.BaseFiringDistance + " " + logCounter);
+                UnityEngine.Debug.Log(tank.getDistanceToEnemyBase());
+                UnityEngine.Debug.Log("  search switch to attack in firing distance  " + tank.BaseFiringDistance + " " + logCounter);
                 stateToReturn = typeof(CC_AttackState);
             }
             else if (tank.enemyBase != null && tank.getDistanceToEnemyBase() > tank.BaseFiringDistance)
             {
 
-                Debug.Log(" search switch to chase not in firing distance  " + tank.BaseFiringDistance + " " + logCounter);
+                UnityEngine.Debug.Log(" search switch to chase not in firing distance  " + tank.BaseFiringDistance + " " + logCounter);
                 stateToReturn = typeof(Chase);
             }
             logCounter++;
@@ -272,14 +280,15 @@ public class SearchState : BaseST
 
             if (tank.getDistanceToEnemy() < tank.TankFiringDistance)
             {
-                Debug.Log(tank.getDistanceToEnemy());
-                Debug.Log("  search switch to attack in firing distance  " + tank.TankFiringDistance + " " + logCounter);
+                UnityEngine.Debug.Log(tank.getDistanceToEnemy());
+                UnityEngine.Debug.Log("  search switch to attack in firing distance  " + tank.TankFiringDistance + " " + logCounter);
                 stateToReturn = typeof(CC_AttackState);
             }
+            
             else if (tank.priorityManager.checkHigh(PRIORITIES.FUEL))
             {
 
-                Debug.Log(" search switch to chase not in firing distance and high fuel " + tank.TankFiringDistance + " " + logCounter);
+                UnityEngine.Debug.Log(" search switch to chase not in firing distance and high fuel " + tank.TankFiringDistance + " " + logCounter);
                 stateToReturn = typeof(Chase);
             }
 
@@ -324,21 +333,24 @@ public class SearchState : BaseST
     private void MoveToPriorityPositions()
     {
 
+
         if (priorityPositions.Count > 0)
         {
-
             priorityPosition.transform.position = priorityPositions[0];
+            UnityEngine.Debug.Log(currentSpeed + " speed to collect consumable");
             tank.FollowPathToWorldPoint(priorityPosition, currentSpeed);
-            Debug.Log("moving to priority position " + priorityPosition.transform.position);
-            Debug.Log(Vector3.Distance(tank.transform.position, priorityPosition.transform.position));
+            UnityEngine.Debug.Log("moving to priority position " + priorityPosition.transform.position);
+            UnityEngine.Debug.Log(Vector3.Distance(tank.transform.position, priorityPosition.transform.position));
             if (Vector3.Distance(priorityPosition.transform.position, tank.transform.position) < 5.0f)
             {
-                Debug.Log("removed position " + priorityPosition.transform.position);
+                UnityEngine.Debug.Log("removed position " + priorityPosition.transform.position);
                 priorityPositions.RemoveAt(0);
             }
-
-
         }
+        
+
+
+        
 
 
 
@@ -420,7 +432,7 @@ public class SearchState : BaseST
         {
             if (organisedConsumables.ContainsKey(priority) && !priorityPositions.Contains(organisedConsumables[priority].transform.position))
             {
-                Debug.Log("added minor/safe priority " + priority + " in to priority position list");
+                UnityEngine.Debug.Log("added minor/safe priority " + priority + " in to priority position list");
                 priorityPositions.Add(organisedConsumables[priority].transform.position);
             }
         }

@@ -46,7 +46,7 @@ public class CC_SmartTankBTFSM : CC_SmartTank
             {typeof(WaitState),new WaitState(GetComponent<CC_FSM>(),this)},
             {typeof(Chase),new Chase(this)},
             {typeof(DodgeState),new DodgeState(this)},
-            {typeof(Ambush),new Ambush(this)},
+            {typeof(Ambush),new Ambush(this,GetComponent<CC_FSM>())},
             {typeof(Guard),new Guard(this)},
         };
 

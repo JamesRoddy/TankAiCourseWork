@@ -34,7 +34,7 @@ public class CC_AttackState : BaseST
         if (Tank.enemyTank != null) // if we see the enemy tank
         {
            
-            if (Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.HEALTH))
+            if (Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {
                 // Debug.Log("attack switch to retreat low health " + logCounter);
                 logCounter++;

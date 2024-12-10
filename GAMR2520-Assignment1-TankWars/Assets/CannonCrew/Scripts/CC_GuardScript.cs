@@ -71,7 +71,7 @@ public class Guard : BaseST
             return true;
         }
 
-        Tank.FollowPathToWorldPoint(BasePos, fSpeed, AStar.HeuristicMode.Manhattan);
+        Tank.FollowPathToWorldPoint(BasePos, fSpeed,AStar.HeuristicMode.Manhattan);
         return false;
     }
 

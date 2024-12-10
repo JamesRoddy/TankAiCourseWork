@@ -11,11 +11,11 @@ public class PriorityValuesHolder
     private float normalisedMaxThresh; // define max
     private float normalisedCurrentValue; // current value updated by smart tank
     
-    public PriorityValuesHolder(float lowThreshHold, float highThreshHold, float max )
+    public PriorityValuesHolder(float lowThreshHold, float highThreshHold, float threshHoldivider )
     {
-        Debug.Log("non normalised threshHolds " + lowThreshHold + " " + highThreshHold + " max: " + max);
-        normalisedMinThresh = lowThreshHold / max;
-        normalisedMaxThresh = highThreshHold / max;
+        Debug.Log("non normalised threshHolds " + lowThreshHold + " " + highThreshHold + " max: " + threshHoldivider);
+        normalisedMinThresh = lowThreshHold / threshHoldivider;
+        normalisedMaxThresh = highThreshHold / threshHoldivider;
         Debug.Log("normalisedThreshHoldlow " + normalisedMinThresh);
         Debug.Log("normalisedThreshHoldhigh " + normalisedMaxThresh);
 

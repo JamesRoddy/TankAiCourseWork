@@ -21,9 +21,9 @@ using static PriorityManager;
     }
 
 
-    public bool checkSafe() // check if the current resource is not below a defined safety thresh hold 
+    public bool checkSafe() // check if the current resource is not below a defined safety thresh hold or at max
     {
-
+     
        
         if(state != PriorityManager.queuePriority.SAFE && CurrentValue >= SafetyThreshHold) // if we are not safe but are above the saftey thresh hold 
         {
