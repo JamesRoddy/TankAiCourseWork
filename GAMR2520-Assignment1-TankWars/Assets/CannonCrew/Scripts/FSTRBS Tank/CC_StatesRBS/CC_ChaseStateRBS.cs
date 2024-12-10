@@ -40,7 +40,7 @@ public class ChaseRBS : BaseST
         logCounter++;
 
         Tank.stats["chaseState"] = false;
-
+        Tank.chaseTime = 0.0f;
         t = 0.0f;
         fSpeed = 1f;
         return null;
@@ -48,29 +48,16 @@ public class ChaseRBS : BaseST
 
     public override Type Update()
     {
-        Tank.SetEnemySeen();
-        Tank.checkAmmo();
-        Tank.CheckFuel();
-        Tank.CheckHealth();
-        Tank.IsWithinRange();
-        Tank.CheckShouldRetreat();
-        Tank.SetEnemyBaseSeen();
-        Tank.CheckSpeed();
-        Tank.AttackEnemyBase();
-        Tank.CheckCanAttack();
-        Tank.enemyBaseWithinRange();
-        Tank.CheckShouldChase();
-        Tank.ChaseEnemy();
-
 
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
+
+
             if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
             {
                 return item.CheckRule(Tank.stats); // return the state
             }
         }
-
         //First we check for any enemy tanks in our vision
         if (Tank.stats["enemySeen"] == true && Tank.stats["highFuel"] == true)
         {
@@ -88,8 +75,8 @@ public class ChaseRBS : BaseST
 
             if (Tank.stats["lowFuel"] == true || Tank.stats["lowHealth"] == true)
             {
-                Debug.Log(" switch retreat due to fuel priority " + logCounter);
-                logCounter++;
+/*                Debug.Log(" switch retreat due to fuel priority " + logCounter);
+*/                logCounter++;
                 return null;
             }
         }
@@ -102,8 +89,8 @@ public class ChaseRBS : BaseST
             hasSeenBase = true;
 
             //Once we have seen the enemy the base we travel towards it.
-            Debug.Log("Chasing Enemy Bases");
-            if (Tank.stats["enemyBaseSeen"] == true)// ensure base doesnt slip out of vision
+/*            Debug.Log("Chasing Enemy Bases");
+*/            if (Tank.stats["enemyBaseSeen"] == true)// ensure base doesnt slip out of vision
             {
                 Tank.FollowPathToWorldPoint(Tank.enemyBase, fSpeed);
             }
@@ -118,16 +105,16 @@ public class ChaseRBS : BaseST
                 if (Tank.stats["withinRange"]
                 && Tank.stats["ammoCritical"] == false)
                 {
-                    Debug.Log("Base switch attack: greater than min attack dist and smaller than max attack dist and ammo " + logCounter);
-                    logCounter++;
+/*                    Debug.Log("Base switch attack: greater than min attack dist and smaller than max attack dist and ammo " + logCounter);
+*/                    logCounter++;
                     hasSeenBase = false;
                     return null;
                 }
             }
             else if (Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
             {
-                Debug.Log("chase switch to search chasing base no ammo");
-                return typeof(SearchStateRBS);
+/*                Debug.Log("chase switch to search chasing base no ammo");
+*/                return typeof(SearchStateRBS);
             }
 
 
@@ -137,27 +124,38 @@ public class ChaseRBS : BaseST
 
 
         }
-/*        else if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
-        {
-            Debug.Log("Chasing with timer ");
-            t += Time.deltaTime;
-            Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
+
+
+        /*            Debug.Log("t is" + Tank.t);
+         *            
+        */
+     
+            Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);
+
+        
+
+
+        /*       else if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
+               {
+                   Debug.Log("Chasing with timer "+t);
+                   t += Time.deltaTime;
+                   Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
 
 
 
 
-            return null;
-        }*/
+                   return null;
+               }*/
 
         //Chase the enemy tank once it gets outside of our range
-        if (Tank.enemyTank == null)
+        if (Tank.stats["enemySeen"] == false)
         {
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
 
             if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 5f)
             {
-                //Questionable change
+                
                 if (Tank.enemyTank != null)
                 {
                     Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);
@@ -166,7 +164,8 @@ public class ChaseRBS : BaseST
                     if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < Tank.TankFiringDistance
                         && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
                     {
-                        Debug.Log("Switches to attack after it tries to chase a retreating tank");
+/*                        Debug.Log("Switches to attack after it tries to chase a retreating tank");
+*/
                         return null;
                     }
 
@@ -177,8 +176,8 @@ public class ChaseRBS : BaseST
 
                 }
 
-                Debug.Log("switch search tank no longer visible after moving to last known pos " + logCounter);
-                logCounter++;
+/*                Debug.Log("switch search tank no longer visible after moving to last known pos " + logCounter);
+*/                logCounter++;
                 return null;
             }
             return null;

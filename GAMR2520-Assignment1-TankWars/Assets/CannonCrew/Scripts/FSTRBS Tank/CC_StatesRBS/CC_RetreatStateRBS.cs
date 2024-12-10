@@ -87,28 +87,15 @@ public class RetreatRBS : BaseST
 
     public override Type Update()
     {
-        Tank.SetEnemySeen();
-        Tank.checkAmmo();
-        Tank.CheckFuel();
-        Tank.CheckHealth();
-        Tank.IsWithinRange();
-        Tank.CheckShouldRetreat();
-        Tank.SetEnemyBaseSeen();
-        Tank.CheckSpeed();
-        Tank.AttackEnemyBase();
-        Tank.CheckCanAttack();
-        Tank.enemyBaseWithinRange();
-        Tank.CheckShouldChase();
-        Tank.ChaseEnemy();
-
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
+
+
             if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
             {
                 return item.CheckRule(Tank.stats); // return the state
             }
         }
-
         Debug.Log("saftey spot current pos " + safetySpot.transform.position);
         //If we are low on a certain resource
         //We check if we have seen the enemy tank and that we still have bases alive.
@@ -139,12 +126,12 @@ public class RetreatRBS : BaseST
             {
 
                 t -= Time.deltaTime; // decrement timer to look back againn
-                Debug.Log(" enemy seen decrment retreat time " + t);
-            }
+/*                Debug.Log(" enemy seen decrment retreat time " + t);
+*/            }
             else
             {
-                Debug.Log("has no position reference");
-
+/*                Debug.Log("has no position reference");
+*/
             }
 
             if (t <= 0.0f)
@@ -166,25 +153,25 @@ public class RetreatRBS : BaseST
 
         if (!bEnemySeen)
         {
-            Debug.Log("stopping distance " + Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position));
-            //  wait 2 seconds to pass to make sure that the enemy tank isn't anywhere near us.
+/*            Debug.Log("stopping distance " + Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position));
+*/            //  wait 2 seconds to pass to make sure that the enemy tank isn't anywhere near us.
             //If 2 seconds pass uninterrupted then we go back to the search state
-            Debug.Log("t before entering retreat swivile " + t);
-
-            Debug.Log("tank runtime met  t was " + t);
-                
+/*            Debug.Log("t before entering retreat swivile " + t);
+*/
+/*            Debug.Log("tank runtime met  t was " + t);
+*/                
             
                 if (Tank.stopAndCheckPos(Tank.LastKnownEPos, tankCheckBehindTime, Tank.enemyTank, ref waitTime))
                 {
-                    Debug.Log("last known enemy tank position " + Tank.LastKnownEPos.transform.position);
-                    Debug.Log("current wait time " + waitTime);
-
+/*                    Debug.Log("last known enemy tank position " + Tank.LastKnownEPos.transform.position);
+*//*                     Debug.Log("current wait time " + waitTime);
+*/
 
 
                     if (Tank.enemyTank == null) // if we didnt see the tank when we retreated 
                     {
-                        Debug.Log("retreat switch to search on timer enemy not seen" + logCounter);
-                        logCounter++;
+/*                        Debug.Log("retreat switch to search on timer enemy not seen" + logCounter);
+*/                        logCounter++;
                         /*Debug.Log("executing final retreat check for " + tankCheckBehindTime + "seconds");*/
                         return typeof(SearchStateRBS); // go into search
 
@@ -193,12 +180,12 @@ public class RetreatRBS : BaseST
                     else if (Tank.enemyTank != null)
                     {
 
-                        Debug.Log("enemy tank was not null when checking retreat");
-                        
+/*                        Debug.Log("enemy tank was not null when checking retreat");
+*/                        
                         t = runTime;// set retreat timer  ready for next run 
-                        Debug.Log("retreat timer  " + t);
-                        Debug.Log(" retreat timer set equal to runtime t was : " + t);
-                        bEnemySeen = true; // assume we saw the enemy
+/*                        Debug.Log("retreat timer  " + t);
+*//*                        Debug.Log(" retreat timer set equal to runtime t was : " + t);
+*/                        bEnemySeen = true; // assume we saw the enemy
 
                     }
                     return null;
