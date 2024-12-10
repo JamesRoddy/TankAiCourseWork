@@ -19,36 +19,42 @@ public class CC_BTChase : MonoBehaviour
         Tank = newtank;
     }
 
+
     public void Update()
     {
 
 
         //First we check for any enemy tanks in our vision
-        if (Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
-        {
+       
+        
 
-            if (Tank.priorityManager.checkLow(PRIORITIES.FUEL) || Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
+           /* if (Tank.priorityManager.checkLow(PRIORITIES.FUEL) || Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {
                 Debug.Log(" switch retreat due to fuel priority " + logCounter);
                 logCounter++;
                 //return typeof(Retreat);
-            }
-            Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
-            Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
+            }*/
 
+            Debug.Log("Chasing in chase state");
+
+            
+            Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
+            Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);//Follow the tank so that we have a more accurate shot
+            
+            
 
 
             //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the kite state
-            if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
+            /*if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
                && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
             {
                 Debug.Log("switch attack: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
                 logCounter++;
                 //return typeof(DodgeState);
-            }
+            }*/
 
 
-        }
+        
 
 
 

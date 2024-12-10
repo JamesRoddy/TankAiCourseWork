@@ -8,6 +8,7 @@ public class CC_BTSearch : MonoBehaviour
 {
 
     private CC_SmartTank tank;
+    
     private List<GameObject> pointsOfInterest;
     float explorationTimer;
     float searchTimer;
@@ -31,10 +32,9 @@ public class CC_BTSearch : MonoBehaviour
     {
         //tank = GetComponent<CC_SmartTankBTFSM>();
     }
-    void Update()
+    public void Update()
 
     {
-        Debug.Log("update");
         if (tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             currentSpeed = 0.85f;
