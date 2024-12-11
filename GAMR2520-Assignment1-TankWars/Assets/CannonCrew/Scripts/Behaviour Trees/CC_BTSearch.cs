@@ -35,6 +35,7 @@ public class CC_BTSearch : MonoBehaviour
     public void Update()
 
     {
+        Debug.Log("In search update");
         if (tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             currentSpeed = 0.85f;

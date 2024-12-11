@@ -47,6 +47,11 @@ public class Chase : BaseST
         //First we check for any enemy tanks in our vision
         if (Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
+            if(Tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.AMMO))
+            {
+                return typeof(SearchState);
+            }
+
 
             if (Tank.priorityManager.checkLow(PRIORITIES.FUEL) || Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {

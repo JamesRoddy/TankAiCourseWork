@@ -35,9 +35,6 @@ public class CC_BTChase : MonoBehaviour
                 //return typeof(Retreat);
             }*/
 
-            Debug.Log("Chasing in chase state");
-
-            
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);//Follow the tank so that we have a more accurate shot
             
@@ -99,14 +96,14 @@ public class CC_BTChase : MonoBehaviour
 
 
         }
-        else if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
+        /*else if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
         {
             Debug.Log("Chasing with timer ");
             t += Time.deltaTime;
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
 
             //return null;
-        }
+        }*/
 
         //Chase the enemy tank once it gets outside of our range
         if (Tank.enemyTank == null)
