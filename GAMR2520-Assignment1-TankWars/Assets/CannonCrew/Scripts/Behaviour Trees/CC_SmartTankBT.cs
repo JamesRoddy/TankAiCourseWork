@@ -154,7 +154,7 @@ public class CC_SmartTankBT : CC_SmartTank
 
         }
 
-        else
+        if(!Sequence(shouldChase) && !Sequence(shouldVisionLostChase) && !(Sequence(shouldAttack) || facts["seeEnemyBases"]) && !Sequence(shouldRetreat))
         {
             searchState.Update();
         }
@@ -273,7 +273,7 @@ public class CC_SmartTankBT : CC_SmartTank
         facts["seeEnemyBases"] = enemyBase != null ? true : false;
 
         facts["withinTankRange"] = enemyTank != null && (Vector3.Distance(transform.position, enemyTank.transform.position) < 30f &&
-           Vector3.Distance(transform.position, enemyTank.transform.position) > 10f) ?  true : false; 
+           Vector3.Distance(transform.position, enemyTank.transform.position) > 5f) ?  true : false; 
         facts["withinBaseRange"] = enemyBase != null && Vector3.Distance(transform.position, EnemyBasePos.transform.position) < 10f ? true : false;
 
         facts["lowHealth"] = priorityManager.checkLow(PRIORITIES.HEALTH) ? true : false;
