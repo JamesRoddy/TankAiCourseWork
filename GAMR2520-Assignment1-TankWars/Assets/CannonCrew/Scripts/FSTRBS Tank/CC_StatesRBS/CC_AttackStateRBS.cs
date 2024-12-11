@@ -45,7 +45,7 @@ public class CC_AttackStateRBS : BaseST
         }
 
 
-        if (Tank.stats["enemySeen"] == true) // if we see the enemy tank
+        if (Tank.stats["enemySeen"] == true && Tank.stats["withinRange"] == true) // if we see the enemy tank
         {
 
             //fire at the stored position

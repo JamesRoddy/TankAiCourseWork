@@ -62,7 +62,12 @@ public class SearchStateRBS : BaseST
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
 
-
+            Debug.Log("current rule being checked is IN SEARCH STATE" + item.debugType.GetType());
+            Debug.Log(item.debugType.GetType() + "antecedent a is " + item.antecentA + " is " + Tank.stats[item.antecentA] + " antecedent b is " + item.antecentB + " is " + Tank.stats[item.antecentB]);
+            if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
+            {
+                Debug.Log("rule fired " + item.debugType.GetType());
+            }
             if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
             {
                 return item.CheckRule(Tank.stats); // return the state

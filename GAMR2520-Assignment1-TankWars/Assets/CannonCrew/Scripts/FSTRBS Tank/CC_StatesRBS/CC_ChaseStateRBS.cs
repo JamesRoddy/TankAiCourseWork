@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -13,7 +14,7 @@ public class ChaseRBS : BaseST
     GameObject EnemyTankPositionStore = new GameObject();
     float fSpeed;
     float tankAttackMinThresh = 20.0f;
-    float chaseTime = 2.0f;
+
     float t = 0.0f;
     bool hasSeenBase = false;
     int logCounter = 0;
@@ -40,7 +41,7 @@ public class ChaseRBS : BaseST
         logCounter++;
 
         Tank.stats["chaseState"] = false;
-        Tank.chaseTime = 0.0f;
+     
         t = 0.0f;
         fSpeed = 1f;
         return null;
@@ -52,7 +53,7 @@ public class ChaseRBS : BaseST
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
 
-
+           
             if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
             {
                 return item.CheckRule(Tank.stats); // return the state
@@ -79,10 +80,14 @@ public class ChaseRBS : BaseST
 */                logCounter++;
                 return null;
             }
+
+
+
+            return null;
         }
 
 
-
+       
         //If there are no enemy tnaks in our vision we check for enemy bases
         if (Tank.stats["enemyBaseSeen"] == true || hasSeenBase)
         {
@@ -111,11 +116,11 @@ public class ChaseRBS : BaseST
                     return null;
                 }
             }
-            else if (Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+          /*  else if (Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
             {
-/*                Debug.Log("chase switch to search chasing base no ammo");
-*/                return typeof(SearchStateRBS);
-            }
+*//*                Debug.Log("chase switch to search chasing base no ammo");
+*//*                return typeof(SearchStateRBS);
+            }*/
 
 
             return null;
@@ -126,64 +131,30 @@ public class ChaseRBS : BaseST
         }
 
 
-        /*            Debug.Log("t is" + Tank.t);
-         *            
-        */
-     
-            Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);
-
-        
-
-
-        /*       else if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
-               {
-                   Debug.Log("Chasing with timer "+t);
-                   t += Time.deltaTime;
-                   Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
 
 
 
-
-                   return null;
-               }*/
-
-        //Chase the enemy tank once it gets outside of our range
-        if (Tank.stats["enemySeen"] == false)
+        // every state will have a default return state allowing us to focus on more complex sides of the state governed by the global rules while still being able to use 
+        // the simplicity of the finite state machine 
+        if (!Tank.stats["shouldChase"])
         {
-            Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
-            Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
-
-            if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 5f)
+     
+            
+            if (!Tank.stats["moveToTarget"])
             {
-                
-                if (Tank.enemyTank != null)
-                {
-                    Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);
-                    Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);
-
-                    if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < Tank.TankFiringDistance
-                        && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
-                    {
-/*                        Debug.Log("Switches to attack after it tries to chase a retreating tank");
-*/
-                        return null;
-                    }
-
-                    else
-                    {
-                        return null;
-                    }
-
-                }
-
-/*                Debug.Log("switch search tank no longer visible after moving to last known pos " + logCounter);
-*/                logCounter++;
-                return null;
+                Debug.Log("should going into SEARCH from CHASE with TIMER    ");
+                return typeof(SearchStateRBS);
             }
-            return null;
+            else
+            {
+                Debug.Log("should chase with timer ");
+                Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);
+            }
+
         }
 
         return null;
+      
 
     }
 }
