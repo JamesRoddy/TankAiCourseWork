@@ -84,8 +84,20 @@ public class Ambush : BaseST
             }
 
 
+            if (!checkTimeLimitToMoveToConsumable() && Tank.enemyTank != null && Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
+            {
+                
+                if(resourceFoundDuringAmbush != PRIORITIES.HEALTH)
+                {
+                    return typeof(Retreat);
+                }
+
+
+            }
+
             if (checkTimeLimitToMoveToConsumable()) // if the time limit is at 30% and weve found a consumable of high prioiryt during ambush we dont wait as long for the enemy tank and move to the conusmable instead
             {
+               
 
                 transitionContext.SetWaitStateGlobalContext(consumableFound, 0.5f, false); // set the context for the wait state before going into it
                 return typeof(WaitState);
@@ -128,6 +140,7 @@ public class Ambush : BaseST
         {
             if (Tank.priorityManager.checkLow(resourceFoundDuringAmbush)) // if we had any resources of high priority
             {
+                
                 // we dont know the position of the object as the ambush state will repetedly turn the turret for
                 // 30% of its original wait time event when it sees a consumable it needs
                 // so we may not have eyes on the consumable initially so we need to turn the turret to look at it before we can move to it 
