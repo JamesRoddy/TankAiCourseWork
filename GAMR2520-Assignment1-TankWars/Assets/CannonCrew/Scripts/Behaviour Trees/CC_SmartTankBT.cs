@@ -12,7 +12,7 @@ using static PriorityManager;
 
 
 
-public class CC_SmartTankBTFSM : CC_SmartTank
+public class CC_SmartTankBT : CC_SmartTank
 {
 
     Dictionary<string, bool> facts = new Dictionary<string, bool>();
@@ -20,6 +20,7 @@ public class CC_SmartTankBTFSM : CC_SmartTank
     List<string> shouldChase = new List<string>();
     List<string> shouldAttack = new List<string>();
     List<string> shouldRetreat = new List<string>();
+    List<string> shouldVisionLostChase = new List<string>();
 
     CC_BTSearch searchState;
     CC_BTChase chaseState;
@@ -38,14 +39,11 @@ public class CC_SmartTankBTFSM : CC_SmartTank
     float t = 0.0f;
 
     float tankChecKBehindeTime = 0.5f;
-    bool isRetreat = false;
+    bool wasAttack = false;
 
     //private void Awake()
     //{
-
-    //initStateMachine();
-    //InitialiseBT();
-
+    //InitialiseBT()
     //}
 
     private void Awake()
@@ -53,32 +51,6 @@ public class CC_SmartTankBTFSM : CC_SmartTank
         
     }
 
-
-    private void initStateMachine()
-    {
-
-
-        Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>
-        {
-            {typeof(SearchState),new SearchState(this)},
-            {typeof(CC_AttackState),new CC_AttackState(this)},
-            {typeof(Retreat),new Retreat(this,GetComponent<CC_FSM>())},
-            {typeof(WaitState),new WaitState(GetComponent<CC_FSM>(),this)},
-            {typeof(Chase),new Chase(this)},
-            {typeof(DodgeState),new DodgeState(this)},
-            {typeof(Ambush),new Ambush(this)},
-            {typeof(Guard),new Guard(this)},
-        };
-
-
-            Debug.Log("found did not find RBS ");
-            GetComponent<CC_FSM>().setStates(states);
-        
-
-
-
-
-    }
 
     /*private void InitialiseBT()
     {
@@ -90,24 +62,26 @@ public class CC_SmartTankBTFSM : CC_SmartTank
 
     void RunBT()
     {
-            //Debug.Log("Trying to search");
-            
-        if (Sequence(shouldChase))
+       
+
+        if (Sequence(shouldChase) || facts["seeEnemyBases"])
         {
-            //Debug.Log("Entered chase");
-
             chaseState.Update();
-
-            //Debug.Log("Exited chase");
         }
 
-        if (Sequence(shouldAttack) || facts["seeEnemyBases"])
+        else if (Sequence(shouldVisionLostChase))
+        {
+            chaseState.LostVisionChase();
+            Debug.LogError("Lost vision chase");
+        }
+
+        if (Sequence(shouldAttack) || facts["withinBaseRange"])
         {
             Debug.Log("Trying to attack");
             attackState.Update();
         }
 
-        if(Sequence(shouldRetreat))
+        if (Sequence(shouldRetreat))
         {
             Debug.Log("Retreat");
             retreatTimer += Time.deltaTime;
@@ -115,16 +89,16 @@ public class CC_SmartTankBTFSM : CC_SmartTank
 
         }
 
-        else
+        if (!(Sequence(shouldChase) || facts["seeEnemyBases"]) && !Sequence(shouldVisionLostChase) && !(Sequence(shouldAttack) && facts["withinBaseRange"]) && !Sequence(shouldRetreat))
         {
             searchState.Update();
         }
-        
+
 
     }
 
 
-    
+
 
     void InitialiseFacts()
     {
@@ -148,36 +122,30 @@ public class CC_SmartTankBTFSM : CC_SmartTank
         facts.Add("atBases", false);
         facts.Add("isInRetreat", false);
         facts.Add("retreatTimer", false);
+        facts.Add("chaseTimer", false);
     }
 
     void InitialiseLists()
     {
-        //Searching Facts
-        //shouldSearch.Add("cantSeeEnemy");
-        //shouldSearch.Add("cantSeePickup");
-       // shouldSearch.Add("cantSeeBases");
 
         //Chase
         shouldChase.Add("highHealth");
         shouldChase.Add("enemySeen");
-        //shouldChase.Add("seeEnemyBases");
-        //shouldChase.Add("cantSeeEnemy");
 
         //Attack
-        //shouldAttack.Add("enemySeen");
-        //shouldAttack.Add("seeEnemyBases");
-
         shouldAttack.Add("withinTankRange");
         shouldAttack.Add("highHealth");
+        shouldAttack.Add("highAmmo");
         
         //shouldAttack.Add("withinBaseRange");
 
         //Retreat
         shouldRetreat.Add("lowHealth");
-        //shouldRetreat.Add("notAtBases");
         shouldRetreat.Add("retreatTimer");
 
-        //shouldRetreat.Add("enemySeen");
+        shouldVisionLostChase.Add("chaseTimer");
+        shouldVisionLostChase.Add("cantSeeEnemy");
+        shouldVisionLostChase.Add("cantSeeBases");
     }
 
     bool Selection(List<string> conditions)
@@ -222,6 +190,8 @@ public class CC_SmartTankBTFSM : CC_SmartTank
         facts["cantSeeEnemy"] = enemyTank == null ? true : false;
         facts["cantSeeBases"] = enemyBase == null ? true : false;
 
+        //Debug.Log("Facts[cantSeeEnemy]: " + facts["cantSeeEnemy"]);
+        //Debug.Log("Facts[cantSeeBases]: " + facts["cantSeeBases"]);
 
         facts["highHealth"] = priorityManager.checkHigh(PRIORITIES.HEALTH) ? true : false;
         facts["enemySeen"] = enemyTank != null ? true : false;
@@ -229,28 +199,40 @@ public class CC_SmartTankBTFSM : CC_SmartTank
 
         facts["withinTankRange"] = enemyTank != null && (Vector3.Distance(transform.position, enemyTank.transform.position) < 60f &&
            Vector3.Distance(transform.position, enemyTank.transform.position) > 10f) ?  true : false; 
-        facts["withinBaseRange"] = enemyBase != null && Vector3.Distance(transform.position, EnemyBasePos.transform.position) < 10f ? true : false;
-
+        facts["withinBaseRange"] = enemyBase != null && (Vector3.Distance(transform.position, EnemyBasePos.transform.position) < 30f && 
+            Vector3.Distance(transform.position, EnemyBasePos.transform.position) > 10f) ? true : false;
         facts["lowHealth"] = priorityManager.checkLow(PRIORITIES.HEALTH) ? true : false;
-        facts["notAtBases"] = Vector3.Distance(transform.position,BasePositionStore) > 30f ? true : false;
+
+        facts["highAmmo"] = !priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO)? true : false;
 
        
         facts["isInRetreat"] = Sequence(shouldRetreat) ? true : false;
         facts["retreatTimer"] = retreatTimer <= retreatTimerMax ? true : false;
-        Debug.Log("retreatTimer: " + retreatTimer);
-        Debug.Log("Facts[retreatTimer]: " + facts["retreatTimer"]);
+        //Debug.Log("retreatTimer: " + retreatTimer);
+        //Debug.Log("Facts[retreatTimer]: " + facts["retreatTimer"]);
 
         if (!facts["retreatTimer"])
         {
-            Debug.Log("Going to wait");
+            //Debug.Log("Going to wait");
             wait.Update();
             //retreatTimer = 0;
             
         }
 
+        facts["chaseTimer"] = t > chaseTime ? true : false;
+        if (!facts["chaseTimer"])
+        {
+            t+= Time.deltaTime; 
+        }
+
+        else
+        {
+            t = 0;
+        }
+
     }
 
-    /* public BTNodeState FuelCheck()
+    public BTNodeState FuelCheck()
      {
          if(priorityManager.checkLow(PRIORITIES.FUEL))
          {
@@ -258,7 +240,6 @@ public class CC_SmartTankBTFSM : CC_SmartTank
          }
          else
          {
-             Searching();
              return BTNodeState.SUCCESS;
          }
      }
@@ -285,7 +266,7 @@ public class CC_SmartTankBTFSM : CC_SmartTank
          {
              return BTNodeState.SUCCESS;
          }
-     }*/
+     }
 
 
     public override void AITankStart()
