@@ -7,7 +7,7 @@ public class CC_BTChase : MonoBehaviour
 {
     private CC_SmartTank Tank;
     GameObject EnemyTankPositionStore = new GameObject();
-    float fSpeed;
+    float fSpeed = 1f;
     float tankAttackMinThresh = 20.0f;
     float chaseTime = 2.0f;
     float t = 0.0f;
@@ -24,46 +24,23 @@ public class CC_BTChase : MonoBehaviour
     {
 
 
-        //First we check for any enemy tanks in our vision
-       
-        
-
-           /* if (Tank.priorityManager.checkLow(PRIORITIES.FUEL) || Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
-            {
-                Debug.Log(" switch retreat due to fuel priority " + logCounter);
-                logCounter++;
-                //return typeof(Retreat);
-            }*/
-
+        if(Tank.enemyTank != null)
+        {
+            Debug.Log("Chasing Enemy");
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);//Follow the tank so that we have a more accurate shot
-            
-            
-
-
-            //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the kite state
-            /*if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
-               && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
-            {
-                Debug.Log("switch attack: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
-                logCounter++;
-                //return typeof(DodgeState);
-            }*/
-
-
-        
-
-
+        }
+       
 
         //If there are no enemy tnaks in our vision we check for enemy bases
-        if (Tank.enemyBase != null || hasSeenBase)
+       if (Tank.enemyBase != null || hasSeenBase)
         {
             hasSeenBase = true;
-
             //Once we have seen the enemy the base we travel towards it.
-            Debug.Log("Chasing Enemy Bases");
+
             if (Tank.enemyBase != null)// ensure base doesnt slip out of vision
             {
+                Debug.Log("Chasing Enemy Bases");
                 Tank.FollowPathToWorldPoint(Tank.enemyBase, fSpeed);
             }
             else
@@ -106,7 +83,7 @@ public class CC_BTChase : MonoBehaviour
         }*/
 
         //Chase the enemy tank once it gets outside of our range
-        if (Tank.enemyTank == null)
+        /*if (Tank.enemyTank == null)
         {
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
@@ -138,9 +115,21 @@ public class CC_BTChase : MonoBehaviour
                 //return typeof(SearchState);
             }
             //return null;
-        }
+        }*/
 
         //return typeof(SearchState);
 
     }
+
+    public void LostVisionChase()
+    {
+        Debug.Log("t: " + t);
+        if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
+        {
+            Debug.Log("Chasing with timer ");
+            t += Time.deltaTime;
+            Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
+        }
+    }
+
 }

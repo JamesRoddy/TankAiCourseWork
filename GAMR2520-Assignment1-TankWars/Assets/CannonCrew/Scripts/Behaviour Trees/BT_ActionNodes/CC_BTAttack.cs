@@ -59,7 +59,7 @@ public class CC_BTAttack : MonoBehaviour
 
         if (Tank.enemyBase != null && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
         {
-
+            Debug.Log("Firing enemy base");
             t += Time.deltaTime;
             if (baseDeadTimer < t)
             {
