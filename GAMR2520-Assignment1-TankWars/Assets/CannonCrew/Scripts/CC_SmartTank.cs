@@ -61,7 +61,7 @@ public class CC_SmartTank : AITank
     private GameObject basePositionHolder;
     private float tankWaitTime = 0.0f;
     private GameObject lastKnownEnemyData;
-    private GameObject enemyBasePosition;
+    protected GameObject enemyBasePosition;
     public List<GameObject> currentBases;
 
 

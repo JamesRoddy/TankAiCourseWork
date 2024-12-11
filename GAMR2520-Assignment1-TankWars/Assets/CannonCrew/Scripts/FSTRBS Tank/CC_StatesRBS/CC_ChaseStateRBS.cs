@@ -37,6 +37,8 @@ public class ChaseRBS : BaseST
 
     public override Type Exit()
     {
+        
+
         Debug.Log("Chase Exit " + logCounter);
         logCounter++;
 
@@ -70,21 +72,8 @@ public class ChaseRBS : BaseST
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
 
-            //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the kite state
-            /*            if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
-                           && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
-                        {
-                            Debug.Log("switch attack: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
-                            logCounter++;
-                            return typeof(DodgeState);
-                        }*/
-
-            if (Tank.stats["lowFuel"] == true || Tank.stats["lowHealth"] == true)
-            {
-/*                Debug.Log(" switch retreat due to fuel priority " + logCounter);
-*/                logCounter++;
-                return null;
-            }
+          
+          
 
 
 
@@ -109,23 +98,7 @@ public class ChaseRBS : BaseST
                 Tank.FollowPathToWorldPoint(Tank.EnemyBasePos, fSpeed);
             }
 
-            //if our tank is between  min units away from the enemy base and we are good on ammo, we go into the attack state
-            if (Tank.stats["ammoCritical"] == false)
-            {
-                if (Tank.stats["withinRange"]
-                && Tank.stats["ammoCritical"] == false)
-                {
-/*                    Debug.Log("Base switch attack: greater than min attack dist and smaller than max attack dist and ammo " + logCounter);
-*/                    logCounter++;
-                    hasSeenBase = false;
-                    return null;
-                }
-            }
-          /*  else if (Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
-            {
-*//*                Debug.Log("chase switch to search chasing base no ammo");
-*//*                return typeof(SearchStateRBS);
-            }*/
+        
 
 
             return null;
@@ -152,7 +125,7 @@ public class ChaseRBS : BaseST
                 Debug.Log("should going into SEARCH from CHASE with TIMER    ");
                 return typeof(SearchStateRBS);
             }
-            else if (Tank.stats["lostSight"])
+            else if (Tank.stats["lostSight"] )
             {
                 Debug.Log("should chase with timer ");
                 Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);
@@ -164,4 +137,8 @@ public class ChaseRBS : BaseST
       
 
     }
+
+
+
+
 }

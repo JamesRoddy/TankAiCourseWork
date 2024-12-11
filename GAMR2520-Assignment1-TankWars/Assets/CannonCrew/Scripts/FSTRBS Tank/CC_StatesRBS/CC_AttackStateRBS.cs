@@ -57,7 +57,7 @@ public class CC_AttackStateRBS : BaseST
         }
 
 
-        if (Tank.enemyBase != null && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+        if (Tank.stats["enemyBaseSeen"] && !Tank.stats["ammoCritical"])
         {
 
             t += Time.deltaTime;
@@ -67,39 +67,27 @@ public class CC_AttackStateRBS : BaseST
 */                isFiringAtBase = false;
                 t = 0.0f;
             }
-            //Potential to do 
-            /*   GameObject inverseEnemeyBase = new GameObject();
-               inverseEnemeyBase.transform.position = new Vector3(Tank.transform.forward.x , 0, Tank.transform.position.z + -Tank.transform.forward.z*5.0f);
-               */
-            /*if (Tank.stopAndCheckPos(inverseEnemeyBase, 2.5f,Tank.enemyTank)) {*/
-
-            /* if(Tank.enemyTank != null)
-             {
-                 Debug.Log("saw enemy tank before attacking base ");
-                 return null;
-             }*/
-/*            Debug.Log("Attacking enemy base");
-*/            if (isFiringAtBase != true)
+            Tank.TurretFaceWorldPoint(Tank.enemyBase);
+            if (isFiringAtBase != true)
             {
-                Tank.TurretFireAtPoint(Tank.EnemyBasePos);
+
+                Tank.TurretFireAtPoint(Tank.enemyBase);
                 isFiringAtBase = true;
             }
 
 
 
-/*            Debug.Log("go into /*search*//* after firing at base preventing chase with timer bug");
-*/
+
             return null; ;
         }
 
-/*        Debug.Log("is enemy base null");
-*//*        Debug.Log("attack switch to search no condtion was hit " + logCounter);
-*/        return typeof(SearchStateRBS);
+       Debug.Log("is enemy base null");
+       Debug.Log("attack switch to search no condtion was hit " + logCounter);
+         // reurn default state if none of the conditons are met 
+       return typeof(SearchStateRBS);
 
 
-        /*  Debug.Log("attack switch to search low on res " + logCounter);
-          logCounter++;
-          return typeof(SearchState);*/
+        
 
 
     }

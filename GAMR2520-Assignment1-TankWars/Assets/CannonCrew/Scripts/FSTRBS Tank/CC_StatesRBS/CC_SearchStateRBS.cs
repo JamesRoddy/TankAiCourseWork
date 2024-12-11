@@ -15,6 +15,7 @@ public class SearchStateRBS : BaseST
     private List<GameObject> pointsOfInterest;
     float explorationTimer;
     GameObject behind = new GameObject();
+    bool hasFoundConsuamble = false;
     private Type stateToReturn = null;
     List<Vector3> priorityPositions = new List<Vector3>();
     List<Vector3> visited;
@@ -45,7 +46,7 @@ public class SearchStateRBS : BaseST
         Debug.Log("Search Exit " + logCounter);
 
         Tank.stats["searchState"] = false;
-
+        hasFoundConsuamble = false;
         logCounter++;
         stateToReturn = null;
         priorityPositions.Clear();
@@ -86,9 +87,17 @@ public class SearchStateRBS : BaseST
         {
          //   currentSpeed = 0.5f;
         }
+        if(hasFoundConsuamble == true)
+        {
+            Tank.currentSpeed = 1.0f;
+        }
 
         if (Tank.consumablesFound.Count > 0)
         {
+            if (!hasFoundConsuamble)
+            {
+                hasFoundConsuamble = true;
+            }
             organiseConsumables();
             if (organisedConsumables.Count > 0) // if we saw any items 
             {
@@ -321,11 +330,16 @@ public class SearchStateRBS : BaseST
 *//*            Debug.Log(Vector3.Distance(Tank.transform.position, priorityPosition.transform.position));
 */            if (Vector3.Distance(priorityPosition.transform.position, Tank.transform.position) < 5.0f)
             {
+                Debug.Log("can not go to consumable ");
 /*                Debug.Log("removed position " + priorityPosition.transform.position);
 */                priorityPositions.RemoveAt(0);
             }
 
 
+        }
+        else
+        {
+            hasFoundConsuamble = false;
         }
 
 

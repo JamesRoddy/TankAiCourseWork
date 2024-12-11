@@ -19,8 +19,9 @@ public class CC_SmartTankRBS : CC_SmartTank
     public float currentSpeed = 0.85f;
     public Dictionary<string, bool> stats = new Dictionary<string, bool>();
     public Rules rules = new Rules();
-    public float chaseTime = 0.0f;
-    public float chaseTimeMax = 2.0f;
+    private float chaseTime = 0.0f;
+    private float chaseTimeMax = 4.0f;
+    private float chaseDistanceCheck = 5.0f;
     ChaseRBS chaseDebug;
     CC_SmartTankRBS debugTank;
     CC_AttackStateRBS attackDebug;
@@ -34,6 +35,10 @@ public class CC_SmartTankRBS : CC_SmartTank
         {"highHealth",true},
 
     };*/
+
+
+    // mini rule dictionaries allow us to check multiple booleans at once and predefine all the conditions that need to be met 
+    // used to check if we should attack
     Dictionary<string, bool> canAttackCheck = new Dictionary<string, bool>
     {
         {"enemySeen",true },
@@ -52,6 +57,8 @@ public class CC_SmartTankRBS : CC_SmartTank
         { "attackState",false}
     };
 
+
+
     Dictionary<string, bool> shouldChaseBaseCheck = new Dictionary<string, bool>
     {
 
@@ -61,7 +68,8 @@ public class CC_SmartTankRBS : CC_SmartTank
         { "chaseState",false},
 
     };
-/*    Dictionary<string, bool> shouldChaseCheck = new Dictionary<string, bool>
+    // used to check if we should chase 
+   Dictionary<string, bool> shouldChaseCheck = new Dictionary<string, bool>
     {
 
         {"withinRange",false },
@@ -72,6 +80,8 @@ public class CC_SmartTankRBS : CC_SmartTank
         { "chaseState",false},
 
     };
+
+  
     Dictionary<string, bool> shouldChaseAttackCheck = new Dictionary<string, bool>
     {
 
@@ -82,7 +92,8 @@ public class CC_SmartTankRBS : CC_SmartTank
         { "ammoCritical",false },
         { "chaseState",false},
 
-    };*/
+    };
+    // used to check if enemy dropped out of sight during attack
     Dictionary<string, bool> shouldChaseTargetNotVisible = new Dictionary<string, bool>
     {
         {"wasWithinRange",true },
@@ -92,18 +103,46 @@ public class CC_SmartTankRBS : CC_SmartTank
         { "highFuel",true },
         { "ammoCritical",false },
         { "highHealth", true },
-        {"chaseState",false },
+
+
+    };
+    // used to deteetct of the enemy dropped out of sight during chase
+    Dictionary<string, bool> shouldChaseTargetFromChase= new Dictionary<string, bool>
+    {
+        {"hadChase",true },
+        {"enemyBaseSeen",false },
+        {"chaseTimer",false },
+        { "enemySeen",false },
+        { "highFuel",true },
+        { "ammoCritical",false },
+        { "highHealth", true },
+
+
+    };
+    // check if chasing abase to gte in range is viable
+    Dictionary<string, bool> shouldChaseBase = new Dictionary<string, bool>
+    {
+       
+        
+        {"enemyBaseWithinRange",false },
+        { "enemySeen",false },
+        { "highFuel",true },
+        { "ammoCritical",false },
+        { "highHealth", true },
+
 
     };
 
 
-
+    // used to detect if we should retreat our not 
     Dictionary<string, bool> shouldRetreatCheck = new Dictionary<string, bool>
     {
         { "lowHealth",true },
         { "enemySeen",true },
         { "retreatState",false }
     };
+
+    List<Dictionary<string, bool>> backwardsChainFromSearchToChaseConditions;
 
     private void Awake()
     {
@@ -118,10 +157,15 @@ public class CC_SmartTankRBS : CC_SmartTank
         //wrappers for the values of each resource so they can be passed by reference to the priority holders that will then be sorted by the priority manager 
         // current thresholds for when something should become a priority
         // calc maxiumum for resources 
+     backwardsChainFromSearchToChaseConditions  = new List<Dictionary<string, bool>>()
+     {
+         shouldChaseTargetNotVisible,
+         shouldChaseTargetFromChase,
 
+     };
     }
 
-    public void InitiliseStats()
+    private void InitiliseStats()
     {
 
 
@@ -152,32 +196,36 @@ public class CC_SmartTankRBS : CC_SmartTank
         stats.Add("moveToTarget", false);
         stats.Add("lostSight", false);
         stats.Add("wasWithinRange", false);
+        stats.Add("hadChase", false);
+        stats.Add("canAttackBase",false);
+        stats.Add("chaseBase", false);
      /*   stats.Add("shootBase", false);*/
-       
+
      /*   stats.Add("shootTank", false);
         stats.Add("shootBase", false);*/
 
     }
 
-    public void InitiliseRules()
+    private void InitiliseRules()
     {
         
         rules.addRule(new Rule("shouldRetreat", "attackState", typeof(RetreatRBS),retreatDebug, Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
-
-
-/*        rules.addRule(new Rule("shouldRetreat", "searchState", typeof(RetreatRBS), Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
-        rules.addRule(new Rule("shouldRetreat", "chaseState", typeof(RetreatRBS), Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
-    rules.addRule(new Rule("enemyBaseWithinRange", "canAttack", typeof(CC_AttackStateRBS), Rule.Predicate.And));*/
+        rules.addRule(new Rule("shouldRetreat", "searchState", typeof(RetreatRBS), retreatDebug,Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
+        rules.addRule(new Rule("shouldRetreat", "chaseState", typeof(RetreatRBS),retreatDebug, Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
+        rules.addRule(new Rule("enemyBaseWithinRange", "canAttackBase", typeof(CC_AttackStateRBS),attackDebug, Rule.Predicate.And));
         rules.addRule(new Rule("withinRange", "canAttack", typeof(CC_AttackStateRBS),attackDebug, Rule.Predicate.And));// if we are able to attack(our health and fuel are high and ammo isn't a major priority) we should go into the attack state
         rules.addRule(new Rule("shouldChase", "moveToTarget", typeof(ChaseRBS),chaseDebug ,Rule.Predicate.Or)); // if we are in the attack state
+        rules.addRule(new Rule("enemyBaseSeen", "chaseBase", typeof(ChaseRBS), chaseDebug, Rule.Predicate.And));
+        
+    
     }
 
 
 
 
 
-
-    public void CheckSpeed()
+    // modulate  speed based on resource priority 
+    private void CheckSpeed()
     {
         if (stats["searchState"] == true && stats["highFuel"] == true)
         {
@@ -187,10 +235,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         {
             currentSpeed = 0.5f;
         }
-        else if (consumablesFound.Count > 0)
-        {
-            currentSpeed = 1.0f;
-        }
+      
         else if (stats["retreatState"] == true)
         {
             currentSpeed = 1;
@@ -203,7 +248,8 @@ public class CC_SmartTankRBS : CC_SmartTank
        
         
     }
-    public void CheckHealth()
+    // check the current health level based on its priority 
+    private void CheckHealth()
     {
         if (priorityManager.checkLow(PRIORITIES.HEALTH) == true) // checks if we are low on health
         {
@@ -235,7 +281,8 @@ public class CC_SmartTankRBS : CC_SmartTank
         }
     }
 
-    public void CheckFuel()
+    //check the current fuel level based on the priority manager
+    private void CheckFuel()
     {
         if (priorityManager.checkLow(PRIORITIES.FUEL) == true) // checks if we are low on fuel
         {
@@ -248,8 +295,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         }
         else if (priorityManager.checkHigh(PRIORITIES.FUEL)) // if not then check if we are high on fuel
         {
-            stats["highFuel"] = true; // if yes then return as true
-
+            stats["highFuel"] = true; 
             stats["lowFuel"] = false;
             stats["fuelMajor"] = false;
         }
@@ -261,7 +307,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         }
     }
 
-    public void checkAmmo()
+    private void checkAmmo()
     {
 
         
@@ -300,7 +346,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         }
     }
 
-    public void SetEnemySeen()
+    private void SetEnemySeen()
     {
         if (enemyTank != null)
         {
@@ -313,10 +359,11 @@ public class CC_SmartTankRBS : CC_SmartTank
         }
     }
 
-    public void SetEnemyBaseSeen()
+    private void SetEnemyBaseSeen()
     {
         if (enemyBase != null)
         {
+            Debug.Log("enemyBase" + (enemyBase != null));
             stats["enemyBaseSeen"] = true;
         }
         else
@@ -325,7 +372,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         }
     }
 
-    public void IsWithinRange()
+    private void IsWithinRange()
     {
         if (stats["enemySeen"])
         {
@@ -350,42 +397,51 @@ public class CC_SmartTankRBS : CC_SmartTank
        
     }
 
-    public void CanAttackBase()
-    {
-
-        if (stats["enemyBaseSeen"] == true && stats["enemyBaseWithinRange"] == true)
-        {
-            stats["canAttack"] = true;
-        }
-        else
-        {
-            stats["canAttack"] = false;
-
-        }
-
-    }
-    public void CheckCanAttack()
+    
+    private void CheckCanAttack()
     {
         if (checkSum(canAttackCheck) == true)
         {
             stats["canAttack"] = true;
 
         }
-
         else
         {
             stats["canAttack"] = false;
-         
-
 
         }
     }
 
-    public void CheckCanAttackEnemyBase()
+    private void CheckCanAttackEnemyBase()
     {
+
+        if (checkSum(canAttackEnemyBaseCheck) == true)
+        {
+            stats["canAttackBase"] = true;
+
+        }
+        else
+        {
+            stats["canAttackBase"] = false;
+
+
+        }
+
     }
 
-    public void CheckShouldRetreat()
+    public void CheckChaseBase()
+    {
+        if (checkSum(shouldChaseBase) && stats["chaseState"] == false)
+        {
+            Debug.Log("chasing base is true ");
+            stats["chaseBase"] = true;
+        }
+        else
+        {
+            stats["chaseBase"] = false;
+        } 
+    }
+    private void CheckShouldRetreat()
     {
 
         if (checkSum(shouldRetreatCheck) == true)
@@ -398,15 +454,15 @@ public class CC_SmartTankRBS : CC_SmartTank
             stats["shouldRetreat"] = false;
         }
     }
-    public void CheckShouldChase()
+    private void CheckShouldChase()
     {
         if (stats["chaseState"] == false )
         {
             Debug.Log("chase state false " + stats["chaseState"]);
-            if (checkSum(shouldChaseBaseCheck) )
+            if (checkSum(shouldChaseCheck) )
             {
-               
 
+                stats["hadChase"] = true;
                 Debug.Log("chasing enemy without timer ");
                 stats["shouldChase"] = true;
                 return;
@@ -414,7 +470,7 @@ public class CC_SmartTankRBS : CC_SmartTank
           
 
         }
-        
+       
         stats["shouldChase"] = false;
 
 
@@ -422,21 +478,23 @@ public class CC_SmartTankRBS : CC_SmartTank
 
     }
 
-    // as search is the defualt state to return to this method will be called in the enrty method for any timers governed by the rules that switch into search
+    
+
+    
     public void resetTimersIntoSearch()
     {
         
             Debug.Log("switch to search");
-       
+           
         
     }
-    public void enemyBaseWithinRange()
+    private void enemyBaseWithinRange()
     {
         if (stats["enemyBaseSeen"] == true)
         {
-            if (Vector3.Distance(transform.position, EnemyBasePos.transform.position) < BaseFiringDistance)
+            if (Vector3.Distance(transform.position, enemyBase.transform.position) < BaseFiringDistance)
             {
-              
+                Debug.Log("enemyBase within range");
                 stats["enemyBaseWithinRange"] = true;
             }
             else
@@ -445,33 +503,35 @@ public class CC_SmartTankRBS : CC_SmartTank
                 stats["enemyBaseWithinRange"] = false;
             }
         }
-        else if (stats["enemyBaseSeen"] == false)
+        else
         {
             
             stats["enemyBaseWithinRange"] = false;
         }
     }
 
-    public bool timerGuard(float timer )
-    {
-        return timer > 0.0f;
-    }
+
     void lostSight()
     {
         Debug.Log("CHASE STATE iS tUre" + stats["chaseState"]);
         Debug.Log("ATTTACK STATE iS tUre" + stats["chaseState"]);
         Debug.Log("cHEK sum For chAse When target n v" + checkSum(shouldChaseTargetNotVisible));
-        if ((stats["searchState"] ) && checkSum(shouldChaseTargetNotVisible)) // use backwards chaning to figure out if we loots the enemy during chase are not 
+        Debug.Log("was in search state " + stats["searchState"]);
+/*        if (stats["searchState"] && (checkSum(shouldChaseTargetNotVisible) || checkSum(shouldChaseTargetFromChase)))
+*/     if (backWardsChain("searchState", backwardsChainFromSearchToChaseConditions, Rule.Predicate.Or))  // use backwards chaning to figure out if we lost the enemy during chase are not 
         {
             Debug.Log("lost sIgHt");
-           stats["lostSight"] = true;
+            
+            stats["lostSight"] = true;
+            
+         
            chaseTime = 0.0f;
         }
 
         if (stats["lostSight"] == true  )
         {
-            chaseTime += Time.deltaTime;
-            if (stats["chaseState"] == false) 
+            chaseTime += Time.deltaTime;//  increment chase timer while he dont know where the enemy is 
+            if (stats["chaseState"] == false) //
             {
                 Debug.Log("MoveToTarget is true");
                 stats["moveToTarget"] = true;
@@ -492,26 +552,68 @@ public class CC_SmartTankRBS : CC_SmartTank
             Debug.Log("move to target bool chase " + stats["moveToTarget"]);
 
             Debug.Log("chasing with timer to attack enemy " + chaseTime);
-          
+            // if we have reached our chase time or the position we are moving to our the rule dictionary or the rule dictionary check is hit 
+            if (stats["chaseTimer"] == true || stats["shouldChase"] == true || stats["shouldRetreat"] == true
+                || Vector3.Distance(transform.position,LastKnownEPos.transform.position)< chaseDistanceCheck) 
+            {
+                Debug.Log("chase timer reset" + stats["chaseTimer"]);
+                stats["wasWithinRange"] = false;
+                stats["moveToTarget"] = false;
+                stats["ChaseTimer"] = false;
+                stats["lostSight"] = false;
+                stats["hadChase"] = false;
+
+                chaseTime = 0.0f;
+
+
+            }
 
         }
-        if (stats["chaseTimer"] == true || stats["shouldChase"] == true)
-        {
-            Debug.Log("chase timer reset" + stats["chaseTimer"]);
-            stats["wasWithinRange"] = false;
-            stats["moveToTarget"] = false;
-            stats["ChaseTimer"] = false;
-            stats["lostSight"] = false;
-            chaseTime = 0.0f;
-
-
-        }
+      
 
 
 
 
     }
 
+
+
+    private bool backWardsChain(string consequenceState,List<Dictionary<string,bool>> conditionsToCheck,Rule.Predicate condtionComparison)
+    {
+
+        if (stats[consequenceState])
+        {
+            int booleanResult = 0; 
+
+            foreach (Dictionary<string, bool> condition in conditionsToCheck)
+            {
+
+                booleanResult += Convert.ToInt32(checkSum(condition));
+              
+            }
+            switch (condtionComparison) {
+
+                case Rule.Predicate.Or:
+              { 
+                     return booleanResult >0;   
+              }
+              case Rule.Predicate.And:
+              {
+                 return booleanResult == conditionsToCheck.Count-1;
+                    
+               }
+            
+            
+            }
+
+
+        }
+        return false;
+
+
+
+
+    }
     public void ChaseEnemy()
     {
 
@@ -581,7 +683,7 @@ public class CC_SmartTankRBS : CC_SmartTank
 
 
 
-    private bool checkSum(Dictionary<string, bool> statsList) // utility function to check multiple stats at once
+    private bool checkSum(Dictionary<string, bool> statsList) // utility function to check multiple stats against the global stat dictionary  at once
     {
 
         foreach (KeyValuePair<string, bool> stat in statsList)
@@ -644,10 +746,14 @@ public class CC_SmartTankRBS : CC_SmartTank
         CheckShouldRetreat();
         SetEnemyBaseSeen();
         CheckSpeed();
-        enemyBaseWithinRange();
         CheckShouldChase();
         CheckCanAttack();
         lostSight();
+        enemyBaseWithinRange();
+        CheckCanAttackEnemyBase();
+        CheckChaseBase();
+
+
         /*CanAttackBase();*/
 
 
