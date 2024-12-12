@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +68,7 @@ public class CC_SmartTankBTFSM : CC_SmartTank
         //search = new BTSequence(new List<BTBaseNode> { fuelCheck, healthCheck });
     }
 
-    /*void Initialisefacts()
+    *//*void Initialisefacts()
     {
         facts.Add("lowHealth", false); // our health is low                                       
         facts.Add("lowFuel", false); // our fuel is low                                           
@@ -81,7 +81,7 @@ public class CC_SmartTankBTFSM : CC_SmartTank
         facts.Add("canAttack", false); // a fact to combine other facts like enemy seen, high fuel and high ammo into 1
         facts.Add("shouldRetreat", false); // combining the enemySeen and lowHealth facts into one fact
         facts.Add("shouldChase", false); // we should retreat because we see the enemy, our health is low and we aren't retreating already
-    }*/
+    }*//*
 
     public BTNodeState FuelCheck()
     {
@@ -145,3 +145,4 @@ public class CC_SmartTankBTFSM : CC_SmartTank
    
 
 }
+*/
