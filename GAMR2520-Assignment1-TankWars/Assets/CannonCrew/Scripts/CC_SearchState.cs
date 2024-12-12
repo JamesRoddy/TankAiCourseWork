@@ -1,12 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.XR;
 using UnityEngine;
-using static CC_SmartTank;
 using static PriorityManager;
 public class SearchState : BaseST
 {
@@ -23,6 +17,7 @@ public class SearchState : BaseST
     Dictionary<PRIORITIES, GameObject> organisedConsumables = new Dictionary<PRIORITIES, GameObject>();
     private float currentSpeed = 0.85f;
     float checkBehindWaitTime = 0.0f;
+    bool hasFoundConsumable = false;
     int logCounter = 0;
     public SearchState(CC_SmartTank newTank)
     {
@@ -71,13 +66,11 @@ public class SearchState : BaseST
         {
             currentSpeed = 0.6f;
         }
-        if (tank.consumablesFound.Count > 0) {
-            currentSpeed = 1.0f;
-          
-        }
+       
 
         if (tank.consumablesFound.Count > 0)
         {
+            hasFoundConsumable = true;
             organiseConsumables();
             if (organisedConsumables.Count > 0) // if we saw any items 
             {
@@ -88,10 +81,10 @@ public class SearchState : BaseST
 
             }
         }
-        if (organisedConsumables.Count == 0)
+        if (hasFoundConsumable)
         {
+            currentSpeed = 1.0f;
 
-            priorityPositions.Clear();
         }
 
         if (priorityPositions.Count > 0 )
@@ -324,7 +317,7 @@ public class SearchState : BaseST
     private void MoveToPriorityPositions()
     {
 
-        if (priorityPositions.Count > 0)
+        if (priorityPositions.Count > 0 && tank.consumablesFound.Count>0)
         {
 
             priorityPosition.transform.position = priorityPositions[0];
@@ -338,6 +331,11 @@ public class SearchState : BaseST
             }
 
 
+        }
+        else
+        {
+            priorityPositions.Clear();
+            hasFoundConsumable = false;
         }
 
 
@@ -416,14 +414,17 @@ public class SearchState : BaseST
 
         }
         // sweep the remaining queues where resources would be of less of concern(minor/safe priority and see if any game resources were sighted that relate to that priority)
-        foreach (PRIORITIES priority in tank.priorityManager.sweepQueues(new List<queuePriority> { queuePriority.MINOR, queuePriority.SAFE }))
-        {
-            if (organisedConsumables.ContainsKey(priority) && !priorityPositions.Contains(organisedConsumables[priority].transform.position))
+        
+        
+            foreach (PRIORITIES priority in tank.priorityManager.sweepQueues(new List<queuePriority> { queuePriority.MINOR, queuePriority.SAFE }))
             {
-                Debug.Log("added minor/safe priority " + priority + " in to priority position list");
-                priorityPositions.Add(organisedConsumables[priority].transform.position);
+                if (organisedConsumables.ContainsKey(priority) && !priorityPositions.Contains(organisedConsumables[priority].transform.position))
+                {
+                    Debug.Log("added minor/safe priority " + priority + " in to priority position list");
+                    priorityPositions.Add(organisedConsumables[priority].transform.position);
+                }
             }
-        }
+        
 
 
     }
