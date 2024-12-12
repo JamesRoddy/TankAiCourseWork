@@ -114,7 +114,13 @@ public class CC_SmartTank : AITank
         // transition context to certain states like the retreat state and wait state allowing the
         // states to set and adjust their values based on the previous state only this does not mean every single state is aware of every state or the state machine
         // simply that they have some kind of AI behaviour that has a global context they can access via their previous state or themselves
-        Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>
+       
+
+       
+      
+        if (!TryGetComponent(out CC_SmartTankRBS rules) && !TryGetComponent(out CC_SmartTankBT behaviourTree)){
+            Debug.Log("found did not find RBS ");
+            Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>
         {
             {typeof(SearchState),new SearchState(this)},
             {typeof(CC_AttackState),new CC_AttackState(this)},
@@ -125,11 +131,6 @@ public class CC_SmartTank : AITank
             {typeof(Ambush),new Ambush(this)},
             {typeof(Guard),new Guard(this)},
         };
-
-       
-      
-        if (!TryGetComponent(out CC_SmartTankRBS rules) && !TryGetComponent(out CC_SmartTankBTFSM behaviourTree)){
-            Debug.Log("found did not find RBS ");
             GetComponent<CC_FSM>().setStates(states);
         }
 
@@ -144,6 +145,7 @@ public class CC_SmartTank : AITank
 
     public override void AITankStart()
     {
+        Debug.Log("base start");
         // store current bases 
         currentBases = MyBases;
         /// lower thesh holds, higher thresh holds and max for each resource 
@@ -156,7 +158,8 @@ public class CC_SmartTank : AITank
         enemyBasePosition = new GameObject();
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
         healthPriorityThresh = 30.0f;
-        healthSafteyThresh = 60.0f;
+        healthSafteyThresh = 50.0f;
+
 
         ammoPriorityThresh = 4.0f;
         ammoSafteyThresh = 10.0f;
