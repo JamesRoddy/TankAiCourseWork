@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class Rule
@@ -8,7 +9,7 @@ public class Rule
     public string antecentA;
     public string antecentB;
     public Type consequentState;
-
+    public BaseST debugType;
     public Predicate compare;
 
     public enum Predicate
@@ -16,16 +17,19 @@ public class Rule
         And, Or, nAnd
     }
 
-    public Rule(string antecentA, string antecentB, Type consequentState, Predicate compare)
+    public Rule(string antecentA, string antecentB, Type consequentState,BaseST debugType, Predicate compare)
     {
         this.antecentA = antecentA;
         this.antecentB = antecentB;
         this.consequentState = consequentState;
         this.compare = compare;
+        this.debugType = debugType;
     }
 
     public Type CheckRule(Dictionary<string, bool> stats)
     {
+        
+     
         bool antecentABool = stats[antecentA];
         bool antecentBBool = stats[antecentB];
 

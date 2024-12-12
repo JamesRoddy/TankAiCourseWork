@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 using static CC_SmartTank;
 using static PriorityManager;
@@ -33,23 +34,10 @@ public class CC_AttackStateRBS : BaseST
 
     public override Type Update()
     {
-
-        Tank.SetEnemySeen();
-        Tank.checkAmmo();
-        Tank.CheckFuel();
-        Tank.CheckHealth();
-        Tank.IsWithinRange();
-        Tank.CheckShouldRetreat();
-        Tank.SetEnemyBaseSeen();
-        Tank.CheckSpeed();
-        Tank.AttackEnemyBase();
-        Tank.CheckCanAttack();
-        Tank.enemyBaseWithinRange();
-        Tank.CheckShouldChase();
-        Tank.ChaseEnemy();
-
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
+
+
             if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
             {
                 return item.CheckRule(Tank.stats); // return the state
@@ -57,11 +45,15 @@ public class CC_AttackStateRBS : BaseST
         }
 
 
-        if (Tank.stats["enemySeen"] == true) // if we see the enemy tank
+        if (Tank.stats["enemySeen"] == true && Tank.stats["withinRange"] == true) // if we see the enemy tank
         {
 
             //fire at the stored position
-            Tank.TurretFireAtPoint(Tank.LastKnownEPos);
+            if (!Tank.TankIsFiring())
+            {
+                Tank.TurretFireAtPoint(Tank.LastKnownEPos);
+
+            }
             // return null since the state doesn't change, we will continue attacking
             return null;
 
@@ -69,49 +61,37 @@ public class CC_AttackStateRBS : BaseST
         }
 
 
-        if (Tank.enemyBase != null && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+        if (Tank.stats["enemyBaseSeen"] && !Tank.stats["ammoCritical"])
         {
 
             t += Time.deltaTime;
             if (baseDeadTimer < t)
             {
-                Debug.Log("base dead");
-                isFiringAtBase = false;
+/*                Debug.Log("base dead");
+*/                isFiringAtBase = false;
                 t = 0.0f;
             }
-            //Potential to do 
-            /*   GameObject inverseEnemeyBase = new GameObject();
-               inverseEnemeyBase.transform.position = new Vector3(Tank.transform.forward.x , 0, Tank.transform.position.z + -Tank.transform.forward.z*5.0f);
-               */
-            /*if (Tank.stopAndCheckPos(inverseEnemeyBase, 2.5f,Tank.enemyTank)) {*/
-
-            /* if(Tank.enemyTank != null)
-             {
-                 Debug.Log("saw enemy tank before attacking base ");
-                 return null;
-             }*/
-            Debug.Log("Attacking enemy base");
+            Tank.TurretFaceWorldPoint(Tank.enemyBase);
             if (isFiringAtBase != true)
             {
-                Tank.TurretFireAtPoint(Tank.EnemyBasePos);
+
+                Tank.TurretFireAtPoint(Tank.enemyBase);
                 isFiringAtBase = true;
             }
 
 
 
-            Debug.Log("go into search after firing at base preventing chase with timer bug");
 
             return null; ;
         }
 
-        Debug.Log("is enemy base null");
-        Debug.Log("attack switch to search no condtion was hit " + logCounter);
-        return typeof(SearchStateRBS);
+       Debug.Log("is enemy base null");
+       Debug.Log("attack switch to search no condtion was hit " + logCounter);
+         // reurn default state if none of the conditons are met 
+       return typeof(SearchStateRBS);
 
 
-        /*  Debug.Log("attack switch to search low on res " + logCounter);
-          logCounter++;
-          return typeof(SearchState);*/
+        
 
 
     }

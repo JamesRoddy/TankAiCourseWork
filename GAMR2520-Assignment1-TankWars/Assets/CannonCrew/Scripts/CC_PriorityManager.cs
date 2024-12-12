@@ -137,7 +137,8 @@ public class PriorityManager
         public bool checkQueue(queuePriority queue, PRIORITIES resource)
         {
 
-         return priorityQueues[queue].Count > 0 && priorityQueues[queue].Contains(resource);// if the resource is in the priority state being checked
+      
+         return   priorityQueues[queue].Contains(resource);// if the resource is in the priority state being checked
 
 
         }
