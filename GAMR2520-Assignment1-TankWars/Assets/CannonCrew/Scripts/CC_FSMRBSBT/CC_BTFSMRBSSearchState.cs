@@ -27,8 +27,8 @@ public class CC_BTFSMRBSSearchState : BaseST
         priorityPosition = new GameObject();
         stateToReturn = null;
         Debug.Log("Entered Search " + logCounter);
-        Tank.resetTimersIntoSearch(); // reset timers coming in from search
-        Tank.stats["searchState"] = true; // search state true
+/*        Tank.resetTimersIntoSearch(); // reset timers coming in from search
+*/        Tank.stats["searchState"] = true; // search state true
 
         logCounter++;
         return null;

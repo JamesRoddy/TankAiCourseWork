@@ -50,12 +50,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     private void Awake()
     {
-        debugTank = new CC_SmartTankRBS();
-        chaseDebug = new ChaseRBS(debugTank);
-        attackDebug = new CC_AttackStateRBS(debugTank);
-        retreatDebug = new RetreatRBS(debugTank);
-        searchDebug = new SearchStateRBS(debugTank);
-       
+        
         initStateMachine();
         //wrappers for the values of each resource so they can be passed by reference to the priority holders that will then be sorted by the priority manager 
         // current thresholds for when something should become a priority
