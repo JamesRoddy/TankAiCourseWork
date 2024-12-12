@@ -35,6 +35,7 @@ public class CC_BTFSMRBChaseState : BaseST
     public override Type Update()
     {
 
+
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
 

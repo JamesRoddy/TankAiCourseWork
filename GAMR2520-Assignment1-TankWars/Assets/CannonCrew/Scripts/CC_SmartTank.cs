@@ -119,7 +119,7 @@ public class CC_SmartTank : AITank
 
        
       
-        if (!TryGetComponent(out CC_SmartTankRBS rules) ){
+        if (!TryGetComponent(out CC_SmartTankRBS rules) || !TryGetComponent(out CC_smartTankFSMRBSBT bt)){
             Debug.Log("found did not find RBS ");
             Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>
         {

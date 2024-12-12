@@ -37,11 +37,11 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTaction attackEnemy;
     public BTAttackFunctions tankActionsForAttack;
 
-    BTsequence attackingBase;
-    BTsequence attackingEnemy;
-    BTsequence retreating;
-    BTsequence chasingEnemy;
-
+   public BTsequence attackingBase;
+   public BTsequence attackingEnemy;
+   public BTsequence retreating;
+   public BTselector chasingEnemy;
+  
 
 
     // timers associated with certain actions
@@ -50,10 +50,11 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
 
 
-    private void Awake()
+    private  void Awake()
     {
 
-
+        base.InitiliseStats();
+        base.InitiliseRules();
         initStateMachine();
 
     }
@@ -401,10 +402,13 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     {
 
 
-        Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>();
+        Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>
         {
+            
+            { typeof(BTFSMRBSAttack),new BTFSMRBSAttack(this)},
+            
 
-        }
+        };
 
         GetComponent<CC_FSM>().setStates(states);
 
@@ -461,7 +465,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         attackingEnemy = new BTsequence(new List<BTaction> { checkRetreatNeeded, checkShouldAttack, withinRangeCheck });
         attackingBase = new BTsequence(new List<BTaction> { checkShouldAttackBase, checkWihtinRangeOfBase });
-        chasingEnemy = new BTsequence(new List<BTaction> { checkHighFuel, checkHighHealth, checkLostTarget, checkShouldChase });
+        chasingEnemy = new BTselector(new List<BTaction> {  checkLostTarget, checkShouldChase });
         retreating = new BTsequence(new List<BTaction> { checkShouldRetreat });
 
 
@@ -493,7 +497,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     {
         base.AITankStart();
 
-
+        initBt();
 
 
 

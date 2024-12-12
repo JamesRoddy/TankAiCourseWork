@@ -166,7 +166,7 @@ public class CC_SmartTankRBS : CC_SmartTank
      };
     }
 
-    private void InitiliseStats()
+    public void InitiliseStats()
     {
 
 
@@ -207,7 +207,7 @@ public class CC_SmartTankRBS : CC_SmartTank
 
     }
 
-    private void InitiliseRules()
+    public void InitiliseRules()
     {
         
         rules.addRule(new Rule("shouldRetreat", "attackState", typeof(RetreatRBS),retreatDebug, Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
@@ -676,8 +676,11 @@ public class CC_SmartTankRBS : CC_SmartTank
             {typeof(ChaseRBS),new ChaseRBS(this)}
         };
 
+        if(!TryGetComponent( out CC_smartTankFSMRBSBT bt))
+        {
+            GetComponent<CC_FSM>().setStates(states);
+        }
 
-        GetComponent<CC_FSM>().setStates(states);
 
 
     }
