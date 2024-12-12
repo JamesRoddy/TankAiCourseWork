@@ -16,7 +16,6 @@ public class ChaseRBS : BaseST
     float tankAttackMinThresh = 20.0f;
 
     float t = 0.0f;
-    bool hasSeenBase = false;
     int logCounter = 0;
     public ChaseRBS(CC_SmartTankRBS newtank)
     {
@@ -83,20 +82,17 @@ public class ChaseRBS : BaseST
 
        
         //If there are no enemy tnaks in our vision we check for enemy bases
-        if (Tank.stats["enemyBaseSeen"] == true || hasSeenBase)
+        if (Tank.stats["enemyBaseSeen"] == true )
         {
-            hasSeenBase = true;
-
+            
+            Debug.Log(Tank.stats["enemyBaseSeen"] + " enemy base seen is ");
             //Once we have seen the enemy the base we travel towards it.
 /*            Debug.Log("Chasing Enemy Bases");
 */            if (Tank.stats["enemyBaseSeen"] == true)// ensure base doesnt slip out of vision
             {
                 Tank.FollowPathToWorldPoint(Tank.enemyBase, fSpeed);
             }
-            else
-            {
-                Tank.FollowPathToWorldPoint(Tank.EnemyBasePos, fSpeed);
-            }
+           
 
         
 

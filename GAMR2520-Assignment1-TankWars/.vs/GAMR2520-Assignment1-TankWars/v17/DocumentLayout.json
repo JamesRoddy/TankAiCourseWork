@@ -1,49 +1,69 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\",
+  "WorkspaceRootPath": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|g:\\unity projects\\tankaicoursework\\gamr2520-assignment1-tankwars\\assets\\cannoncrew\\scripts\\cc_ambush.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_ambush.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_searchstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_searchstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_smarttank.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_smarttank.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_dodgestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_dodgestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_chase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_chase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_prioritymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_prioritymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_retreat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_retreat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_attackstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_attackstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_attackstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_priorityvalueholder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|c:\\users\\kewin\\desktop\\tank war assigment\\tankaicoursework\\gamr2520-assignment1-tankwars\\assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_chasestaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_chasestaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|c:\\users\\kewin\\desktop\\tank war assigment\\tankaicoursework\\gamr2520-assignment1-tankwars\\assets\\cannoncrew\\scripts\\fstrbs tank\\cc_smarttankrbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\fstrbs tank\\cc_smarttankrbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|c:\\users\\kewin\\desktop\\tank war assigment\\tankaicoursework\\gamr2520-assignment1-tankwars\\assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_searchstaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_searchstaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_searchstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_searchstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|c:\\users\\kewin\\desktop\\tank war assigment\\tankaicoursework\\gamr2520-assignment1-tankwars\\assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_retreatstaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_retreatstaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|c:\\users\\kewin\\desktop\\tank war assigment\\tankaicoursework\\gamr2520-assignment1-tankwars\\assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_attackstaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_attackstaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_prioritymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_prioritymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_smarttank.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_smarttank.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_priorityvalueholder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_priorityvalueholder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_fsm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|c:\\users\\kewin\\desktop\\tank war assigment\\tankaicoursework\\gamr2520-assignment1-tankwars\\assets\\cannoncrew\\scripts\\cc_ambush.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_ambush.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_dodgestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_dodgestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_chase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_chase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_retreat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_retreat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_fsm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_fsm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\scripts\\do not modify\\astarscripts\\astar.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\scripts\\do not modify\\astarscripts\\astar.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\do not modify\\astarscripts\\astar.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -54,19 +74,149 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CC_ChaseStateRBS.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAABIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-12T14:52:32.996Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CC_RetreatStateRBS.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_RetreatStateRBS.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_RetreatStateRBS.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_RetreatStateRBS.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_RetreatStateRBS.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-12T12:21:55.711Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CC_AttackStateRBS.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAAwCwAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-12T11:45:48.79Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CC_SmartTankRBS.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
+              "ViewState": "AQIAAHkBAAAAAAAAAAAswNkAAAA7AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-12T11:35:33.975Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CC_SearchStateRBS.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_SearchStateRBS.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_SearchStateRBS.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_SearchStateRBS.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_SearchStateRBS.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACQAAAAyAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-12T11:35:25.478Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "CC_AttackState.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_AttackState.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_AttackState.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_AttackState.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_AttackState.cs",
+              "ViewState": "AQIAABsAAAAAAAAAAAAqwAsAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-04T18:59:06.408Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CC_PriorityManager.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_PriorityManager.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_PriorityManager.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_PriorityManager.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_PriorityManager.cs",
+              "ViewState": "AQIAADoAAAAAAAAAAADwv04AAAAaAQAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-04T19:30:27.431Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CC_SmartTank.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
+              "ViewState": "AQIAAJIAAAAAAAAAAAAAwJ8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-04T18:59:38.136Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CC_SearchState.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
+              "ViewState": "AQIAAJABAAAAAAAAAAAIwKgBAAARAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-04T18:59:34.608Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "CC_PriorityValueHolder.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_PriorityValueHolder.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_PriorityValueHolder.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_PriorityValueHolder.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_PriorityValueHolder.cs",
+              "ViewState": "AQIAAAcAAAAAAAAAAAAiwA8AAABpAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T09:24:27.075Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "CC_Ambush.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
               "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
               "ViewState": "AQIAABYAAAAAAAAAAAAgwEkAAAAxAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -75,59 +225,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CC_DodgeState.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_DodgeState.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_DodgeState.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_DodgeState.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_DodgeState.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACsAAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-07T16:21:28.897Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CC_SearchState.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
-              "ViewState": "AQIAAJYAAAAAAAAAAAAmwMQAAAApAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T18:59:34.608Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "CC_PriorityValueHolder.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_PriorityValueHolder.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_PriorityValueHolder.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_PriorityValueHolder.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_PriorityValueHolder.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA8AAABpAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-05T09:24:27.075Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "CC_PriorityManager.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_PriorityManager.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_PriorityManager.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_PriorityManager.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_PriorityManager.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T19:30:27.431Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 14,
               "Title": "CC_FSM.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_FSM.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_FSM.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_FSM.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_FSM.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_FSM.cs",
               "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_FSM.cs",
               "ViewState": "AgIAACEAAAAAAAAAAAAmwCsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -135,23 +237,23 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CC_SmartTank.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
-              "ViewState": "AQIAAE0AAAAAAAAAAAAWwHkAAAAmAAAA",
+              "DocumentIndex": 11,
+              "Title": "CC_DodgeState.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_DodgeState.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_DodgeState.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_DodgeState.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_DodgeState.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACsAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T18:59:38.136Z"
+              "WhenOpened": "2024-12-07T16:21:28.897Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 13,
               "Title": "CC_Retreat.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Retreat.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Retreat.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_Retreat.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Retreat.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Retreat.cs",
               "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_Retreat.cs",
               "ViewState": "AgIAAJAAAAAAAAAAAAAkwAYBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -159,23 +261,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "CC_AttackState.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_AttackState.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_AttackState.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_AttackState.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_AttackState.cs",
-              "ViewState": "AgIAAEoAAAAAAAAAAAAswFcAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T18:59:06.408Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 12,
               "Title": "CC_Chase.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Chase.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Chase.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_Chase.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Chase.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Chase.cs",
               "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_Chase.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -183,11 +273,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 15,
               "Title": "AStar.cs",
-              "DocumentMoniker": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\Scripts\\DO NOT MODIFY\\AStarScripts\\AStar.cs",
+              "DocumentMoniker": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\Scripts\\DO NOT MODIFY\\AStarScripts\\AStar.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\DO NOT MODIFY\\AStarScripts\\AStar.cs",
-              "ToolTip": "G:\\Unity Projects\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\Scripts\\DO NOT MODIFY\\AStarScripts\\AStar.cs",
+              "ToolTip": "C:\\Users\\kewin\\Desktop\\Tank War Assigment\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\Scripts\\DO NOT MODIFY\\AStarScripts\\AStar.cs",
               "RelativeToolTip": "Assets\\Scripts\\DO NOT MODIFY\\AStarScripts\\AStar.cs",
               "ViewState": "AgIAAJMAAAAAAAAAAAAkwI4AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",

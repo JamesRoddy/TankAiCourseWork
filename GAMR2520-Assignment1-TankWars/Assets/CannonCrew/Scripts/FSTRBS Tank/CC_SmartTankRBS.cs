@@ -16,7 +16,6 @@ using static PriorityManager;
 
 public class CC_SmartTankRBS : CC_SmartTank
 {
-    public float currentSpeed = 0.85f;
     public Dictionary<string, bool> stats = new Dictionary<string, bool>();
     public Rules rules = new Rules();
     private float chaseTime = 0.0f;
@@ -26,6 +25,7 @@ public class CC_SmartTankRBS : CC_SmartTank
     CC_SmartTankRBS debugTank;
     CC_AttackStateRBS attackDebug;
     RetreatRBS retreatDebug;
+    Coroutine firiring;
     SearchStateRBS searchDebug; 
 /*    Dictionary<string, bool> chaseEnemyCheck = new Dictionary<string, bool>
     {
@@ -126,6 +126,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         
         {"enemyBaseWithinRange",false },
         { "enemySeen",false },
+        {"enemyBaseSeen",true },
         { "highFuel",true },
         { "ammoCritical",false },
         { "highHealth", true },
@@ -212,8 +213,8 @@ public class CC_SmartTankRBS : CC_SmartTank
         rules.addRule(new Rule("shouldRetreat", "attackState", typeof(RetreatRBS),retreatDebug, Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
         rules.addRule(new Rule("shouldRetreat", "searchState", typeof(RetreatRBS), retreatDebug,Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
         rules.addRule(new Rule("shouldRetreat", "chaseState", typeof(RetreatRBS),retreatDebug, Rule.Predicate.And)); // if we see the enemy and are on low health then we should retreat
-        rules.addRule(new Rule("enemyBaseWithinRange", "canAttackBase", typeof(CC_AttackStateRBS),attackDebug, Rule.Predicate.And));
         rules.addRule(new Rule("withinRange", "canAttack", typeof(CC_AttackStateRBS),attackDebug, Rule.Predicate.And));// if we are able to attack(our health and fuel are high and ammo isn't a major priority) we should go into the attack state
+        rules.addRule(new Rule("enemyBaseWithinRange", "canAttackBase", typeof(CC_AttackStateRBS), attackDebug, Rule.Predicate.And));
         rules.addRule(new Rule("shouldChase", "moveToTarget", typeof(ChaseRBS),chaseDebug ,Rule.Predicate.Or)); // if we are in the attack state
         rules.addRule(new Rule("enemyBaseSeen", "chaseBase", typeof(ChaseRBS), chaseDebug, Rule.Predicate.And));
         
@@ -225,7 +226,7 @@ public class CC_SmartTankRBS : CC_SmartTank
 
 
     // modulate  speed based on resource priority 
-    private void CheckSpeed()
+/*    private void CheckSpeed()
     {
         if (stats["searchState"] == true && stats["highFuel"] == true)
         {
@@ -247,7 +248,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         }
        
         
-    }
+    }*/
     // check the current health level based on its priority 
     private void CheckHealth()
     {
@@ -727,7 +728,7 @@ public class CC_SmartTankRBS : CC_SmartTank
     {
         base.AIOnCollisionEnter(collision);
 
-
+        
     }
 
 
@@ -745,7 +746,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         IsWithinRange();
         CheckShouldRetreat();
         SetEnemyBaseSeen();
-        CheckSpeed();
+//        CheckSpeed();
         CheckShouldChase();
         CheckCanAttack();
         lostSight();

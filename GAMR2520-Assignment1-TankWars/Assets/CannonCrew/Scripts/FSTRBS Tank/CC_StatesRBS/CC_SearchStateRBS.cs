@@ -21,7 +21,7 @@ public class SearchStateRBS : BaseST
     List<Vector3> visited;
     GameObject priorityPosition = new GameObject();
     Dictionary<PRIORITIES, GameObject> organisedConsumables = new Dictionary<PRIORITIES, GameObject>();
-    //private float currentSpeed = 0.85f;
+    private float currentSpeed = 0.85f;
     float checkBehindWaitTime = 0.0f;
     int logCounter = 0;
     public SearchStateRBS(CC_SmartTankRBS newTank)
@@ -77,6 +77,7 @@ public class SearchStateRBS : BaseST
                     return stateToReturn;
 
                 }*/
+        Debug.Log("current speed " + currentSpeed);
         if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
          //   currentSpeed = 0.85f;
@@ -87,10 +88,7 @@ public class SearchStateRBS : BaseST
         {
          //   currentSpeed = 0.5f;
         }
-        if(hasFoundConsuamble == true)
-        {
-            Tank.currentSpeed = 1.0f;
-        }
+      
 
         if (Tank.consumablesFound.Count > 0)
         {
@@ -108,15 +106,14 @@ public class SearchStateRBS : BaseST
 
             }
         }
-
+        if (hasFoundConsuamble == true)
+        {
+            currentSpeed = 1.0f;
+        }
 
         if (priorityPositions.Count > 0)
         {
-            Tank.currentSpeed = 0.95f;
-            if (organisedConsumables.Count == 0)
-            {
-                priorityPositions.Clear();
-            }
+          
             MoveToPriorityPositions();
         }
         else
@@ -168,7 +165,7 @@ public class SearchStateRBS : BaseST
     {
 
 
-        Tank.FollowPathToRandomWorldPoint(Tank.currentSpeed);
+        Tank.FollowPathToRandomWorldPoint(currentSpeed);
 
         explorationTimer += Time.deltaTime;
         if (explorationTimer > 12.0f)
@@ -321,27 +318,26 @@ public class SearchStateRBS : BaseST
     private void MoveToPriorityPositions()
     {
 
-        if (priorityPositions.Count > 0)
+        if (priorityPositions.Count > 0 &&  Tank.consumablesFound.Count > 0)
         {
 
             priorityPosition.transform.position = priorityPositions[0];
-            Tank.FollowPathToWorldPoint(priorityPosition, Tank.currentSpeed);
-/*            Debug.Log("moving to priority position " + priorityPosition.transform.position);
-*//*            Debug.Log(Vector3.Distance(Tank.transform.position, priorityPosition.transform.position));
-*/            if (Vector3.Distance(priorityPosition.transform.position, Tank.transform.position) < 5.0f)
+                Tank.FollowPathToWorldPoint(priorityPosition, currentSpeed);
+            Debug.Log("moving to priority position " + priorityPosition.transform.position);
+            Debug.Log(Vector3.Distance(Tank.transform.position, priorityPosition.transform.position));
+            if (Vector3.Distance(priorityPosition.transform.position, Tank.transform.position) < 5.0f)
             {
-                Debug.Log("can not go to consumable ");
-/*                Debug.Log("removed position " + priorityPosition.transform.position);
-*/                priorityPositions.RemoveAt(0);
+                Debug.Log("removed position " + priorityPosition.transform.position);
+                priorityPositions.RemoveAt(0);
             }
 
 
         }
         else
         {
+            priorityPositions.Clear();
             hasFoundConsuamble = false;
         }
-
 
 
 
@@ -352,15 +348,15 @@ public class SearchStateRBS : BaseST
         /*bool isHealthMajor = Tank.priorityManager.checkLow(PRIORITIES.HEALTH);
         bool isFuelMajor = Tank.priorityManager.checkLow(PRIORITIES.FUEL); // check if current priority of fuel is low
         bool isAmmoMajor = Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.AMMO);*/
-        if (Tank.stats["fuelMajor"] == true || Tank.stats["healthMajor"] == true) // if either was low
+        if (Tank.stats["lowHealth"] == true || Tank.stats["lowFuel"] == true) // if either was low
         {
             int getHealthOrFuel = Convert.ToInt32(organisedConsumables.ContainsKey(PRIORITIES.HEALTH)) - Convert.ToInt32(organisedConsumables.ContainsKey(PRIORITIES.FUEL));
-
+            
             switch (getHealthOrFuel) // check boolean sum 
             {
                 case -1:
                     {
-
+                        Debug.Log("going for fuel ");
                         priorityPositions.Add(organisedConsumables[PRIORITIES.FUEL].transform.position);  // asigning the current position of the found health pick up to a game object
 
 
@@ -368,12 +364,15 @@ public class SearchStateRBS : BaseST
                     }
                 case 1:
                     {
-
+                        Debug.Log("going for health ");
                         priorityPositions.Add(organisedConsumables[PRIORITIES.HEALTH].transform.position);
                         break;
                     }
                 case 0:
                     {
+
+                        Debug.Log("going for health and fuel ");
+
                         if (organisedConsumables.ContainsKey(PRIORITIES.HEALTH))// if health was true that means a case of 0 means that both health and fuel were found in the orgainse items dictionary  
                         {
 
@@ -418,14 +417,18 @@ public class SearchStateRBS : BaseST
 
         }
         // sweep the remaining queues where resources would be of less of concern(minor/safe priority and see if any game resources were sighted that relate to that priority)
-        foreach (PRIORITIES priority in Tank.priorityManager.sweepQueues(new List<queuePriority> { queuePriority.MINOR, queuePriority.SAFE }))
-        {
-            if (organisedConsumables.ContainsKey(priority) && !priorityPositions.Contains(organisedConsumables[priority].transform.position))
+        
+        
+            foreach (PRIORITIES priority in Tank.priorityManager.sweepQueues(new List<queuePriority> { queuePriority.MINOR, queuePriority.SAFE }))
             {
-/*                Debug.Log("added minor/safe priority " + priority + " in to priority position list");
-*/                priorityPositions.Add(organisedConsumables[priority].transform.position);
+                if (organisedConsumables.ContainsKey(priority) && !priorityPositions.Contains(organisedConsumables[priority].transform.position))
+                {
+                    Debug.Log("added minor/safe priority " + priority + " in to priority position list");
+                    priorityPositions.Add(organisedConsumables[priority].transform.position);
+                }
             }
-        }
+        
+
 
 
     }

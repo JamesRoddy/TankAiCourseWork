@@ -49,7 +49,11 @@ public class CC_AttackStateRBS : BaseST
         {
 
             //fire at the stored position
-            Tank.TurretFireAtPoint(Tank.LastKnownEPos);
+            if (!Tank.TankIsFiring())
+            {
+                Tank.TurretFireAtPoint(Tank.LastKnownEPos);
+
+            }
             // return null since the state doesn't change, we will continue attacking
             return null;
 
