@@ -41,8 +41,8 @@ public class Ambush : BaseST
         {
             Tank.TurretReset();
         }
-        
-     
+
+        hasFoundConsumable = false;
         lastKnownConsumablePos.transform.position = Vector3.zero;
         orbitPath.transform.position = Vector3.zero;
         tankPosition.transform.position = Vector3.zero;
@@ -84,6 +84,7 @@ public class Ambush : BaseST
             }
 
 
+
             if (!checkTimeLimitToMoveToConsumable() && Tank.enemyTank != null && Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {
                 
@@ -94,8 +95,7 @@ public class Ambush : BaseST
 
 
             }
-
-            if (checkTimeLimitToMoveToConsumable()) // if the time limit is at 30% and weve found a consumable of high prioiryt during ambush we dont wait as long for the enemy tank and move to the conusmable instead
+           else if (checkTimeLimitToMoveToConsumable()) // if the time limit is at 30% and weve found a consumable of high prioiryt during ambush we dont wait as long for the enemy tank and move to the conusmable instead
             {
                
 
