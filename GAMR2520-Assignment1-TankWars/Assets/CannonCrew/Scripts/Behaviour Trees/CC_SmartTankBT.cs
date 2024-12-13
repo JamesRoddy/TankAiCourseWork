@@ -21,11 +21,12 @@ public class CC_SmartTankBT : CC_SmartTank
     List<string> shouldAttack = new List<string>();
     List<string> shouldRetreat = new List<string>();
     List<string> shouldVisionLostChase = new List<string>();
+    List<string> shouldGetPickup = new List<string>();
 
     CC_BTSearch searchState;
     CC_BTChase chaseState;
     CC_BTAttack attackState;
-    CC_BTRetreat retreatState;
+    CC_BTNewRetreat retreatState;
     CC_BTWait wait;
 
 
@@ -69,11 +70,11 @@ public class CC_SmartTankBT : CC_SmartTank
             chaseState.Update();
         }
 
-        else if (Sequence(shouldVisionLostChase))
+        /*else if (Sequence(shouldVisionLostChase))
         {
             chaseState.LostVisionChase();
             Debug.LogError("Lost vision chase");
-        }
+        }*/
 
         if (Sequence(shouldAttack) || facts["withinBaseRange"])
         {
@@ -84,12 +85,19 @@ public class CC_SmartTankBT : CC_SmartTank
         if (Sequence(shouldRetreat))
         {
             Debug.Log("Retreat");
-            retreatTimer += Time.deltaTime;
             retreatState.Update();
 
         }
 
-        if (!(Sequence(shouldChase) || facts["seeEnemyBases"]) && !Sequence(shouldVisionLostChase) && !(Sequence(shouldAttack) && facts["withinBaseRange"]) && !Sequence(shouldRetreat))
+        if(Sequence(shouldGetPickup))
+        {
+            Debug.Log("shouldGetPickup");
+            searchState.organiseConsumables();
+            searchState.EvaluatePriorityPositions();
+            searchState.MoveToPriorityPositions();
+        }
+
+        if (!(Sequence(shouldChase) || facts["seeEnemyBases"]) && !Sequence(shouldVisionLostChase) && !(Sequence(shouldAttack) && facts["withinBaseRange"]) && !Sequence(shouldRetreat) && !Sequence(shouldGetPickup))
         {
             searchState.Update();
         }
@@ -123,6 +131,7 @@ public class CC_SmartTankBT : CC_SmartTank
         facts.Add("isInRetreat", false);
         facts.Add("retreatTimer", false);
         facts.Add("chaseTimer", false);
+        facts.Add("seePickup", false);
     }
 
     void InitialiseLists()
@@ -137,15 +146,14 @@ public class CC_SmartTankBT : CC_SmartTank
         shouldAttack.Add("highHealth");
         shouldAttack.Add("highAmmo");
         
-        //shouldAttack.Add("withinBaseRange");
-
         //Retreat
         shouldRetreat.Add("lowHealth");
-        shouldRetreat.Add("retreatTimer");
 
         shouldVisionLostChase.Add("chaseTimer");
         shouldVisionLostChase.Add("cantSeeEnemy");
         shouldVisionLostChase.Add("cantSeeBases");
+
+        shouldGetPickup.Add("seePickup"); 
     }
 
     bool Selection(List<string> conditions)
@@ -211,13 +219,13 @@ public class CC_SmartTankBT : CC_SmartTank
         //Debug.Log("retreatTimer: " + retreatTimer);
         //Debug.Log("Facts[retreatTimer]: " + facts["retreatTimer"]);
 
-        if (!facts["retreatTimer"])
+        /*if (!facts["retreatTimer"])
         {
             //Debug.Log("Going to wait");
             wait.Update();
             //retreatTimer = 0;
             
-        }
+        }*/
 
         facts["chaseTimer"] = t > chaseTime ? true : false;
         if (!facts["chaseTimer"])
@@ -230,9 +238,13 @@ public class CC_SmartTankBT : CC_SmartTank
             t = 0;
         }
 
+       
+        facts["seePickup"] = this.consumablesFound.Count > 0 ? true : false;
+        Debug.Log("seePickup: " + facts["seePickup"]);
+
     }
 
-    public BTNodeState FuelCheck()
+    /*public BTNodeState FuelCheck()
      {
          if(priorityManager.checkLow(PRIORITIES.FUEL))
          {
@@ -266,7 +278,7 @@ public class CC_SmartTankBT : CC_SmartTank
          {
              return BTNodeState.SUCCESS;
          }
-     }
+     }*/
 
 
     public override void AITankStart()
@@ -280,7 +292,7 @@ public class CC_SmartTankBT : CC_SmartTank
         searchState = new CC_BTSearch(this);
         chaseState = new CC_BTChase(this);
         attackState = new CC_BTAttack(this);
-        retreatState = new CC_BTRetreat(this, wait);
+        retreatState = new CC_BTNewRetreat(this);
         wait = new CC_BTWait(this);
    
     }

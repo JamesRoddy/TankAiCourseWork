@@ -17,7 +17,7 @@ public class CC_BTSearch : MonoBehaviour
     List<Vector3> priorityPositions = new List<Vector3>();
     List<Vector3> visited;
     GameObject priorityPosition = new GameObject();
-    Dictionary<PRIORITIES, GameObject> organisedConsumables = new Dictionary<PRIORITIES, GameObject>();
+    public Dictionary<PRIORITIES, GameObject> organisedConsumables = new Dictionary<PRIORITIES, GameObject>();
     private float currentSpeed = 0.85f;
     float checkBehindWaitTime = 0.0f;
     int logCounter = 0;
@@ -86,7 +86,7 @@ public class CC_BTSearch : MonoBehaviour
 
     }
 
-    private void organiseConsumables()
+    public void organiseConsumables()
     {
         // form a dicitionary that catergorises  each resource currently in view 
         Debug.Log("consumables reset " + organisedConsumables.Count);
@@ -132,7 +132,7 @@ public class CC_BTSearch : MonoBehaviour
 
     }
 
-    private void MoveToPriorityPositions()
+    public void MoveToPriorityPositions()
     {
 
         if (priorityPositions.Count > 0)
@@ -156,7 +156,7 @@ public class CC_BTSearch : MonoBehaviour
 
     }
 
-    private void EvaluatePriorityPositions()
+    public void EvaluatePriorityPositions()
     {
 
         bool isHealthMajor = tank.priorityManager.checkLow(PRIORITIES.HEALTH);
