@@ -163,7 +163,7 @@ public class CC_BTNewRetreat : MonoBehaviour
                 hasPositionReference = false;
                 Debug.Log(hasPositionReference);
                 Debug.Log("was not  viable to retreat to inverted enemy spot looking behind for new refernce to enemy");
-
+                bReturn = true;
 
                 Tank.stopAndCheckPos(Tank.LastKnownEPos, 2.0f, Tank.enemyTank, ref waitingTimeForEnemyReference); // checl behind us to see if we can get a reference to the enemy 
 

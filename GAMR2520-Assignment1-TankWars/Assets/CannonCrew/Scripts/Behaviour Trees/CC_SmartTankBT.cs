@@ -84,17 +84,25 @@ public class CC_SmartTankBT : CC_SmartTank
 
         if (Sequence(shouldRetreat) && retreatState.bReturn == false)
         {
-            Debug.Log("Retreat");
-            retreatState.Update();
-            Debug.Log("Exit retreat");
+            if (Sequence(shouldGetPickup))
+            {
+                Debug.Log("Pickups in retreat");
+                PickUps();
+            }
+
+            else
+            {
+                retreatState.Update();
+                Debug.Log("Exit retreat");
+            }
+            
         }
 
         else if(Sequence(shouldGetPickup))
         {
             Debug.Log("shouldGetPickup");
-            searchState.organiseConsumables();
-            searchState.EvaluatePriorityPositions();
-            searchState.MoveToPriorityPositions();
+            PickUps();
+            
         }
 
         if (!(Sequence(shouldChase) || facts["seeEnemyBases"]) && 
@@ -248,6 +256,13 @@ public class CC_SmartTankBT : CC_SmartTank
         facts["seePickup"] = this.consumablesFound.Count > 0 ? true : false;
         Debug.Log("seePickup: " + facts["seePickup"]);
 
+    }
+
+    void PickUps()
+    {
+        searchState.organiseConsumables();
+        searchState.EvaluatePriorityPositions();
+        searchState.MoveToPriorityPositions();
     }
 
     /*public BTNodeState FuelCheck()
