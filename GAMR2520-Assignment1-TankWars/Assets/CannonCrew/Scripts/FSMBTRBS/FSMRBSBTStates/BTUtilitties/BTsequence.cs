@@ -23,7 +23,7 @@ public class BTsequence : BTbaseNode
         { // go through all nodes
 
             nodeState = action.evaluate();
-            Debug.Log("evelauting node state "+nodeState); 
+   
 
              
             if(nodeState == BTNODESTATES.FORCESUCCES )

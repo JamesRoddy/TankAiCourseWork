@@ -15,18 +15,19 @@ public class BTFSMRBSAttack : BaseST
     public override Type Entry()
     {
         Tank.stats["attackState"] = true;
-
-        Debug.Log("Entered Attack");
+      
         return null;
     }
     public override Type Update()
     {
 
-        Debug.Log("attack enemy "+Tank.attackingEnemy.evaluate());
-        if(Tank.evaluateSelectors(Tank.selectorsForAttack)) // if we succeded the attack sequence check all of the rules to see the next state transition 
+      
+        if(!Tank.evaluateSelectors(Tank.selectorsForAttack)) // if we succeded the attack sequence check all of the rules to see the next state transition 
         {
+            Debug.Log("evaluting rules for attack");
             foreach (var item in Tank.rules.GetRules) // iterates through the rules
             {
+
                 if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
                 {
                     return item.CheckRule(Tank.stats); // return the state
@@ -48,7 +49,7 @@ public class BTFSMRBSAttack : BaseST
     {
         Tank.stats["attackState"] = false;
 
-        Debug.Log("Exited Attack");
+   
         return null;
     }
 }

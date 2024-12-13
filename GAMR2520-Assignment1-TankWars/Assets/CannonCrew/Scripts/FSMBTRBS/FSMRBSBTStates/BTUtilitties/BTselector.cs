@@ -17,7 +17,7 @@ public class BTselector:BTbaseNode
     public override BTNODESTATES evaluate()
     {
 
-        Debug.Log("evealuting selector");
+ 
         foreach (BTaction action in actions) { 
         
             nodeState = action.evaluate();

@@ -23,14 +23,14 @@ public class BTactionRetreat : MonoBehaviour
         Tank = tank;
         
     }
-    
 
-    
-    
+
+
+
 
     public bool checkEtankPos()
     {
-        bool waiting ;
+        bool waiting;
 
         if (runtimeIncrement > runTime || CheckPositionReference())
         {
@@ -40,7 +40,7 @@ public class BTactionRetreat : MonoBehaviour
             {
                 runtimeIncrement = 0.0f;
                 Debug.Log("set runtimer back to 0");
-               
+
 
             }
             return waiting;
@@ -78,50 +78,50 @@ public class BTactionRetreat : MonoBehaviour
 
     public bool findSafteySpot()
     {
-        
-      
-            if (baseIsViable())
+
+
+        if (baseIsViable())
+        {
+            safetySpot.transform.position = Tank.BasePositionStore;
+            hasinversion = false;
+            Debug.Log("base was viable");
+
+        }
+        else
+        {
+
+
+            if (Tank.enemyTank == null)
             {
-                safetySpot.transform.position = Tank.BasePositionStore;
-                hasinversion = false;
-              Debug.Log("base was viable");
-
-            }
-            else
-            {
-
-
-              if ( Tank.enemyTank == null)
-              {
 
                 Debug.Log("enemy tank was null when getting pos reference");
-                    return false;
-              }
+                return false;
+            }
 
-              if (!hasCalculatedEnemyInversion)
-              {
+            if (!hasCalculatedEnemyInversion)
+            {
                 Debug.Log("calculating enemy tank inversion");
                 hasinversion = true;
                 findInversionToETank(Tank.LastKnownEPos.transform.position);
 
-              }
+            }
 
-              if (CheckPositionReference())
-              {
+            if (CheckPositionReference())
+            {
                 Debug.Log("need position refence no longer has inversion");
 
                 hasinversion = false;
                 return false;
-              }
-
-
-
-
-
             }
-            Debug.Log("saftey spoot found success");
-        
-            return true;
+
+
+
+
+
+        }
+        Debug.Log("saftey spoot found success");
+
+        return true;
 
 
 
@@ -131,7 +131,7 @@ public class BTactionRetreat : MonoBehaviour
     public bool CheckPositionReference()
     {
 
-        if(isToCloseToSafetySpotToRetreat(Tank.transform.position, safetySpot.transform.position, retreatToSpotDist))
+        if (isToCloseToSafetySpotToRetreat(Tank.transform.position, safetySpot.transform.position, retreatToSpotDist))
         {
             Debug.Log("to close to saftey spot ");
 
@@ -142,16 +142,16 @@ public class BTactionRetreat : MonoBehaviour
         }
         return false;
     }
-    
-    public bool  running()
+
+    public bool running()
     {
 
-       
+
         if (runtimeIncrement < runTime)
         {
             runtimeIncrement += Time.deltaTime;
             Debug.Log("run increment time " + runtimeIncrement);
-            Tank.FollowPathToWorldPoint(safetySpot,currentSpeed);
+            Tank.FollowPathToWorldPoint(safetySpot, currentSpeed);
 
 
 
@@ -171,11 +171,11 @@ public class BTactionRetreat : MonoBehaviour
         return isToCloseToSafetySpotToRetreat(position, positionOfRetreat, viableDistance);
 
     }
-    
+
 
 
     private void checkIfInCorner()
-        {
+    {
         Vector3 safetySpotCheck = Tank.transform.position + safetySpot.transform.position;
 
         bool checkGreaterZDir = safetySpotCheck.z > 0; // where the safety spot was placed realtive to enemy tank
@@ -224,7 +224,7 @@ public class BTactionRetreat : MonoBehaviour
 
 
 
-      }
+    }
 
 
 
@@ -260,4 +260,4 @@ public class BTactionRetreat : MonoBehaviour
         // if  the enemy  tank isnt too close and the base isnt too close to retreat to then it is considered a viable saftey spot 
 
     }
-  }
+}

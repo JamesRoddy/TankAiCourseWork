@@ -26,7 +26,7 @@ public class CC_BTFSMRBChaseState : BaseST
         logCounter++;
 
         Tank.stats["chaseState"] = true;
-
+        Debug.Log("chase");
         fSpeed = 1f;
         t = 0.0f;
         return null;

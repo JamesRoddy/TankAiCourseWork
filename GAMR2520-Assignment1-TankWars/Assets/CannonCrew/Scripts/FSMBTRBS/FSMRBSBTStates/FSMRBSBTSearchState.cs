@@ -30,8 +30,6 @@ public class CC_BTFSMRBSSearchState : BaseST
         //  currentSpeed = 0.85f;
       
         stateToReturn = null;
-        Debug.Log("Entered Search " + logCounter);
-        Tank.resetTimersIntoSearch(); // reset timers coming in from search
         Tank.stats["searchState"] = true; // search state true
 
         logCounter++;
@@ -40,7 +38,6 @@ public class CC_BTFSMRBSSearchState : BaseST
 
     public override Type Update()
     {
-        Debug.Log("updating search");
         if ((!Tank.evaluateSequences(Tank.sequencesFromSearch) && !Tank.evaluateSelectors(Tank.selectorsFromSearch))
               && Tank.checkSearch.evaluate() == BTNODESTATES.SUCCESS
             
@@ -49,7 +46,6 @@ public class CC_BTFSMRBSSearchState : BaseST
 
             foreach (var item in Tank.rules.GetRules) // iterates through the rules
             {
-                Debug.Log("evelauting rules for search");
 
                 if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
                 {
@@ -67,9 +63,9 @@ public class CC_BTFSMRBSSearchState : BaseST
     }
     public override Type Exit()
     {
-        Debug.Log("Search Exit " + logCounter);
 
         Tank.stats["searchState"] = false;
+        Debug.Log(Tank.stats["searchState"]);
         hasFoundConsuamble = false;
         logCounter++;
         stateToReturn = null;

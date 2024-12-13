@@ -6,10 +6,11 @@ using UnityEngine;
 public class CC_BTFSMRBSRetreatState : BaseST
 {
     CC_smartTankFSMRBSBT Tank;
- 
+
 
     public CC_BTFSMRBSRetreatState(CC_smartTankFSMRBSBT tank)
     {
+
         Tank = tank;
     }
 
@@ -22,7 +23,7 @@ public class CC_BTFSMRBSRetreatState : BaseST
     }
     public override Type Update()
     {
-        Debug.Log("retreating");
+
         if (Tank.retreating.evaluate() == BTNODESTATES.SUCCESS) // if we succeded the attack sequence check all of the rules to see the next state transition 
         {
             foreach (var item in Tank.rules.GetRules) // iterates through the rules

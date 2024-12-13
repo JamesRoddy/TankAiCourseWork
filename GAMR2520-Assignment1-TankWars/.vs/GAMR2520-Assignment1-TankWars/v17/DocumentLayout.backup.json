@@ -3,8 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_searchstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_searchstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_ambush.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_ambush.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_smarttank.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_smarttank.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|c:\\users\\richa\\onedrive\\desktop\\tankaicoursework\\tankaicoursework\\gamr2520-assignment1-tankwars\\assets\\cannoncrew\\scripts\\cc_waitstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_waitstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|c:\\users\\richa\\onedrive\\desktop\\tankaicoursework\\tankaicoursework\\gamr2520-assignment1-tankwars\\assets\\cannoncrew\\scripts\\fsmbtrbs\\fsmrbsbtstates\\cc_smarttankfsmrbsbt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\fsmbtrbs\\fsmrbsbtstates\\cc_smarttankfsmrbsbt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\fstrbs tank\\cc_smarttankrbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\fstrbs tank\\cc_smarttankrbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_attackstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -15,16 +35,8 @@
       "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_chasestaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\fstrbs tank\\cc_smarttankrbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\fstrbs tank\\cc_smarttankrbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_searchstaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_searchstaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_searchstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_searchstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\fstrbs tank\\cc_statesrbs\\cc_retreatstaterbs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -39,16 +51,8 @@
       "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_prioritymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_smarttank.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_smarttank.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_priorityvalueholder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_priorityvalueholder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_ambush.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|solutionrelative:assets\\cannoncrew\\scripts\\cc_ambush.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{45EE48F7-5DE6-1042-73D9-2FC1CEF892CE}|Assembly-CSharp.csproj|C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\assets\\cannoncrew\\scripts\\cc_dodgestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -82,7 +86,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -90,44 +94,97 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
+              "Title": "CC_WaitState.cs",
+              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_WaitState.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_WaitState.cs",
+              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_WaitState.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_WaitState.cs",
+              "ViewState": "AgIAADgAAAAA/f////84wEAAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-12T19:07:26.858Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "CC_smartTankFSMRBSBT.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSMBTRBS\\FSMRBSBTStates\\CC_smartTankFSMRBSBT.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSMBTRBS\\FSMRBSBTStates\\CC_smartTankFSMRBSBT.cs",
               "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSMBTRBS\\FSMRBSBTStates\\CC_smartTankFSMRBSBT.cs",
               "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSMBTRBS\\FSMRBSBTStates\\CC_smartTankFSMRBSBT.cs",
-              "ViewState": "AgIAAMoBAADA6DIzMzMXwMgBAABHAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-12T18:49:04.21Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "CC_SmartTankBT.cs",
-              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\Behaviour Trees\\CC_SmartTankBT.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\Behaviour Trees\\CC_SmartTankBT.cs",
-              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\Behaviour Trees\\CC_SmartTankBT.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\Behaviour Trees\\CC_SmartTankBT.cs",
-              "ViewState": "AgIAABEAAABAmpmZmZkdwCIAAAAdAAAAAAAAAA==",
+              "DocumentIndex": 10,
+              "Title": "CC_AttackStateRBS.cs",
+              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
+              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAAwCwAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-12T18:48:33.288Z"
+              "WhenOpened": "2024-12-12T11:45:48.79Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CC_SmartTankRBS.cs",
+              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
+              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
+              "ViewState": "AgIAAC8CAAAA4DIzMzMwwBAAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-12T11:35:33.975Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CC_Ambush.cs",
+              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
+              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
+              "ViewState": "AgIAAGoAAAAAmDIzMzPrv24AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-08T09:40:41.766Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "CC_ChaseStateRBS.cs",
-              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
-              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAABIAAAAAAAAA",
+              "Title": "CC_SmartTank.cs",
+              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
+              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
+              "ViewState": "AgIAADwBAAAAAAAAAIA5wEkBAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-12T14:52:32.996Z"
+              "WhenOpened": "2024-12-04T18:59:38.136Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 0,
+              "Title": "CC_SearchState.cs",
+              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
+              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
+              "ViewState": "AgIAAD8BAAAALjMzMzMpwFwBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-04T18:59:34.608Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "CC_RetreatStateRBS.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_RetreatStateRBS.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_RetreatStateRBS.cs",
@@ -140,30 +197,30 @@
             {
               "$type": "Document",
               "DocumentIndex": 7,
-              "Title": "CC_AttackStateRBS.cs",
-              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
-              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_AttackStateRBS.cs",
-              "ViewState": "AQIAAAsAAAAAAAAAAAAAwCwAAAAJAAAA",
+              "Title": "CC_ChaseStateRBS.cs",
+              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
+              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_ChaseStateRBS.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAABIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-12T11:45:48.79Z"
+              "WhenOpened": "2024-12-12T14:52:32.996Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CC_SmartTankRBS.cs",
-              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
-              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_SmartTankRBS.cs",
-              "ViewState": "AQIAAHkBAAAAAAAAAAAswNkAAAA7AAAA",
+              "DocumentIndex": 18,
+              "Title": "CC_SmartTankBT.cs",
+              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\Behaviour Trees\\CC_SmartTankBT.cs",
+              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\Behaviour Trees\\CC_SmartTankBT.cs",
+              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\Behaviour Trees\\CC_SmartTankBT.cs",
+              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\Behaviour Trees\\CC_SmartTankBT.cs",
+              "ViewState": "AgIAABEAAABAmpmZmZkdwCIAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-12T11:35:33.975Z"
+              "WhenOpened": "2024-12-12T18:48:33.288Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "CC_SearchStateRBS.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_SearchStateRBS.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\FSTRBS Tank\\CC_StatesRBS\\CC_SearchStateRBS.cs",
@@ -175,7 +232,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": "CC_AttackState.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_AttackState.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_AttackState.cs",
@@ -187,7 +244,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "CC_PriorityManager.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_PriorityManager.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_PriorityManager.cs",
@@ -199,31 +256,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "CC_SmartTank.cs",
-              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
-              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_SmartTank.cs",
-              "ViewState": "AQIAAJIAAAAAAAAAAAAAwJ8AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T18:59:38.136Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "CC_SearchState.cs",
-              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
-              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_SearchState.cs",
-              "ViewState": "AQIAAJABAAAAAAAAAAAIwKgBAAARAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-04T18:59:34.608Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "CC_PriorityValueHolder.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_PriorityValueHolder.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_PriorityValueHolder.cs",
@@ -235,19 +268,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "CC_Ambush.cs",
-              "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
-              "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
-              "ToolTip": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
-              "RelativeToolTip": "Assets\\CannonCrew\\Scripts\\CC_Ambush.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAAgwEkAAAAxAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-08T09:40:41.766Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "CC_FSM.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_FSM.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_FSM.cs",
@@ -259,7 +280,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "CC_DodgeState.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_DodgeState.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_DodgeState.cs",
@@ -271,7 +292,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "CC_Retreat.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Retreat.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_Retreat.cs",
@@ -283,7 +304,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "CC_Chase.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\CannonCrew\\Scripts\\CC_Chase.cs",
               "RelativeDocumentMoniker": "Assets\\CannonCrew\\Scripts\\CC_Chase.cs",
@@ -295,7 +316,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "AStar.cs",
               "DocumentMoniker": "C:\\Users\\richa\\OneDrive\\Desktop\\TankAICourseWork\\TankAiCourseWork\\GAMR2520-Assignment1-TankWars\\Assets\\Scripts\\DO NOT MODIFY\\AStarScripts\\AStar.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\DO NOT MODIFY\\AStarScripts\\AStar.cs",

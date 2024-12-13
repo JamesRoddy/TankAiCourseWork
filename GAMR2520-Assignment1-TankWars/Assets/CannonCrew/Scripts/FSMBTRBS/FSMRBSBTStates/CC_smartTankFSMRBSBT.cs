@@ -183,7 +183,6 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         if (stats["searchState"])
         {
             tankActionsForSearch.search();
-            Debug.Log("searching state for fsmRbSBt");
             return BTNODESTATES.FAILURE;
         }
         else
@@ -297,7 +296,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     }
     public BTNODESTATES moveToSaftey()
     {
-        
+
         if (tankActionsForRetreat.running()) // if we are still moving to the saftey spot then reset the retreat sequence 
         {
 
@@ -325,7 +324,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["enemyBaseWithinRange"])
         {
-            Debug.Log("attacking base");
+            
             tankActionsForAttack.AttackBase();
             return BTNODESTATES.FAILURE;
         }
@@ -338,10 +337,10 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     }
     public BTNODESTATES ActionCheckRange()
     {
-        Debug.Log("check range fsmrbsbt");
+       
             if (stats["withinRange"])
             {
-                Debug.Log(" withinRange btfsmrbs");
+    
 
                 tankActionsForAttack.attackEnemy();
                 return BTNODESTATES.FAILURE;
@@ -360,7 +359,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["highFuel"])
         {
-            Debug.Log(" highFuel btfsmrbs");
+        
 
             return BTNODESTATES.FAILURE;
         }
@@ -376,7 +375,6 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["highAmmo"])
         {
-            Debug.Log(" highAmmo btfsmrbs");
 
             return BTNODESTATES.FAILURE;
         }
@@ -395,7 +393,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["enemyBaseSeen"])
         {
-            Debug.Log(" enemyBaseSeen btfsmrbs");
+           
 
             return BTNODESTATES.FAILURE;
         }
@@ -411,8 +409,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["enemySeen"])
         {
-            Debug.Log(" enemySeen btfsmrbs");
-
+          
             return BTNODESTATES.FAILURE;
         }
         else
@@ -429,7 +426,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     {
         if (stats["canAttackBase"])
         {
-            Debug.Log(" canAttackBase btfsmrbs");
+
 
             return BTNODESTATES.FAILURE;
 
@@ -448,7 +445,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["lostSight"])
         {
-            Debug.Log(" lostSight btfsmrbs");
+        
             tankActionsForChase.moveToLastKnownPos();
             return BTNODESTATES.FAILURE;
 
@@ -464,7 +461,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["highHealth"])
         {
-            Debug.Log(" highHealth btfsmrbs");
+           
 
             return BTNODESTATES.FAILURE;
         }
@@ -483,7 +480,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["lowFuel"])
         {
-            Debug.Log(" lowFuel btfsmrbs");
+           
 
             return BTNODESTATES.FAILURE;
         }
@@ -501,7 +498,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["lowAmmo"])
         {
-            Debug.Log(" lowAmmo btfsmrbs");
+           
 
             return BTNODESTATES.FAILURE;
         }
@@ -521,7 +518,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     {
         if (stats["chaseBase"])
         {
-            Debug.Log("chasing base fsmrbsbt");
+        
             tankActionsForChase.moveToBase();
             return BTNODESTATES.FAILURE;
         }
@@ -536,7 +533,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["shouldChase"])
         {
-            Debug.Log(" shouldChase btfsmrbs");
+        
 
             tankActionsForChase.moveToKnownEnemyPos();
             return BTNODESTATES.FAILURE;
@@ -561,7 +558,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["lowHealth"])
         {
-            Debug.Log(" lowHealth btfsmrbs");
+       
 
             return BTNODESTATES.FAILURE;
         }
@@ -581,7 +578,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["canAttackBase"])
         {
-            Debug.Log("can attack base btfsmrbs");
+           
             return BTNODESTATES.FAILURE;
 
         }
@@ -600,7 +597,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         
         if (stats["canAttack"])
         {
-            Debug.Log("can attack btfsmrbs");
+    
             return BTNODESTATES.FAILURE;
 
         }
@@ -616,7 +613,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["lostSight"])
         {
-            Debug.Log(" lostSight btfsmrbs");
+         
             tankActionsForChase.moveToLastKnownPos();
             return BTNODESTATES.FAILURE;
         }
@@ -634,7 +631,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     {
         if (stats["shouldRetreat"])
         {
-            Debug.Log(" shouldRetreat btfsmrbs");
+            
 
             return BTNODESTATES.FAILURE;
         }
@@ -649,7 +646,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["ammoCritical"])
         {
-            Debug.Log(" ammoCritical btfsmrbs");
+           
 
             return BTNODESTATES.FAILURE;
         }
@@ -675,10 +672,14 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
             {typeof(CC_BTFSMRBSRetreatState), new CC_BTFSMRBSRetreatState(this) }
 
         };
-
+        foreach (var state in states) {
+        
+          Debug.Log("states "+ state.Key);
+        
+        }
         GetComponent<CC_FSM>().setStates(states);
 
-        
+
 
 
     }
@@ -686,16 +687,16 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     public bool evaluateSelectors(List<BTselector> selectors) // util function to evaluate multiple sequences at once
     {
-        Debug.Log("selectors check");
+     
         BTNODESTATES result = BTNODESTATES.FAILURE;
         foreach (BTselector selector in selectors)
         {
-            Debug.Log("selectors check");
+            
 
             result = selector.evaluate();
              if(result == BTNODESTATES.FAILURE)
              {
-                Debug.Log("seletcro failure");
+                
                 return true;
              }
 
@@ -710,14 +711,13 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     public bool evaluateSequences(List<BTsequence> sequences) // allows us to evaluate multiple seuqences at once to se if we should go into other states from search for exmaple
     {
-        Debug.Log("sequences check");
+        
         foreach (BTsequence sequence in sequences)
         {
           if(sequence.evaluate() == BTNODESTATES.FAILURE) {
 
-                Debug.Log("sequence failure moving to other state");
-                return true; }
-            Debug.Log("no sequence failure ");
+                return true; 
+          }
         }
        
         return false; // no seqeuence needed execution 
