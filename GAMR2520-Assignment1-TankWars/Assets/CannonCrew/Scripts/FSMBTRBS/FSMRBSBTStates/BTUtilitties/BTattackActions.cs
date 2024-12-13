@@ -19,24 +19,13 @@ public class BTAttackActions : MonoBehaviour
 
     public void AttackBase()
     {
-        Debug.Log("attack base");
-        baseTimerIncrement += Time.deltaTime;
-        if (baseDeadTimer < baseTimerIncrement)
-        {
-            /*                Debug.Log("base dead");
-            */
-            isFiringAtBase = false;
-            baseTimerIncrement = 0.0f;
-        }
         Tank.TurretFaceWorldPoint(Tank.enemyBase);
-        if (isFiringAtBase != true)
+        if (!Tank.TankIsFiring())
         {
-
             Tank.TurretFireAtPoint(Tank.enemyBase);
-            isFiringAtBase = true;
         }
-
-
+        
+        
 
     }
 

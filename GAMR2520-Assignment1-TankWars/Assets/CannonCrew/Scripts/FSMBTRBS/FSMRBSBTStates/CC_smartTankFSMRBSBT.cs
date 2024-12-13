@@ -43,12 +43,13 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
    public BTsequence retreating;
    public List<BTsequence> sequencesFromSearch ;
    public List<BTselector> selectorsFromSearch;
+
    public BTsequence chasingEnemy;
 
    public BTaction checkHighPriority; 
    public BTaction checkLowPriority;
    public BTsequence resourceCheck;
-    public BTsequence evaluateConsumable;
+   public BTsequence evaluateConsumable;
    public BTaction moveToconsumable;
 
     private BTAttackActions tankActionsForAttack;
@@ -149,7 +150,8 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         chasingEnemy = new BTsequence(new List<BTaction> { checkLostTarget, checkShouldChase });
         retreating = new BTsequence(new List<BTaction> { checkShouldRetreat });
         sequencesFromSearch = new List<BTsequence> { chasingEnemy }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
-        selectorsFromSearch = new List<BTselector> {attackingEnemy }; // same as above but with selectors
+        selectorsFromSearch = new List<BTselector> {attackingEnemy,attackingBase }; // same as above but with selectors
+       
         evaluateConsumable = new BTsequence(new List<BTaction> { seenConsumable, priorityCheck });
 
 
@@ -239,13 +241,13 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     }
 
+
     public BTNODESTATES ActionCheckBaseRange()
     {
 
         if (stats["enemyBaseWithinRange"])
         {
-            Debug.Log(" enemyBaseWithinRange btfsmrbs");
-            
+            Debug.Log("attacking base");
             tankActionsForAttack.AttackBase();
             return BTNODESTATES.FAILURE;
         }
@@ -343,20 +345,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         }
 
     }
-    public BTNODESTATES isNotInRangeOfBase()
-    {
-        if (!stats["enemyBaseWithinRange"])
-        { 
 
-            Debug.Log(" enemyBaseWithinRange btfsmrbs");
-
-            return BTNODESTATES.FAILURE;
-        }
-        else
-        {
-            return BTNODESTATES.SUCCESS;
-        }
-    }
     public BTNODESTATES ActionCheckCanAttackBase()
     {
         if (stats["canAttackBase"])
@@ -449,7 +438,18 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     }
 
 
+    public BTNODESTATES chaseBase()
+    {
+        if (stats["chaseBase"])
+        {
+            return BTNODESTATES.FAILURE;
+        }
+        else
+        {
+            return BTNODESTATES.SUCCESS;
+        }
 
+    }
     public BTNODESTATES ActionCheckShouldChase()
     {
 
@@ -597,7 +597,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         GetComponent<CC_FSM>().setStates(states);
 
-
+        
 
 
     }
@@ -608,17 +608,20 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         Debug.Log("selectors check");
         BTNODESTATES result = BTNODESTATES.FAILURE;
         foreach (BTselector selector in selectors)
-         {
-            result = selector.evaluate();
-             
-
-        }
-
-        if(result != BTNODESTATES.SUCCESS)
         {
-            return true;
+            Debug.Log("selectors check");
+
+            result = selector.evaluate();
+             if(result == BTNODESTATES.FAILURE)
+             {
+                Debug.Log("seletcro failure");
+                return true;
+             }
+
         }
-        return false; // no selector needed execution 
+
+       
+            return false; // no selector needed execution 
 
     }
 

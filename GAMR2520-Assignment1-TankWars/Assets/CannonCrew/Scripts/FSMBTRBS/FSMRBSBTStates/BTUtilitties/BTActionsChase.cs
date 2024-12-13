@@ -12,7 +12,13 @@ public class BTActionsChase : MonoBehaviour
         Tank = tank;
     }
 
+    public void moveToBase()
+    {
 
+        Tank.FollowPathToWorldPoint(Tank.enemyBase, currentSpeed); 
+
+
+    }
     public void moveToKnownEnemyPos()
     {
 
