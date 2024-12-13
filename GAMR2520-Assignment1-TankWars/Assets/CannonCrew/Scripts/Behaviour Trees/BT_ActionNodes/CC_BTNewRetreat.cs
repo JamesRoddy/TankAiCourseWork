@@ -23,6 +23,7 @@ public class CC_BTNewRetreat : MonoBehaviour
     float waitTime = 0.0f;
     float fSpeed = 1f;
     bool bEnemySeen = true;
+    public bool bReturn = false;
     int logCounter = 0;
 
     public CC_BTNewRetreat(CC_SmartTank newtank)
@@ -111,8 +112,8 @@ public class CC_BTNewRetreat : MonoBehaviour
 */                        logCounter++;
                         /*Debug.Log("executing final retreat check for " + tankCheckBehindTime + "seconds");*/
                         //return typeof(SearchStateRBS); // go into search
-
-
+                        Debug.Log("Cant see enemy retreat");
+                        bReturn = true;
                     }
                     else if (Tank.enemyTank != null)
                     {

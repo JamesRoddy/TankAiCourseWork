@@ -82,14 +82,14 @@ public class CC_SmartTankBT : CC_SmartTank
             attackState.Update();
         }
 
-        if (Sequence(shouldRetreat))
+        if (Sequence(shouldRetreat) && retreatState.bReturn == false)
         {
             Debug.Log("Retreat");
             retreatState.Update();
-
+            Debug.Log("Exit retreat");
         }
 
-        if(Sequence(shouldGetPickup))
+        else if(Sequence(shouldGetPickup))
         {
             Debug.Log("shouldGetPickup");
             searchState.organiseConsumables();
@@ -97,9 +97,16 @@ public class CC_SmartTankBT : CC_SmartTank
             searchState.MoveToPriorityPositions();
         }
 
-        if (!(Sequence(shouldChase) || facts["seeEnemyBases"]) && !Sequence(shouldVisionLostChase) && !(Sequence(shouldAttack) && facts["withinBaseRange"]) && !Sequence(shouldRetreat) && !Sequence(shouldGetPickup))
+        if (!(Sequence(shouldChase) || facts["seeEnemyBases"]) && 
+            !Sequence(shouldVisionLostChase) && !(Sequence(shouldAttack) && facts["withinBaseRange"]) 
+            && !(Sequence(shouldRetreat) && retreatState.bReturn == false) && !Sequence(shouldGetPickup))
         {
             searchState.Update();
+
+            if (this.enemyTank != null)
+            {
+                retreatState.bReturn = false;
+            }
         }
 
 
@@ -153,7 +160,7 @@ public class CC_SmartTankBT : CC_SmartTank
         shouldVisionLostChase.Add("cantSeeEnemy");
         shouldVisionLostChase.Add("cantSeeBases");
 
-        shouldGetPickup.Add("seePickup"); 
+        shouldGetPickup.Add("seePickup");
     }
 
     bool Selection(List<string> conditions)
@@ -211,9 +218,8 @@ public class CC_SmartTankBT : CC_SmartTank
             Vector3.Distance(transform.position, EnemyBasePos.transform.position) > 10f) ? true : false;
         facts["lowHealth"] = priorityManager.checkLow(PRIORITIES.HEALTH) ? true : false;
 
-        facts["highAmmo"] = !priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO)? true : false;
+        facts["highAmmo"] = !priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO) ? true : false;
 
-       
         facts["isInRetreat"] = Sequence(shouldRetreat) ? true : false;
         facts["retreatTimer"] = retreatTimer <= retreatTimerMax ? true : false;
         //Debug.Log("retreatTimer: " + retreatTimer);
