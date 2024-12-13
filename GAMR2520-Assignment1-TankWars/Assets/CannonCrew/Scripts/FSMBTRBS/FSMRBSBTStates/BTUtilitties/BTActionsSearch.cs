@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static PriorityManager;
+// wrapper for all actions the behaviour tree can perform when in search state
 
 public class BTActionsSearch : MonoBehaviour
 {

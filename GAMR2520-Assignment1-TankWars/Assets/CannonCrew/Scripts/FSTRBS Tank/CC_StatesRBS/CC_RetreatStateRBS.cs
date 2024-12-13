@@ -21,7 +21,7 @@ public class RetreatRBS : BaseST
     float safteySpotTimer = 0.0f;
     float retreatCheckDistance = 40.0f;
     float retreatToBaseViableDistance = 90.0f;
-    float retreatToInvertedEnemtViableDistance = 15.0f;
+    float retreatToInvertedEnemViableDistance = 15.0f;
     bool hasPositionReference = true;
     float t;
     float waitingTimeForEnemyReference;
@@ -248,7 +248,7 @@ public class RetreatRBS : BaseST
                 hasCalculatedEnemyInversion = true; // has inversion
             }
 
-            if (   isRetreatToNotSpotViable(Tank.transform.position, safetySpot.transform.position, retreatToInvertedEnemtViableDistance)) // inverted spot no longer safe 
+            if (isRetreatToNotSpotViable(Tank.transform.position, safetySpot.transform.position, retreatToInvertedEnemViableDistance)) // inverted spot no longer safe 
             {
                 hasPositionReference = false;
                 Debug.Log(hasPositionReference);

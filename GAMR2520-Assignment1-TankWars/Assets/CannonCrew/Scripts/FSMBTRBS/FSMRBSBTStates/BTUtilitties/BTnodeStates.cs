@@ -7,4 +7,6 @@ public enum BTNODESTATES
 {
     SUCCESS,
     FAILURE,
+    FORCESUCCES,
+    REPEAT,
 }

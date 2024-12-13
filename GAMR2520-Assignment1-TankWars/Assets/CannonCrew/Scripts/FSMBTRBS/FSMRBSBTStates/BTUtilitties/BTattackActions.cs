@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using UnityEngine;
+// wrapper for all actions the behaviour tree can perform when in attack state
 
 public class BTAttackActions : MonoBehaviour
 {
@@ -19,13 +20,27 @@ public class BTAttackActions : MonoBehaviour
 
     public void AttackBase()
     {
-        Tank.TurretFaceWorldPoint(Tank.enemyBase);
-        if (!Tank.TankIsFiring())
+        // taking into account firing delay and a bit extra to stop tank from shooting base twice 
+        baseTimerIncrement+= Time.deltaTime;
+        if (baseDeadTimer < baseTimerIncrement)
         {
-            Tank.TurretFireAtPoint(Tank.enemyBase);
+            /*                Debug.Log("base dead");
+            */
+            isFiringAtBase = false;
+            baseTimerIncrement= 0.0f;
+            return;
+            
         }
-        
-        
+        Tank.TurretFaceWorldPoint(Tank.enemyBase);
+        if (isFiringAtBase != true)
+        {
+
+            Tank.TurretFireAtPoint(Tank.enemyBase);
+            isFiringAtBase = true;
+            return;
+        }
+        baseTimerIncrement = 0.0f;
+
 
     }
 
@@ -33,9 +48,9 @@ public class BTAttackActions : MonoBehaviour
     {
         Debug.Log("attacking enemy");
 
-        Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);
 
-        if (!Tank.TankIsFiring())
+
+        if (!Tank.TankIsFiring()) // we will ocntsanly try to shoot the enemy after our firing delay 
         {
             Tank.TurretFireAtPoint(Tank.enemyTank);
 

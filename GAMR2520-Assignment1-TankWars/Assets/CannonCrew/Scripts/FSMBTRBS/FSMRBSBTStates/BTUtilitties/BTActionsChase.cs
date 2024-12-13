@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// wrapper for all actions the behaviour tree can perform when in chase state
 public class BTActionsChase : MonoBehaviour
 {
 

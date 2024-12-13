@@ -36,12 +36,10 @@ public class CC_BTFSMRBChaseState : BaseST
     {
 
 
-        if (Tank.chasingEnemy.evaluate() == BTNODESTATES.SUCCESS) // if we succeded the attack sequence check all of the rules to see the next state transition 
+        if (Tank.chasing.evaluate() == BTNODESTATES.SUCCESS) // if we succeded the attack sequence check all of the rules to see the next state transition 
         {
             foreach (var item in Tank.rules.GetRules) // iterates through the rules
             {
-
-
                 if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
                 {
                     return item.CheckRule(Tank.stats); // return the state

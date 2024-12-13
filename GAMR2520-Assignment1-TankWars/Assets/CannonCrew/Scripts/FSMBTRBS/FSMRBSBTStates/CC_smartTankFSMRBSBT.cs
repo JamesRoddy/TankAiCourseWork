@@ -21,7 +21,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTaction checkSearch;
     public BTaction checkHighFuel;
     public BTaction checkLowFuel;
-
+    public BTaction checkShoulChaseBase;
     public BTaction checkShouldChase;
     public BTaction checkLostTarget;
     public BTaction checkShouldAttack;
@@ -36,15 +36,22 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     public BTaction attackBase;
     public BTaction attackEnemy;
-    
+
+
+    BTaction checkEnemyPos;
+    BTaction lookForEnemy;
+    BTaction getSafeSpot;
+    BTaction moveToSafeSpot;
+
+
     
    public BTselector attackingBase;
    public BTselector attackingEnemy;
    public BTsequence retreating;
    public List<BTsequence> sequencesFromSearch ;
    public List<BTselector> selectorsFromSearch;
-
-   public BTsequence chasingEnemy;
+    public List<BTselector> selectorsForAttack;
+   public BTsequence chasing;
 
    public BTaction checkHighPriority; 
    public BTaction checkLowPriority;
@@ -55,6 +62,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     private BTAttackActions tankActionsForAttack;
     private BTActionsSearch tankActionsForSearch;
     private BTActionsChase tankActionsForChase;
+    private BTactionRetreat tankActionsForRetreat;
     private List<queuePriority> priorityOrder =  new List<queuePriority> { queuePriority.MAJOR, queuePriority.CRITICAL };
    public List<PRIORITIES> currentPriorityResources = new List<PRIORITIES>();
 
@@ -106,18 +114,18 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     }
 
 
-
-
-
-
-
     private void initBt()
     {
 
         tankActionsForAttack = new BTAttackActions(this);
         tankActionsForSearch = new BTActionsSearch(this);
         tankActionsForChase = new BTActionsChase(this);
+        tankActionsForRetreat = new BTactionRetreat(this);
 
+        checkEnemyPos = new BTaction(checkPosRetreat);
+        getSafeSpot = new BTaction(getSafteySpot);
+        moveToSafeSpot = new BTaction(moveToSaftey);
+        
 
         targetVisisbleCheck = new BTaction(ActionCheckEnemyVisisble);
         withinRangeCheck = new BTaction(ActionCheckRange);
@@ -127,17 +135,20 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         checkLowAmmo = new BTaction(ActionCheckLowAmmo);
         checkAmmoCritical = new BTaction(ActionmCheckCriticalAmmo);
 
+        
+
+
         checkHighFuel = new BTaction(ActionCheckHighFuel);
         checkLowFuel = new BTaction(ActionCheckLowFuel);
 
         checkShouldChase = new BTaction(ActionCheckShouldChase);
         checkLostTarget = new BTaction(ActionCheckLostSight);
+        checkShoulChaseBase = new BTaction(chaseBase);
         checkSearch = new BTaction(checkShouldSearch);
         checkShouldAttack = new BTaction(ActionCanAttackEnemy);
         checkShouldRetreat = new BTaction(ActionCheckShouldRetreat);
         checkShouldAttackBase = new BTaction(ActionCanAttackEnemyBase);
         checkEnemyBaseVisible = new BTaction(ActionCheckEnemyVisisble);
-        checkEnemyVisible = new BTaction(ActionCheckEnemyBaseVisisble);
         checkWihtinRangeOfBase = new BTaction(ActionCheckBaseRange);
         
 
@@ -147,11 +158,14 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         
         attackingEnemy = new BTselector(new List<BTaction> {  checkShouldAttack, withinRangeCheck });
         attackingBase = new BTselector(new List<BTaction> { checkShouldAttackBase, checkWihtinRangeOfBase });
-        chasingEnemy = new BTsequence(new List<BTaction> { checkLostTarget, checkShouldChase });
-        retreating = new BTsequence(new List<BTaction> { checkShouldRetreat });
-        sequencesFromSearch = new List<BTsequence> { chasingEnemy }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
-        selectorsFromSearch = new List<BTselector> {attackingEnemy,attackingBase }; // same as above but with selectors
+        chasing = new BTsequence(new List<BTaction> { checkLostTarget, checkShouldChase,checkShoulChaseBase }); 
+
+        retreating = new BTsequence(new List<BTaction> { checkEnemyPos,getSafeSpot,moveToSafeSpot });
        
+        
+        sequencesFromSearch = new List<BTsequence> { chasing }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
+        selectorsFromSearch = new List<BTselector> {attackingEnemy,attackingBase }; // same as above but with selectors
+        selectorsForAttack = new List< BTselector>{ attackingEnemy,attackingBase};
         evaluateConsumable = new BTsequence(new List<BTaction> { seenConsumable, priorityCheck });
 
 
@@ -179,7 +193,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     }
 
-
+  
     public BTNODESTATES findPriorityConsuamble()
     {
 
@@ -241,6 +255,70 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     }
 
+
+    public BTNODESTATES checkPosRetreat()
+    {
+
+        if (!tankActionsForRetreat.checkEtankPos()) // certain node states are based on the success of actions that need to be performed by the tank istelf 
+        {
+            Debug.Log("checming position");
+            // for exmaple here the checkEpos method inside the retreat actions wrapper will return true if the wait time for checkin the position is reached or if the enemy tank was seen 
+            return BTNODESTATES.FAILURE;// return failure if we havent seen the enemy tank yet or while we havent reached our wait time 
+        }
+        else if (enemyTank == null) // if we ddint see the enemy tank that means the retreat was successful and we are safe so the sequence is 'forced' inot success through the force success state for nodes 
+        {
+            Debug.Log("found  no tank in retreat");
+
+            return BTNODESTATES.FORCESUCCES; // consider the whole sequence complete 
+        }
+        else
+        {
+            Debug.Log("found tank continue retreat  sequence");
+            return BTNODESTATES.SUCCESS; // otherwise if we saw the enemy tank we need to continue the sequence regardless 
+        }
+    }
+
+
+    public BTNODESTATES getSafteySpot()
+    {
+
+        if (tankActionsForRetreat.findSafteySpot())// know if we found a succesful safety spot 
+        {
+            Debug.Log("finding  spot retreat sequence");
+
+            return BTNODESTATES.SUCCESS;
+        }
+        else
+        {
+            Debug.Log("finding  spot failied checking for position ref ");
+
+            return BTNODESTATES.FAILURE;// if not go back to waiting to get a ref position in relation to the enemy 
+        }
+    }
+    public BTNODESTATES moveToSaftey()
+    {
+        
+        if (tankActionsForRetreat.running()) // if we are still moving to the saftey spot then reset the retreat sequence 
+        {
+
+            Debug.Log("moving to safe spot sequence");
+
+            return BTNODESTATES.FAILURE;
+        }
+        else
+        {
+            Debug.Log("reached safe spot repeating sequence");
+
+            return BTNODESTATES.REPEAT; // this node is marked a repeat as when we reach our saftey spot we
+                                        // will need to loop back to the beggining in order to check if the enemy is
+                                        // behind us and since we have a node that forces success of the
+                                        // sequence when we dont see the enemy after running we dont need to
+                                        // mark this final part of the chain as success just that it should repeat
+        }
+
+
+
+    }
 
     public BTNODESTATES ActionCheckBaseRange()
     {
@@ -346,6 +424,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     }
 
+    
     public BTNODESTATES ActionCheckCanAttackBase()
     {
         if (stats["canAttackBase"])
@@ -442,6 +521,8 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     {
         if (stats["chaseBase"])
         {
+            Debug.Log("chasing base fsmrbsbt");
+            tankActionsForChase.moveToBase();
             return BTNODESTATES.FAILURE;
         }
         else
@@ -591,7 +672,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
             {typeof(CC_BTFSMRBSSearchState),new CC_BTFSMRBSSearchState(this)},
             {typeof(BTFSMRBSAttack),new BTFSMRBSAttack(this)},
             {typeof(CC_BTFSMRBChaseState),new CC_BTFSMRBChaseState(this)},
-
+            {typeof(CC_BTFSMRBSRetreatState), new CC_BTFSMRBSRetreatState(this) }
 
         };
 
@@ -627,7 +708,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
 
 
-    public bool evaluateSequences(List<BTsequence> sequences) // util function to evaluate multiple sequences at once
+    public bool evaluateSequences(List<BTsequence> sequences) // allows us to evaluate multiple seuqences at once to se if we should go into other states from search for exmaple
     {
         Debug.Log("sequences check");
         foreach (BTsequence sequence in sequences)

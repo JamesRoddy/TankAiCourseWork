@@ -9,9 +9,17 @@ public class BTaction : BTbaseNode
 
     // the action we assigned to the BTaction that will eveulate itself when called 
     private ActionNodeFunction action;
+    public bool forceSuccess = false;
+    public BTNODESTATES forceSuccesOn = BTNODESTATES.SUCCESS;
     public BTaction(ActionNodeFunction action)
     {
         this.action = action;
+    }
+    public BTaction(ActionNodeFunction action, bool forceSuccess, BTNODESTATES nodeStateToForceSucces)
+    {
+        this.action = action;
+        this.forceSuccess = forceSuccess;
+        this.forceSuccesOn = nodeStateToForceSucces;
     }
 
 
