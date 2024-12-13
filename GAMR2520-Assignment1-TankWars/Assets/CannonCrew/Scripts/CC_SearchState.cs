@@ -220,6 +220,9 @@ public class SearchState : BaseST
     {
         searchTimer += Time.deltaTime;
         UnityEngine.Debug.Log("ambush timer " + searchTimer);
+
+
+
         if (searchTimer > 15f)
         {
             UnityEngine.Debug.Log("start ambush " + searchTimer);

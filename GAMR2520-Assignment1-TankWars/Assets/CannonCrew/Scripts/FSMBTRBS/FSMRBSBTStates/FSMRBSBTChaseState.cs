@@ -36,16 +36,20 @@ public class CC_BTFSMRBChaseState : BaseST
     {
 
 
-        foreach (var item in Tank.rules.GetRules) // iterates through the rules
+        if (Tank.chasingEnemy.evaluate() == BTNODESTATES.SUCCESS) // if we succeded the attack sequence check all of the rules to see the next state transition 
         {
-
-
-            if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
+            foreach (var item in Tank.rules.GetRules) // iterates through the rules
             {
-                return item.CheckRule(Tank.stats); // return the state
-            }
-        }
 
+
+                if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
+                {
+                    return item.CheckRule(Tank.stats); // return the state
+                }
+            }
+            // again using the simiplicty of the state machine the serach state can be the default state without any extra rules attacked expect the search state its self 
+            return typeof(CC_BTFSMRBSSearchState);
+        }
         return null;
 
 

@@ -7,16 +7,17 @@ using UnityEngine;
 
 public class BTselector:BTbaseNode
 {
-    List<BTaction> actions;
+    public List<BTaction> actions;
     public  BTselector(List<BTaction> actions)
     {
+        Debug.Log("init actions ");
         this.actions = actions;
     }
 
     public override BTNODESTATES evaluate()
     {
 
-    
+        Debug.Log("evealuting selector");
         foreach (BTaction action in actions) { 
         
             nodeState = action.evaluate();

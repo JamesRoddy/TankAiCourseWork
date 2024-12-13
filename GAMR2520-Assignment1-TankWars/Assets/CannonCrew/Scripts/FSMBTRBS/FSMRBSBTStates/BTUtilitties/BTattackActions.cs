@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using UnityEngine;
 
-public class BTAttackFunctions : MonoBehaviour
+public class BTAttackActions : MonoBehaviour
 {
 
-    CC_SmartTank Tank;
+    CC_smartTankFSMRBSBT Tank;
 
     float baseDeadTimer = 2.20f;
     float baseTimerIncrement = 0.0f;
     bool isFiringAtBase = false;
-    public BTAttackFunctions(CC_SmartTank tank)
+    public BTAttackActions(CC_smartTankFSMRBSBT tank)
     {
-        this.Tank = tank;
+        Tank = tank;
     }
 
 
     public void AttackBase()
     {
-
+        Debug.Log("attack base");
         baseTimerIncrement += Time.deltaTime;
         if (baseDeadTimer < baseTimerIncrement)
         {
@@ -42,6 +42,8 @@ public class BTAttackFunctions : MonoBehaviour
 
     public void attackEnemy()
     {
+        Debug.Log("attacking enemy");
+
         Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);
 
         if (!Tank.TankIsFiring())

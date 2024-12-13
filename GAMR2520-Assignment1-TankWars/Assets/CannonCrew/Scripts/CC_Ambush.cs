@@ -39,6 +39,7 @@ public class Ambush : BaseST
 
         if (!waitCheckComplete) // only reset the turret if we wouldnt be looking at a consumable
         {
+            hasFoundConsumable = false;
             Tank.TurretReset();
         }
 
@@ -58,17 +59,21 @@ public class Ambush : BaseST
         Tank.TankStop();
         t += Time.deltaTime;
 
-
-        if (t <= fTimeLimit&& !waitCheckComplete)
+        if (waitCheckComplete) // if we waited fully to see if the consumable was still there(this will only trigger if the consuamble was of high priroity interupting the ambush 
+        {
+            Debug.Log("ambush found prioirity resource wait check complete moving to search");
+            return typeof(SearchState);
+        }
+        if ((t <= fTimeLimit&& !waitCheckComplete))
         {
             
         
-            if(Tank.enemyTank != null)
+            if(Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH)) // if we are still wainting and see the enemy tank and we are on high healthn we go into the attack styate to get the drop on the enemy while we are stood still(fire first)
             {
                 return typeof(CC_AttackState);
             }
 
-            hasFoundConsumable = consumableFound.transform.position != Vector3.zero;
+            hasFoundConsumable = consumableFound.transform.position != Vector3.zero; // checking for consumables 
             if (!hasFoundConsumable || ( resourceFoundDuringAmbush!=PRIORITIES.NONE &&!Tank.priorityManager.checkLow(resourceFoundDuringAmbush) 
                 && Tank.priorityManager.checkLow( Tank.resourceFoundWhileWaiting))) // if we havent found a consuamble or see one of higher priority while we are wiaitng for the enemy tank
             {
@@ -77,29 +82,26 @@ public class Ambush : BaseST
                 Debug.Log("consumables found during ambush " +consumableFound.transform.position);
 
             }
-            if (waitCheckComplete )
+         
+
+
+
+            if (!checkTimeLimitToMoveToConsumable() && Tank.enemyTank != null && Tank.priorityManager.checkLow(PRIORITIES.HEALTH))  //if the enemy tank interupted us looking around but we were low on health
             {
-                Debug.Log("ambush found prioirity resource wait check complete moving to search");
-                return typeof(SearchState);
-            }
+                float dotBetweenEnenmyAndResouce = Vector3.Dot(Vector3.Normalize(consumableFound.transform.position - Tank.transform.position), Tank.EtankLastKnownTransformForward); // see if the resource is behind us 
 
-
-
-            if (!checkTimeLimitToMoveToConsumable() && Tank.enemyTank != null && Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
-            {
-                
-                if(resourceFoundDuringAmbush != PRIORITIES.HEALTH)
+                if(resourceFoundDuringAmbush != PRIORITIES.HEALTH || (resourceFoundDuringAmbush == PRIORITIES.HEALTH && !(dotBetweenEnenmyAndResouce > 0))) // if the resouce was health but in front of us ie near the enemy tank or it was not health
                 {
-                    return typeof(Retreat);
+                    return typeof(Retreat); // we go into retreat from ambush
                 }
-
+                t = fTimeLimit; // other wise we immidealy set our ambush timer to the max so we finish it 
 
             }
-           else if (checkTimeLimitToMoveToConsumable()) // if the time limit is at 30% and weve found a consumable of high prioiryt during ambush we dont wait as long for the enemy tank and move to the conusmable instead
+            if (checkTimeLimitToMoveToConsumable()) // if the time limit is at 30% and weve found a consumable of high prioiryt during ambush we dont wait as long for the enemy tank and move to the conusmable instead
             {
                
 
-                transitionContext.SetWaitStateGlobalContext(consumableFound, 0.5f, false); // set the context for the wait state before going into it
+                transitionContext.SetWaitStateGlobalContext(consumableFound, 0.3f, false); // set the context for the wait state before going into it
                 return typeof(WaitState);
             }
             fRotate += Time.deltaTime;
@@ -114,7 +116,7 @@ public class Ambush : BaseST
            
         }
 
-        if(Tank.enemyTank != null)
+        if(Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))
         {
             return typeof(CC_AttackState);
         }

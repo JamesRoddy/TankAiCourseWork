@@ -20,9 +20,10 @@ public class BTaction : BTbaseNode
     // with the vreturned enum of success or failure allowing us to keep track of what parts of the sequence failureed and whihc were a success 
     public override BTNODESTATES evaluate()
     {
-
-        nodeState = action();
-        return nodeState;
+        
+        this.nodeState = action();
+    
+        return this.nodeState;
 
     }
 

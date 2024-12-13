@@ -41,7 +41,7 @@ public class CC_FSM:BaseAIBehaviourModel
         if (CState == null) // if our state machine is running for the first time(we dont have a state)
         {
             CState = states.First().Value; // set the current state to the default sate 
-
+            Debug.Log("init BTFSMRBS"+CState.GetType());
         }
         else
         {

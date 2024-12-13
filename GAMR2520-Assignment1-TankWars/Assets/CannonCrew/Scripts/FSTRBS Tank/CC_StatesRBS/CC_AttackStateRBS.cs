@@ -96,6 +96,11 @@ public class CC_AttackStateRBS : BaseST
 
     }
 
+   
+
+
+
+
     public override Type Exit()
     {
         /*if(bCalc == false)

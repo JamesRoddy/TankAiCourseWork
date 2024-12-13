@@ -22,6 +22,7 @@ public class SearchStateRBS : BaseST
     GameObject priorityPosition = new GameObject();
     Dictionary<PRIORITIES, GameObject> organisedConsumables = new Dictionary<PRIORITIES, GameObject>();
     private float currentSpeed = 0.85f;
+    private float maxSearchTime = 12.0f;
     float checkBehindWaitTime = 0.0f;
     int logCounter = 0;
     public SearchStateRBS(CC_SmartTankRBS newTank)
@@ -168,7 +169,7 @@ public class SearchStateRBS : BaseST
         Tank.FollowPathToRandomWorldPoint(currentSpeed);
 
         explorationTimer += Time.deltaTime;
-        if (explorationTimer > 12.0f)
+        if (explorationTimer > maxSearchTime)
         {
             Tank.GenerateNewRandomWorldPoint();
             explorationTimer = 0;
