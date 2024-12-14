@@ -28,24 +28,21 @@ public class CC_BTSearch : MonoBehaviour
         tank = newTank;
     }
 
-    private void Awake()
-    {
-        //tank = GetComponent<CC_SmartTankBTFSM>();
-    }
     public void Update()
 
     {
-        Debug.Log("In search update");
+        //If we are high on fuel we move at a faster speed
         if (tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
             currentSpeed = 0.85f;
 
-
         }
+        //Once we get low we slow down to conserve fuel. Which has helped us win several times against dumb tank.
         if (tank.priorityManager.checkLow(PRIORITIES.FUEL))
         {
             currentSpeed = 0.6f;
         }
+        //Once we see a consumable we want to move to it at full speed to try and get it before our enemies.
         if (tank.consumablesFound.Count > 0)
         {
             currentSpeed = 1.0f;
@@ -57,7 +54,7 @@ public class CC_BTSearch : MonoBehaviour
             organiseConsumables();
             if (organisedConsumables.Count > 0) // if we saw any items 
             {
-                Debug.Log("number of consumables found " + organisedConsumables.Count);
+               
 
                 EvaluatePriorityPositions();
 
@@ -89,8 +86,6 @@ public class CC_BTSearch : MonoBehaviour
     public void organiseConsumables()
     {
         // form a dicitionary that catergorises  each resource currently in view 
-        Debug.Log("consumables reset " + organisedConsumables.Count);
-
         foreach (KeyValuePair<GameObject, float> gameObject in tank.consumablesFound) // loop through consumable dictionary 
         {
             if (!priorityPositions.Contains(gameObject.Key.transform.position))
@@ -116,9 +111,10 @@ public class CC_BTSearch : MonoBehaviour
 
     }
 
+    //We move to a random position at a set speed ,depending on our fuel, for 12 seconds.
+    //After which we generate a new random point in the world and reset the timer.
     public void searching()
     {
-        Debug.Log("Entered Search");
 
         tank.FollowPathToRandomWorldPoint(currentSpeed);
 
@@ -134,18 +130,16 @@ public class CC_BTSearch : MonoBehaviour
 
     public void MoveToPriorityPositions()
     {
-
+        //We saw a pickup we store its position in a list of vectors and then go to that position.
+        //To collect it.
         if (priorityPositions.Count > 0)
         {
 
             priorityPosition.transform.position = priorityPositions[0];
             tank.FollowPathToWorldPoint(priorityPosition, currentSpeed);
-            Debug.Log("moving to priority position " + priorityPosition.transform.position);
-            Debug.Log(Vector3.Distance(tank.transform.position, priorityPosition.transform.position));
             if (Vector3.Distance(priorityPosition.transform.position, tank.transform.position) < 5.0f)
             {
-                Debug.Log("removed position " + priorityPosition.transform.position);
-                priorityPositions.RemoveAt(0);
+                priorityPositions.RemoveAt(0); //Once we have collected the pickup we remove its position from the list to avoid going to that positon again.
             }
 
 
@@ -218,8 +212,8 @@ public class CC_BTSearch : MonoBehaviour
 
 
         }
-        /// after potentially pushing fuel and health to the priority list of postions check if ammo 
-        /// is crticial and if we have it in the  dicitionary meaning we have seen it push the game objects position to the priority positions list
+        //after potentially pushing fuel and health to the priority list of postions check if ammo 
+        //is crticial and if we have it in the  dicitionary meaning we have seen it push the game objects position to the priority positions list
         if (isAmmoMajor && organisedConsumables.ContainsKey(PRIORITIES.AMMO))
         {
             Vector3 ammoPos = organisedConsumables[PRIORITIES.AMMO].transform.position; ;
@@ -232,7 +226,6 @@ public class CC_BTSearch : MonoBehaviour
         {
             if (organisedConsumables.ContainsKey(priority) && !priorityPositions.Contains(organisedConsumables[priority].transform.position))
             {
-                Debug.Log("added minor/safe priority " + priority + " in to priority position list");
                 priorityPositions.Add(organisedConsumables[priority].transform.position);
             }
         }

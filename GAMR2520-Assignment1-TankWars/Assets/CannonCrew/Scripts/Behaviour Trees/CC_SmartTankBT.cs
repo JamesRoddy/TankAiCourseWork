@@ -10,113 +10,79 @@ using static CC_SmartTank;
 using static PriorityManager;
 
 
-
-
-public class CC_SmartTankBT : CC_SmartTank
+public class CC_SmartTankBT : CC_SmartTank //SmartTankBT inherits from the regular smart tank to be able to use its methods and functions
 {
-
+    //Fatcs and the actions that the tank should do.
     Dictionary<string, bool> facts = new Dictionary<string, bool>();
-    List<string> shouldSearch = new List<string>();
     List<string> shouldChase = new List<string>();
     List<string> shouldAttack = new List<string>();
     List<string> shouldRetreat = new List<string>();
-    List<string> shouldVisionLostChase = new List<string>();
     List<string> shouldGetPickup = new List<string>();
 
     CC_BTSearch searchState;
     CC_BTChase chaseState;
     CC_BTAttack attackState;
     CC_BTNewRetreat retreatState;
-    CC_BTWait wait;
 
-
-    public BTActionNode fuelCheck;
-    public BTActionNode healthCheck;
-    public BTActionNode ammoCheck;
-    public BTSequence search;
     float retreatTimer = 0.0f;
     float retreatTimerMax = 10.5f;
-    float chaseTime = 10.0f;
-    float t = 0.0f;
 
-    float tankChecKBehindeTime = 0.5f;
-    bool wasAttack = false;
-
-    //private void Awake()
-    //{
-    //InitialiseBT()
-    //}
-
-    private void Awake()
-    {
-        
-    }
-
-
-    /*private void InitialiseBT()
-    {
-        fuelCheck = new BTActionNode(FuelCheck);
-        healthCheck = new BTActionNode(HealthCheck);
-        ammoCheck = new BTActionNode(AmmoCheck);
-        search = new BTSequence(new List<BTBaseNode> { fuelCheck, healthCheck });
-    }*/
-
+    //Behavior tree
     void RunBT()
     {
-       
-
+        //We should only chase if we see an enemy and our health is high or if we see an enemy base 
         if (Sequence(shouldChase) || facts["seeEnemyBases"])
         {
             chaseState.Update();
         }
 
-        /*else if (Sequence(shouldVisionLostChase))
-        {
-            chaseState.LostVisionChase();
-            Debug.LogError("Lost vision chase");
-        }*/
-
+        //We attack if we are high health, within enemy range and have ammo or if we are within the range of the enemy base.
+        //We dont need to do extra checks for attacking bases because it's a stationary target so as long as we have ammo we can destroy it.
         if (Sequence(shouldAttack) || facts["withinBaseRange"])
         {
-            Debug.Log("Trying to attack");
             attackState.Update();
         }
 
+        //We should only retreat if we are low health.
+        //The bReturn is so that after reatreating and stopping for a certain amount of time we go back into the search state.
+        //It essentially acts as a check.
         if (Sequence(shouldRetreat) && retreatState.bReturn == false)
         {
+            //Whilst in the retreat state we check if we see a pickup and if we do we go and collect it.
+            //This means we can go collect a valuable resource so we can break out of the retreat stae.
             if (Sequence(shouldGetPickup))
             {
-                Debug.Log("Pickups in retreat");
                 PickUps();
             }
 
+            //Otherwise we just keep running away.
             else
             {
                 retreatState.Update();
-                Debug.Log("Exit retreat");
             }
             
         }
 
+        //Of course we need to be able to get pickups when we are not in the retreat so this does that.
         else if(Sequence(shouldGetPickup))
         {
-            Debug.Log("shouldGetPickup");
             PickUps();
-            
         }
 
-        if (!(Sequence(shouldChase) || facts["seeEnemyBases"]) && 
-            !Sequence(shouldVisionLostChase) && !(Sequence(shouldAttack) && facts["withinBaseRange"]) 
+        //Search is the default we go into if none of the other actions are done.
+        //This is to make sure the tank isn't constantly changing into search after one of the other actions has been hit.
+        //Because that causes the A* path to change constantly and make the tank move wrong.
+        if (!(Sequence(shouldChase) || facts["seeEnemyBases"]) && !(Sequence(shouldAttack) && facts["withinBaseRange"]) 
             && !(Sequence(shouldRetreat) && retreatState.bReturn == false) && !Sequence(shouldGetPickup))
         {
             searchState.Update();
 
+            //Once we are back into search we need to set bReturn to false so that we can go back into retreat again.
             if (this.enemyTank != null)
             {
                 retreatState.bReturn = false;
             }
         }
-
 
     }
 
@@ -125,6 +91,8 @@ public class CC_SmartTankBT : CC_SmartTank
 
     void InitialiseFacts()
     {
+        //Initialise all of our facts 
+        //Not all of these have been used but were there if we needed to expand upon the behavior tree.
         facts.Add("lowHealth", false); // our health is low                                       
         facts.Add("lowFuel", false); // our fuel is low                                           
         facts.Add("lowAmmo", false); // our ammo is low                                           
@@ -164,10 +132,7 @@ public class CC_SmartTankBT : CC_SmartTank
         //Retreat
         shouldRetreat.Add("lowHealth");
 
-        shouldVisionLostChase.Add("chaseTimer");
-        shouldVisionLostChase.Add("cantSeeEnemy");
-        shouldVisionLostChase.Add("cantSeeBases");
-
+        //Getting Pickups
         shouldGetPickup.Add("seePickup");
     }
 
@@ -210,11 +175,9 @@ public class CC_SmartTankBT : CC_SmartTank
 
     void UpdateFacts()
     {
+        //All of our facts checked every frame
         facts["cantSeeEnemy"] = enemyTank == null ? true : false;
         facts["cantSeeBases"] = enemyBase == null ? true : false;
-
-        //Debug.Log("Facts[cantSeeEnemy]: " + facts["cantSeeEnemy"]);
-        //Debug.Log("Facts[cantSeeBases]: " + facts["cantSeeBases"]);
 
         facts["highHealth"] = priorityManager.checkHigh(PRIORITIES.HEALTH) ? true : false;
         facts["enemySeen"] = enemyTank != null ? true : false;
@@ -222,42 +185,23 @@ public class CC_SmartTankBT : CC_SmartTank
 
         facts["withinTankRange"] = enemyTank != null && (Vector3.Distance(transform.position, enemyTank.transform.position) < 60f &&
            Vector3.Distance(transform.position, enemyTank.transform.position) > 10f) ?  true : false; 
+
         facts["withinBaseRange"] = enemyBase != null && (Vector3.Distance(transform.position, EnemyBasePos.transform.position) < 30f && 
             Vector3.Distance(transform.position, EnemyBasePos.transform.position) > 10f) ? true : false;
+
         facts["lowHealth"] = priorityManager.checkLow(PRIORITIES.HEALTH) ? true : false;
 
         facts["highAmmo"] = !priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO) ? true : false;
 
         facts["isInRetreat"] = Sequence(shouldRetreat) ? true : false;
         facts["retreatTimer"] = retreatTimer <= retreatTimerMax ? true : false;
-        //Debug.Log("retreatTimer: " + retreatTimer);
-        //Debug.Log("Facts[retreatTimer]: " + facts["retreatTimer"]);
 
-        /*if (!facts["retreatTimer"])
-        {
-            //Debug.Log("Going to wait");
-            wait.Update();
-            //retreatTimer = 0;
-            
-        }*/
-
-        facts["chaseTimer"] = t > chaseTime ? true : false;
-        if (!facts["chaseTimer"])
-        {
-            t+= Time.deltaTime; 
-        }
-
-        else
-        {
-            t = 0;
-        }
-
-       
         facts["seePickup"] = this.consumablesFound.Count > 0 ? true : false;
-        Debug.Log("seePickup: " + facts["seePickup"]);
-
     }
 
+    //This function makes use of the functions in the search state that are related to collecting pickups.
+    //We have decided to call them separately from the search state in order to stop the tank from constantly generating new paths.
+    //When it see's a pickup and just focuses on that one pickup alone.
     void PickUps()
     {
         searchState.organiseConsumables();
@@ -265,46 +209,9 @@ public class CC_SmartTankBT : CC_SmartTank
         searchState.MoveToPriorityPositions();
     }
 
-    /*public BTNodeState FuelCheck()
-     {
-         if(priorityManager.checkLow(PRIORITIES.FUEL))
-         {
-             return BTNodeState.FAILURE;
-         }
-         else
-         {
-             return BTNodeState.SUCCESS;
-         }
-     }
-
-     public BTNodeState HealthCheck()
-     {
-         if (priorityManager.checkLow(PRIORITIES.HEALTH))
-         {
-             return BTNodeState.FAILURE;
-         }
-         else
-         {
-             return BTNodeState.SUCCESS;
-         }
-     }
-
-     public BTNodeState AmmoCheck()
-     {
-         if (priorityManager.checkLow(PRIORITIES.AMMO))
-         {
-             return BTNodeState.FAILURE;
-         }
-         else
-         {
-             return BTNodeState.SUCCESS;
-         }
-     }*/
-
-
+ 
     public override void AITankStart()
     {
-        Debug.Log("starting BT");
         base.AITankStart();
 
 
@@ -314,7 +221,6 @@ public class CC_SmartTankBT : CC_SmartTank
         chaseState = new CC_BTChase(this);
         attackState = new CC_BTAttack(this);
         retreatState = new CC_BTNewRetreat(this);
-        wait = new CC_BTWait(this);
    
     }
     public override void AIOnCollisionEnter(Collision collision)
@@ -323,8 +229,6 @@ public class CC_SmartTankBT : CC_SmartTank
         base.AIOnCollisionEnter(collision);
 
     }
-
-
 
     public override void AITankUpdate()
     {
