@@ -23,16 +23,15 @@ public class CC_BTChase : MonoBehaviour
     public void Update()
     {
 
-
+        //If we see the enemy we go cahse them
         if(Tank.enemyTank != null)
         {
-            Debug.Log("Chasing Enemy");
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);//Follow the tank so that we have a more accurate shot
         }
        
 
-        //If there are no enemy tnaks in our vision we check for enemy bases
+        //If there are no enemy tanks in our vision we check for enemy bases
        if (Tank.enemyBase != null || hasSeenBase)
         {
             hasSeenBase = true;
@@ -40,7 +39,6 @@ public class CC_BTChase : MonoBehaviour
 
             if (Tank.enemyBase != null)// ensure base doesnt slip out of vision
             {
-                Debug.Log("Chasing Enemy Bases");
                 Tank.FollowPathToWorldPoint(Tank.enemyBase, fSpeed);
             }
             else
@@ -48,85 +46,15 @@ public class CC_BTChase : MonoBehaviour
                 Tank.FollowPathToWorldPoint(Tank.EnemyBasePos, fSpeed);
             }
 
-            //if our tank is between  min units away from the enemy base and we are good on ammo, we go into the attack state
-            if (!Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
-            {
-                if (Vector3.Distance(Tank.transform.position, Tank.EnemyBasePos.transform.position) < Tank.BaseFiringDistance
-               && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
-                {
-                    Debug.Log("Base switch attack: greater than min attack dist and smaller than max attack dist and ammo " + logCounter);
-                    logCounter++;
-                    hasSeenBase = false;
-                    //return typeof(CC_AttackState);
-                }
-            }
-            else if (Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
-            {
-                Debug.Log("chase switch to search chasing base no ammo");
-                //return typeof(SearchState);
-            }
-
-
-            //return null;
-
-
-
-
         }
-        /*else if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
-        {
-            Debug.Log("Chasing with timer ");
-            t += Time.deltaTime;
-            Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
-
-            //return null;
-        }*/
-
-        //Chase the enemy tank once it gets outside of our range
-        /*if (Tank.enemyTank == null)
-        {
-            Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
-            Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
-
-            if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 5f)
-            {
-                //Questionable change
-                if (Tank.enemyTank != null)
-                {
-                    Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);
-                    Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);
-
-                    if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < Tank.TankFiringDistance
-                        && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
-                    {
-                        Debug.Log("Switches to attack after it tries to chase a retreating tank");
-                        //return typeof(CC_AttackState);
-                    }
-
-                    else
-                    {
-                        //return null;
-                    }
-
-                }
-
-                Debug.Log("switch search tank no longer visible after moving to last known pos " + logCounter);
-                logCounter++;
-                //return typeof(SearchState);
-            }
-            //return null;
-        }*/
-
-        //return typeof(SearchState);
-
     }
 
+    //If we lose vision of the enemy tank we go to their last sited location to try and find them again.
     public void LostVisionChase()
     {
         Debug.Log("t: " + t);
         if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null)
         {
-            Debug.Log("Chasing with timer ");
             t += Time.deltaTime;
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
         }
