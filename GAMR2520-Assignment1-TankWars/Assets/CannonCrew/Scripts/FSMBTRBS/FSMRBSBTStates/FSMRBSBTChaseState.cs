@@ -36,8 +36,10 @@ public class CC_BTFSMRBChaseState : BaseST
     {
 
         Debug.Log("ATTACK CHASE BTFSMRBS");
+        Debug.Log("ATTACK CHASE" + Tank.attackingEnemy.evaluate());
+        Debug.Log("CHASE STATSE SUCCESS BASES " + (Tank.attackingBase.evaluate() == BTNODESTATES.SUCCESS));
 
-        if (Tank.chasing.evaluate() == BTNODESTATES.SUCCESS) // if we succeded the attack sequence check all of the rules to see the next state transition 
+        if (Tank.chasingEnemy.evaluate() == BTNODESTATES.SUCCESS && Tank.checkShouldChaseBase.evaluate() == BTNODESTATES.SUCCESS) // if we succeded the attack sequence check all of the rules to see the next state transition 
         {
             foreach (var item in Tank.rules.GetRules) // iterates through the rules
             {

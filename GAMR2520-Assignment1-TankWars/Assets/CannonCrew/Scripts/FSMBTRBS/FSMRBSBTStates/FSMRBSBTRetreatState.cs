@@ -34,6 +34,7 @@ public class CC_BTFSMRBSRetreatState : BaseST
                     return item.CheckRule(Tank.stats); // return the state
                 }
             }
+            Debug.Log("returing search from retreat");
             return typeof(CC_BTFSMRBSSearchState);
         }
         return null;
@@ -42,7 +43,7 @@ public class CC_BTFSMRBSRetreatState : BaseST
     public override Type Exit()
     {
         Tank.stats["retreatState"] = false;
-
+        Debug.Log("Exited ReTreat");
 
         return null;
     }

@@ -5,6 +5,8 @@ using UnityEngine;
 using static PriorityManager;
 using static BTaction;
 using UnityEngine.Video;
+using JetBrains.Annotations;
+using System.Runtime.CompilerServices;
 public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 {
 
@@ -21,7 +23,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTaction checkSearch;
     public BTaction checkHighFuel;
     public BTaction checkLowFuel;
-    public BTaction checkShoulChaseBase;
+    public BTaction checkShouldChaseBase;
     public BTaction checkShouldChase;
     public BTaction checkLostTarget;
     public BTaction checkShouldAttack;
@@ -29,43 +31,44 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTaction checkShouldAttackBase;
     public BTaction checkEnemyBaseVisible;
     public BTaction checkEnemyVisible;
-
+    public BTaction checkLostSightInSearch;
     public BTaction checkWihtinRangeOfBase;
     public BTaction seenConsumable;
     public BTaction priorityCheck;
-
+    public BTsequence checkLowHealthAndEnemyVisible;
     public BTaction attackBase;
     public BTaction attackEnemy;
-
+    
 
     BTaction checkEnemyPos;
     BTaction lookForEnemy;
     BTaction getSafeSpot;
     BTaction moveToSafeSpot;
 
-
-    
    public BTselector attackingBase;
    public BTselector attackingEnemy;
    public BTsequence retreating;
    public List<BTsequence> sequencesFromSearch ;
    public List<BTselector> selectorsFromSearch;
     public List<BTselector> selectorsForAttack;
-   public BTsequence chasing;
+   public BTsequence chasingEnemy;
+  public BTaction chasingBases;
 
-   public BTaction checkHighPriority; 
+    public BTaction checkHighPriority; 
    public BTaction checkLowPriority;
    public BTsequence resourceCheck;
    public BTsequence evaluateConsumable;
    public BTaction moveToconsumable;
-
+    public BTselector switchFromSearch;
     private BTAttackActions tankActionsForAttack;
     private BTActionsSearch tankActionsForSearch;
     private BTActionsChase tankActionsForChase;
     private BTactionRetreat tankActionsForRetreat;
+    public BTsequence checkHighHealthAndBaseVisbible;
+    public BTsequence checkSearchSwitch;
     private List<queuePriority> priorityOrder =  new List<queuePriority> { queuePriority.MAJOR, queuePriority.CRITICAL };
    public List<PRIORITIES> currentPriorityResources = new List<PRIORITIES>();
-
+    public BTsequence checkHighHealthAndTargetVisbible;
 
     List<Rule> rulesForFSMRBSBT;
 
@@ -91,11 +94,11 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         searchDebugs = new CC_BTFSMRBSSearchState(debugTanks);
        
         
-        initStateMachine();
+
        
     }
 
-    public BTNODESTATES checkShouldSearch()
+    public BTNODESTATES checkShouldSearch() // allows the search satte to be contious while also allowing for sequences to be evelauted that may cause a switch from search state 
     {
 
         if (stats["searchState"])
@@ -107,6 +110,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         else
         {
             return BTNODESTATES.SUCCESS;
+         
         }
 
     }
@@ -177,23 +181,34 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTNODESTATES checkPosRetreat()
     {
 
+        if (!tankActionsForRetreat.hasFinishedRun() &&!tankActionsForRetreat.CheckPositionReference()) // if we are still runnning and dont need a position refernce we succed the wait automatically
+        {
+            Debug.Log("no need to wait ");
+            return BTNODESTATES.SUCCESS;
+        }
+
         if (!tankActionsForRetreat.checkEtankPos()) // certain node states are based on the success of actions that need to be performed by the tank istelf 
         {
-            Debug.Log("checming position");
-            // for exmaple here the checkEpos method inside the retreat actions wrapper will return true if the wait time for checkin the position is reached or if the enemy tank was seen 
-            return BTNODESTATES.FAILURE;// return failure if we havent seen the enemy tank yet or while we havent reached our wait time 
-        }
-        else if (enemyTank == null) // if we ddint see the enemy tank that means the retreat was successful and we are safe so the sequence is 'forced' inot success through the force success state for nodes 
-        {
-            Debug.Log("found  no tank in retreat");
 
-            return BTNODESTATES.FORCESUCCES; // consider the whole sequence complete 
+            Debug.Log("wait not complete ");
+            return BTNODESTATES.FAILURE;
         }
-        else
-        {   
-            Debug.Log("found tank continue retreat  sequence");
-            return BTNODESTATES.SUCCESS; // otherwise if we saw the enemy tank we need to continue the sequence regardless 
-        }
+         if (enemyTank == null) // if we ddint see the enemy tank that means the retreat was successful and we are safe so the sequence is 'forced' inot success through the force success state for nodes 
+          {
+              Debug.Log("found  no tank in retreat");
+              tankActionsForRetreat.resetTimers();
+
+               return BTNODESTATES.FORCESUCCES; // consider the whole sequence complete 
+          }
+          else
+          {
+               
+                Debug.Log("found tank continue retreat  sequence");
+                return BTNODESTATES.SUCCESS; // otherwise if we saw the enemy tank we need to continue the sequence regardless 
+          }
+            // for exmaple here the checkEpos method inside the retreat actions wrapper will return true if the wait time for checkin the position is reached or if the enemy tank was seen 
+      
+       
     }
 
 
@@ -237,18 +252,32 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
 
     }
+    public BTNODESTATES isInSearchAndLostSight()
+    {
+        if (stats["lostSight"] == true)
+        {
+            Debug.Log("lost sight in search");
+
+            return BTNODESTATES.SUCCESS;
+        }
+        else
+        {
+            return BTNODESTATES.FAILURE;
+        }
+    }
 
     public BTNODESTATES ActionCheckBaseRange()
     {
 
         if (stats["enemyBaseWithinRange"])
         {
-            
+         
             tankActionsForAttack.AttackBase();
             return BTNODESTATES.FAILURE;
         }
         else
         {
+            
             return BTNODESTATES.SUCCESS;
         }
 
@@ -259,8 +288,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
  
             if (stats["withinRange"])
             {
-            Debug.Log("wihtin range check ");
-            Debug.Log("within range btfsmrbs");
+          
                 tankActionsForAttack.attackEnemy();
                 return BTNODESTATES.FAILURE;
             }
@@ -312,13 +340,14 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["enemyBaseSeen"])
         {
-           
 
-            return BTNODESTATES.FAILURE;
+          
+            return BTNODESTATES.SUCCESS;
         }
         else
         {
-            return BTNODESTATES.SUCCESS;
+
+            return BTNODESTATES.FAILURE;
         }
 
     }
@@ -328,12 +357,14 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         if (stats["enemySeen"])
         {
-          
-            return BTNODESTATES.FAILURE;
+
+            
+
+            return BTNODESTATES.SUCCESS;
         }
         else
         {
-            return BTNODESTATES.SUCCESS;
+            return BTNODESTATES.FAILURE;
 
 
         }
@@ -343,31 +374,32 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     
     public BTNODESTATES ActionCheckCanAttackBase()
     {
-        if (BtStatMultiQuery("canAttackBase"))
+        
+        if ( BtStatMultiQuery("canAttackBase") || stats["btBaseDead"] == false)
         {
 
-
+            
             return BTNODESTATES.FAILURE;
 
         }
-        else
+        else 
         {
+            tankActionsForAttack.ResetTimer();
 
             return BTNODESTATES.SUCCESS;
         }
-
+        
 
     }
 
     public BTNODESTATES ChaseTargetNotVisisble()
     {
 
-        if (stats["lostSight"])
+        if (stats["lostSight"]) /// this is still evaluated by the backwards chaining in the RBSFSM system to identify whether or not we lost the enemy when switching to the search state 
         {
-        
-            tankActionsForChase.moveToLastKnownPos();
+            Debug.Log("chasing enemt last known pso btfsmrbs");
+            tankActionsForChase.moveToLastKnownPos();// use the moveToBase function defined in the BTactionsFromChase wrapper class  to have the tank chase the enemy based on their last known position allowing us to catch up when ew loose sight 
             return BTNODESTATES.FAILURE;
-
         }
         else
         {
@@ -382,11 +414,11 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         {
            
 
-            return BTNODESTATES.FAILURE;
+            return BTNODESTATES.SUCCESS;
         }
         else
         {
-            return BTNODESTATES.SUCCESS;
+            return BTNODESTATES.FAILURE;
         }
 
 
@@ -432,13 +464,13 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     }
 
-
+    // evalute chase
     public BTNODESTATES chaseBase()
     {
         if (BtStatMultiQuery("chaseBase"))
         {
         
-            tankActionsForChase.moveToBase();
+            tankActionsForChase.moveToBase(); // use the moveToBase function defined in the BTactionsFromChase wrapper class  to have the tank get in range of the base before firing to secure the shot 
             return BTNODESTATES.FAILURE;
         }
         else
@@ -450,10 +482,10 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTNODESTATES ActionCheckShouldChase()
     {
 
-        if (BtStatMultiQuery("shouldChase"))
+        if (BtStatMultiQuery("shouldChase")) // the BTStatMultiQuery allows us to still make us of the multi stat containers defined by the rule based system but ommit certain thigs such as whetehr or not the current state beigng run is true or false to avoid clashes 
         {
-        
 
+            Debug.Log("chasing enemt btfsmrbs");
             tankActionsForChase.moveToKnownEnemyPos();
             return BTNODESTATES.FAILURE;
 
@@ -479,11 +511,11 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         {
        
 
-            return BTNODESTATES.FAILURE;
+            return BTNODESTATES.SUCCESS;
         }
         else
         {
-            return BTNODESTATES.SUCCESS;
+            return BTNODESTATES.FAILURE;
         }
 
 
@@ -492,31 +524,14 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     }
 
 
-    public BTNODESTATES ActionCanAttackEnemyBase()
-    {
-
-        if (BtStatMultiQuery("canAttackBase"))
-        {
-           
-            return BTNODESTATES.FAILURE;
-
-        }
-        else
-        {
-            return BTNODESTATES.SUCCESS;
-
-
-        }
-
-    }
-
-
+    
+    // check if we can atttack the enemy by querying the canAttack stat which complies multiple stats into a singular check to evaluate the situation 
     public BTNODESTATES ActionCanAttackEnemy()
     {
         
         if (BtStatMultiQuery("canAttack"))
         {
-            Debug.Log("CAN ATTACK");
+            
             return BTNODESTATES.FAILURE;
 
         }
@@ -526,13 +541,15 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         }
 
     }
+
+
 
     public BTNODESTATES ActionCheckLostSight()
     {
 
         if (stats["lostSight"])
         {
-         
+            Debug.Log("lost sight");
             tankActionsForChase.moveToLastKnownPos();
             return BTNODESTATES.FAILURE;
         }
@@ -550,13 +567,13 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     {
         if (BtStatMultiQuery("shouldRetreat"))
         {
-            
 
-            return BTNODESTATES.FAILURE;
+            Debug.Log("should retreat");
+            return BTNODESTATES.SUCCESS;
         }
         else
         {
-            return BTNODESTATES.SUCCESS;
+            return BTNODESTATES.FAILURE;
         }
     }
 
@@ -604,7 +621,21 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     }
 
+    void initBTSpecifcStats()
+    {
+        stats.Add("btBaseDead",false);
 
+
+
+    }
+
+    void updateBTSpecifcStats()
+    {
+        stats["btBaseDead"] = tankActionsForAttack.baseTimerIncrement >= tankActionsForAttack.baseDeadTimer;
+
+
+
+    }
     public bool evaluateSelectors(List<BTselector> selectors) // util function to evaluate multiple sequences at once
     {
      
@@ -614,7 +645,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
             
 
             result = selector.evaluate();
-             if(result == BTNODESTATES.FAILURE)
+             if(result == BTNODESTATES.SUCCESS)
              {
                 
                 return true;
@@ -634,7 +665,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         
         foreach (BTsequence sequence in sequences)
         {
-          if(sequence.evaluate() == BTNODESTATES.FAILURE) {
+          if(sequence.evaluate() == BTNODESTATES.SUCCESS) {
 
                 return true; 
           }
@@ -649,6 +680,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         base.AITankStart();
 
         InitiliseStats();
+        initBTSpecifcStats();
         rulesForFSMRBSBT = new List<Rule>
         {
          new Rule("shouldRetreat", "attackState", typeof(CC_BTFSMRBSRetreatState),retreatDebugs, Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
@@ -666,6 +698,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
             Debug.Log("rule type " + rule.debugType.GetType());
         }
         initRuleDictionaries();
+      
         tankActionsForAttack = new BTAttackActions(this);
         tankActionsForSearch = new BTActionsSearch(this);
         tankActionsForChase = new BTActionsChase(this);
@@ -675,7 +708,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         getSafeSpot = new BTaction(getSafteySpot);
         moveToSafeSpot = new BTaction(moveToSaftey);
 
-
+      
         targetVisisbleCheck = new BTaction(ActionCheckEnemyVisisble);
         withinRangeCheck = new BTaction(ActionCheckRange);
         checkHighHealth = new BTaction(ActionCheckHighHealth);
@@ -683,43 +716,46 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         checkHighAmmo = new BTaction(ActionCheckHighAmmo);
         checkLowAmmo = new BTaction(ActionCheckLowAmmo);
         checkAmmoCritical = new BTaction(ActionmCheckCriticalAmmo);
+        checkLostSightInSearch = new BTaction(isInSearchAndLostSight);
 
 
-
-
+    
         checkHighFuel = new BTaction(ActionCheckHighFuel);
         checkLowFuel = new BTaction(ActionCheckLowFuel);
 
         checkShouldChase = new BTaction(ActionCheckShouldChase);
         checkLostTarget = new BTaction(ActionCheckLostSight);
-        checkShoulChaseBase = new BTaction(chaseBase);
+        checkShouldChaseBase = new BTaction(chaseBase);
         checkSearch = new BTaction(checkShouldSearch);
         checkShouldAttack = new BTaction(ActionCanAttackEnemy);
         checkShouldRetreat = new BTaction(ActionCheckShouldRetreat);
-        checkShouldAttackBase = new BTaction(ActionCanAttackEnemyBase);
-        checkEnemyBaseVisible = new BTaction(ActionCheckEnemyVisisble);
+        checkShouldAttackBase = new BTaction(ActionCheckCanAttackBase);
+        checkEnemyBaseVisible = new BTaction(ActionCheckEnemyBaseVisisble);
         checkWihtinRangeOfBase = new BTaction(ActionCheckBaseRange);
-
 
         priorityCheck = new BTaction(checkHasPriorityresource);
         seenConsumable = new BTaction(ActionSeeConsumable);
 
-
-        attackingEnemy = new BTselector(new List<BTbaseNode> { checkShouldAttack, withinRangeCheck });
+        switchFromSearch = new BTselector(new List<BTbaseNode> {  targetVisisbleCheck, checkLostSightInSearch,checkSearch });
+        attackingEnemy = new BTselector(new List<BTbaseNode> {  checkShouldAttack, withinRangeCheck, });
         attackingBase = new BTselector(new List<BTbaseNode> { checkShouldAttackBase, checkWihtinRangeOfBase });
-        chasing = new BTsequence(new List<BTbaseNode> { checkLostTarget, checkShouldChase, checkShoulChaseBase });
-
+        chasingEnemy = new BTsequence(new List<BTbaseNode> { checkLostTarget, checkShouldChase });
+        
         retreating = new BTsequence(new List<BTbaseNode> { checkEnemyPos, getSafeSpot, moveToSafeSpot });
-
-
-        sequencesFromSearch = new List<BTsequence> { chasing }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
-        selectorsFromSearch = new List<BTselector> { attackingEnemy, attackingBase }; // same as above but with selectors
-        selectorsForAttack = new List<BTselector> { attackingEnemy, attackingBase };
+        checkHighHealthAndTargetVisbible = new BTsequence(new List<BTbaseNode> { checkHighHealth, targetVisisbleCheck });
+        checkHighHealthAndBaseVisbible = new BTsequence(new List<BTbaseNode> { checkHighHealth, checkEnemyBaseVisible });
+        checkLowHealthAndEnemyVisible= new BTsequence(new List<BTbaseNode> { checkLowHealth, checkEnemyVisible});
+        checkSearchSwitch = new BTsequence(new List<BTbaseNode> { checkSearch });
+        sequencesFromSearch = new List<BTsequence> { checkHighHealthAndTargetVisbible,checkHighHealthAndBaseVisbible,checkLowHealthAndEnemyVisible,checkSearchSwitch }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
+        // health giverns intial decisions as to whether or not we enegae with the enemy after that we will then check reosurces such as fuel and ammo 
+        // which are eveualted and updated by the rules and stats 
+        /*selectorsFromSearch = new List<BTselector> { attackingEnemy, attackingBase }; // same as above but with selectors
+        selectorsForAttack = new List<BTselector> { attackingEnemy, attackingBase };*/
         evaluateConsumable = new BTsequence(new List<BTbaseNode> { seenConsumable, priorityCheck });
 
 
 
-
+        initStateMachine();
 
 
 
@@ -733,7 +769,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public override void AITankUpdate()
     {
         base.AITankUpdate();
-
+        updateBTSpecifcStats();
 
 
 

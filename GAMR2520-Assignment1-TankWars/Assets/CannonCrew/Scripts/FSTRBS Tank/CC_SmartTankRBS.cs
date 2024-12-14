@@ -106,6 +106,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         { "highHealth", true },
 
 
+
     };
     // used to deteetct of the enemy dropped out of sight during chase
     Dictionary<string, bool> shouldChaseTargetFromChase= new Dictionary<string, bool>
@@ -123,15 +124,15 @@ public class CC_SmartTankRBS : CC_SmartTank
     // check if chasing abase to gte in range is viable
     Dictionary<string, bool> shouldChaseBase = new Dictionary<string, bool>
     {
-       
-        
+
+
         {"enemyBaseWithinRange",false },
         { "enemySeen",false },
         {"enemyBaseSeen",true },
         { "highFuel",true },
         { "ammoCritical",false },
         { "highHealth", true },
-
+        {"chaseState",false }
 
     };
 
@@ -477,7 +478,7 @@ public class CC_SmartTankRBS : CC_SmartTank
 
     public void CheckChaseBase()
     {
-        if (checkSum(shouldChaseBase) && stats["chaseState"] == false)
+        if (checkSum(shouldChaseBase) )
         {
           /*  Debug.Log("chasing base is true ");*/
             stats["chaseBase"] = true;
@@ -542,7 +543,7 @@ public class CC_SmartTankRBS : CC_SmartTank
     {
         if (stats["enemyBaseSeen"] == true)
         {
-            if (Vector3.Distance(transform.position, enemyBase.transform.position) < BaseFiringDistance)
+            if (Vector3.Distance(transform.position, enemyBase.transform.position) <= BaseFiringDistance)
             {
 /*                Debug.Log("enemyBase within range");
 */                stats["enemyBaseWithinRange"] = true;
@@ -570,8 +571,8 @@ public class CC_SmartTankRBS : CC_SmartTank
 /*        if (stats["searchState"] && (checkSum(shouldChaseTargetNotVisible) || checkSum(shouldChaseTargetFromChase)))
 */     if (backWardsChain("searchState", backwardsChainFromSearchToChaseConditions, Rule.Predicate.Or))  // use backwards chaning to figure out if we lost the enemy during chase are not 
         {
-/*            Debug.Log("lost sIgHt");
-*/            
+         Debug.Log("lost sIgHt");
+      
             stats["lostSight"] = true;
             
          
@@ -583,8 +584,8 @@ public class CC_SmartTankRBS : CC_SmartTank
             chaseTime += Time.deltaTime;//  increment chase timer while he dont know where the enemy is 
             if (stats["chaseState"] == false) //
             {
-/*                Debug.Log("MoveToTarget is true");
-*/                stats["moveToTarget"] = true;
+               Debug.Log("MoveToTarget is true");
+               stats["moveToTarget"] = true;
             }
             else
             {
@@ -788,8 +789,9 @@ public class CC_SmartTankRBS : CC_SmartTank
         foreach (KeyValuePair<string, bool> stat in statsList)
         {
 
-            if (stat.Key.ToLower().Contains("state"))
+            if (stat.Key.Contains("State"))
             {
+                Debug.Log("ommitted " + stat.Key);
                 continue;
             }
 

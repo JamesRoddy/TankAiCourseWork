@@ -11,9 +11,12 @@ public class BTactionRetreat : MonoBehaviour
     float tankCheckBehindTime = 1.0f;
     float waitTime = 0.0f;
     float retreatToSpotDist = 15.0f;
+    bool haseWaited = false; 
+
     bool firstSight = false;
     bool hasinversion = false;
     float currentSpeed = 1.0f;
+    bool enemyTankNull;
     private float retreatCheckDistance = 35.0f;
     private float retreatToBaseViableDistance = 90.0f;
     private GameObject safetySpot = new GameObject();
@@ -30,33 +33,47 @@ public class BTactionRetreat : MonoBehaviour
 
     public bool checkEtankPos()
     {
-        bool waiting;
+        Debug.Log("waiting");
 
-        if (runtimeIncrement > runTime || CheckPositionReference())
+       
+        if (runtimeIncrement >= runTime || CheckPositionReference() )
         {
-            waiting = Tank.stopAndCheckPos(Tank.LastKnownEPos, tankCheckBehindTime, Tank.enemyTank, ref waitTime);
-            Debug.Log("waiting for enemy retreat");
-            if (waiting)
+            Debug.Log(runtimeIncrement + "after run");
+            Debug.Log("needed position reference" + CheckPositionReference());
+            
+            if (Tank.stopAndCheckPos(Tank.LastKnownEPos, tankCheckBehindTime, Tank.enemyTank, ref waitTime))
             {
-                runtimeIncrement = 0.0f;
-                Debug.Log("set runtimer back to 0");
+                Debug.Log("returned true wait retreat");
+                if (Tank.enemyTank != null) {
+                    Debug.Log("returned true wait retreat");
+                    
+                    resetTimers();
+                    Debug.Log("runtime is " + runtimeIncrement);
+
+                }
+
+            
+                return true;
 
 
-            }
-            return waiting;
+            };
+            Debug.Log("returned false wait retreat");
+
+            return false;
+
         }
-        else
-        {
-            Debug.Log("returned true automatically retreat");
+        Debug.Log("no condtion was hit for wiating");
+        return true;
 
-            return true;
-        }
 
 
     }
 
 
-
+    public bool hasFinishedRun()
+    {
+        return runtimeIncrement >= runTime;
+    }
 
     private void findInversionToETank(Vector3 pos)
     {
@@ -70,71 +87,56 @@ public class BTactionRetreat : MonoBehaviour
         UnityEngine.Debug.Log("inverted spot " + safetySpot.transform.position);
 
 
-
-
-
-
     }
 
     public bool findSafteySpot()
     {
-
 
         if (baseIsViable())
         {
             safetySpot.transform.position = Tank.BasePositionStore;
             hasinversion = false;
             Debug.Log("base was viable");
-
+            Tank.FollowPathToWorldPoint(safetySpot, currentSpeed);
+            return true;
         }
         else
         {
 
 
-            if (Tank.enemyTank == null)
-            {
-
-                Debug.Log("enemy tank was null when getting pos reference");
-                return false;
-            }
-
-            if (!hasCalculatedEnemyInversion)
+            if (!hasinversion && Tank.enemyTank != null)
             {
                 Debug.Log("calculating enemy tank inversion");
                 hasinversion = true;
-                findInversionToETank(Tank.LastKnownEPos.transform.position);
+                findInversionToETank(Tank.enemyTank.transform.position);
+                Tank.FollowPathToWorldPoint(safetySpot, currentSpeed);
 
             }
-
-            if (CheckPositionReference())
+            else if (CheckPositionReference() )
             {
+                
                 Debug.Log("need position refence no longer has inversion");
 
                 hasinversion = false;
                 return false;
             }
-
-
-
+            Debug.Log("saftey spoot inversion found success");
+            Tank.FollowPathToWorldPoint(safetySpot, currentSpeed);
+            return true;
 
 
         }
-        Debug.Log("saftey spoot found success");
-
-        return true;
-
-
 
 
     }
 
     public bool CheckPositionReference()
     {
-
-        if (isToCloseToSafetySpotToRetreat(Tank.transform.position, safetySpot.transform.position, retreatToSpotDist))
+       
+        if (isToCloseToSafetySpotToRetreat(Tank.transform.position, safetySpot.transform.position, retreatToSpotDist) )
         {
             Debug.Log("to close to saftey spot ");
-
+           
 
             return true;
 
@@ -154,11 +156,9 @@ public class BTactionRetreat : MonoBehaviour
             Tank.FollowPathToWorldPoint(safetySpot, currentSpeed);
 
 
-
-
         }
 
-        return runtimeIncrement >= runTime;
+        return runtimeIncrement < runTime;
 
 
     }
@@ -190,14 +190,15 @@ public class BTactionRetreat : MonoBehaviour
             {
 
                 safetySpot.transform.position = new Vector3(Tank.transform.position.x, 0.0f, -Tank.transform.position.z);
+                UnityEngine.Debug.Log("had to adjust safety spot no x was - z was + " + safetySpot.transform.position);
 
             }
             else if (!checkGreaterZDir && !checkGreaterZpos)
             {
                 safetySpot.transform.position = new Vector3(-Tank.transform.position.x, 0.0f, Tank.transform.position.z);
+                UnityEngine.Debug.Log("had to adjust safety spot no x was - z was - " + safetySpot.transform.position);
 
             }
-            UnityEngine.Debug.Log("had to adjust safety spot no longer using inverted z of tank  direction in x " + safetySpot.transform.position);
 
         }
         else if (checkXGreaterpos) // ensure that if we are in the bottom right or top right we dont chose a saftey spot behind us 
@@ -205,11 +206,13 @@ public class BTactionRetreat : MonoBehaviour
             if (checkGreaterZDir && checkGreaterZpos) // if we are in the top left and we chose to go behind us
             {
                 safetySpot.transform.position = new Vector3(-Tank.transform.position.x, 0.0f, Tank.transform.position.z); // go in a straight line from the inverted position 
+                UnityEngine.Debug.Log("had to adjust safety spot no x was + z was +" + safetySpot.transform.position);
 
             }
             else if (!checkGreaterZDir && !checkGreaterZpos)
             {
                 safetySpot.transform.position = new Vector3(-Tank.transform.position.x, 0.0f, Tank.transform.position.z);
+                UnityEngine.Debug.Log("had to adjust safety spot no x was + z was -" + safetySpot.transform.position);
 
 
             }
@@ -259,5 +262,16 @@ public class BTactionRetreat : MonoBehaviour
 
         // if  the enemy  tank isnt too close and the base isnt too close to retreat to then it is considered a viable saftey spot 
 
+    }
+
+
+   public void resetTimers()
+    {
+        Debug.Log("resetting retreat timers");
+        waitTime = 0;
+        runtimeIncrement = 0.0f;
+
+        hasinversion = false;
+        safetySpot.transform.position = Tank.BasePositionStore;
     }
 }

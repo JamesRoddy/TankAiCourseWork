@@ -23,13 +23,14 @@ public class BTsequence : BTbaseNode
         { // go through all nodes
 
             nodeState = (action.evaluate());
-   
+            Debug.Log(nodeState);
 
              
             if(nodeState == BTNODESTATES.FORCESUCCES )
-            {  
-
-                return nodeState;
+            {
+                Debug.Log("FORCE SUCCESSS");
+                return BTNODESTATES.SUCCESS;
+                
             }
 
 

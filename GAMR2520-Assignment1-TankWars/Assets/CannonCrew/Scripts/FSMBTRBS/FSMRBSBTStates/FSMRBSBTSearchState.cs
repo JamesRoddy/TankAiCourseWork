@@ -41,10 +41,8 @@ public class CC_BTFSMRBSSearchState : BaseST
 
         Debug.Log("SEARCH STATE BTFSMRBS");
   
-        if (true
-            
-            
-            ) // if we dont need to execute any other sequences or selectors that would require us to switch from search) // we will continue searching 
+        if ( Tank.evaluateSequences(Tank.sequencesFromSearch))
+           // if we dont need to execute any other sequences or selectors that would require us to switch from search) // we will continue searching 
         {
 
             foreach (var item in Tank.rules.GetRules) // iterates through the rules

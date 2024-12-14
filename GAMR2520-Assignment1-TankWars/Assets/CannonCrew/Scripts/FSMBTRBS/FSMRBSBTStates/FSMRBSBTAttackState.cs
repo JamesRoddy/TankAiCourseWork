@@ -23,7 +23,8 @@ public class BTFSMRBSAttack : BaseST
 
         Debug.Log("ATTACK STATE BTFSMRBS");
         Debug.Log("ATTACK STATE" + Tank.attackingEnemy.evaluate());
-        if(Tank.attackingEnemy.evaluate() == BTNODESTATES.SUCCESS) // if we succeded the attack sequence check all of the rules to see the next state transition 
+        Debug.Log("ATTACK STATSE SUCCESS BASES " + (Tank.attackingBase.evaluate() == BTNODESTATES.SUCCESS));
+        if(Tank.attackingEnemy.evaluate() == BTNODESTATES.SUCCESS && Tank.attackingBase.evaluate() == BTNODESTATES.SUCCESS) // if we succeded the attack sequence check all of the rules to see the next state transition 
         {
             Debug.Log("evaluting rules for attack");
             foreach (var item in Tank.rules.GetRules) // iterates through the rules

@@ -9,8 +9,8 @@ public class BTAttackActions : MonoBehaviour
 
     CC_smartTankFSMRBSBT Tank;
 
-    float baseDeadTimer = 2.20f;
-    float baseTimerIncrement = 0.0f;
+    public float baseDeadTimer = 2.10f;
+    public float baseTimerIncrement = 0.0f;
     bool isFiringAtBase = false;
     public BTAttackActions(CC_smartTankFSMRBSBT tank)
     {
@@ -22,25 +22,26 @@ public class BTAttackActions : MonoBehaviour
     {
         // taking into account firing delay and a bit extra to stop tank from shooting base twice 
         baseTimerIncrement+= Time.deltaTime;
-        if (baseDeadTimer < baseTimerIncrement)
+        Debug.Log("base timer increment" + baseTimerIncrement);
+        if ( baseTimerIncrement >= baseDeadTimer)
         {
-            /*                Debug.Log("base dead");
-            */
+             Debug.Log("base dead");
+            
             isFiringAtBase = false;
-            baseTimerIncrement= 0.0f;
+            baseTimerIncrement= 0.0f; 
+
             return;
             
         }
-        Tank.TurretFaceWorldPoint(Tank.enemyBase);
+        
         if (isFiringAtBase != true)
         {
-
+            Debug.Log("queue up attack");
             Tank.TurretFireAtPoint(Tank.enemyBase);
             isFiringAtBase = true;
             return;
         }
-        baseTimerIncrement = 0.0f;
-
+  
 
     }
 
@@ -55,6 +56,13 @@ public class BTAttackActions : MonoBehaviour
         }
 
 
+    }
+
+
+
+    public void ResetTimer()
+    {
+        baseTimerIncrement = 0.0f;
     }
 
 }
