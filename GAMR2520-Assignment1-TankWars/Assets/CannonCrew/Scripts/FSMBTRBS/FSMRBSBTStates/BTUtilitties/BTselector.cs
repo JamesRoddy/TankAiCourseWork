@@ -7,8 +7,8 @@ using UnityEngine;
 
 public class BTselector:BTbaseNode
 {
-    public List<BTaction> actions;
-    public  BTselector(List<BTaction> actions)
+    public List<BTbaseNode> actions = new List<BTbaseNode>();
+    public  BTselector(List<BTbaseNode> actions)
     {
         Debug.Log("init actions ");
         this.actions = actions;
@@ -18,19 +18,21 @@ public class BTselector:BTbaseNode
     {
 
  
-        foreach (BTaction action in actions) { 
+        foreach (BTbaseNode action in actions) { 
         
-            nodeState = action.evaluate();
 
+            nodeState = (action.evaluate());
+            Debug.Log(nodeState);
             if(nodeState == BTNODESTATES.SUCCESS)
             {
-                return BTNODESTATES.SUCCESS;
+
+                return  nodeState;
             }
                 
         
         }
 
-        return BTNODESTATES.FAILURE;
+        return nodeState;
 
 
       

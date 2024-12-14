@@ -49,6 +49,7 @@ public class BTAttackActions : MonoBehaviour
         
         if (!Tank.TankIsFiring()) // we will ocntsanly try to shoot the enemy after our firing delay 
         {
+            Debug.Log("attack enemy");
             Tank.TurretFireAtPoint(Tank.enemyTank);
 
         }

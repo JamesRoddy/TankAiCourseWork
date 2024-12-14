@@ -9,7 +9,7 @@ public abstract class BTbaseNode
     {
 
         get { return nodeState; }
-        set { nodeState = value; }
+      
 
     }
 

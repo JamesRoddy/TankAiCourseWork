@@ -38,15 +38,18 @@ public class CC_BTFSMRBSSearchState : BaseST
 
     public override Type Update()
     {
-        if ((!Tank.evaluateSequences(Tank.sequencesFromSearch) && !Tank.evaluateSelectors(Tank.selectorsFromSearch))
-              && Tank.checkSearch.evaluate() == BTNODESTATES.SUCCESS
+
+        Debug.Log("SEARCH STATE BTFSMRBS");
+  
+        if (true
+            
             
             ) // if we dont need to execute any other sequences or selectors that would require us to switch from search) // we will continue searching 
         {
 
             foreach (var item in Tank.rules.GetRules) // iterates through the rules
             {
-
+                Debug.Log("evealuting rules for search");
                 if (item.CheckRule(Tank.stats) != null) // if a rule doesn't return null
                 {
                     return item.CheckRule(Tank.stats); // return the state

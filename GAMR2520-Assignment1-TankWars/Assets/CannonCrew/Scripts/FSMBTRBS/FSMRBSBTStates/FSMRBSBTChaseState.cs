@@ -35,6 +35,7 @@ public class CC_BTFSMRBChaseState : BaseST
     public override Type Update()
     {
 
+        Debug.Log("ATTACK CHASE BTFSMRBS");
 
         if (Tank.chasing.evaluate() == BTNODESTATES.SUCCESS) // if we succeded the attack sequence check all of the rules to see the next state transition 
         {

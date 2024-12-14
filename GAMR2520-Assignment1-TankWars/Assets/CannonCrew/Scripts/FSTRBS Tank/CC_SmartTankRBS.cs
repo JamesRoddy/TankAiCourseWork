@@ -37,6 +37,7 @@ public class CC_SmartTankRBS : CC_SmartTank
     };*/
 
 
+   public Dictionary<string, Dictionary<string,bool>> multiStatQueryForBT; // allows us to get stats for the behaviour tree side of the FSMRBSBT ommmiting certain things like if a state is false or true as that does not need to be included in a stats query from the bt behaviours  
     // mini rule dictionaries allow us to check multiple booleans at once and predefine all the conditions that need to be met 
     // used to check if we should attack
     Dictionary<string, bool> canAttackCheck = new Dictionary<string, bool>
@@ -153,7 +154,7 @@ public class CC_SmartTankRBS : CC_SmartTank
         attackDebug = new CC_AttackStateRBS(debugTank);
         retreatDebug = new RetreatRBS(debugTank); 
         searchDebug = new SearchStateRBS(debugTank);
-
+        Debug.Log("awake called for rbs tank");
         rulesForRbs = new List<Rule>
         {
          new Rule("shouldRetreat", "attackState", typeof(RetreatRBS),retreatDebug, Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
@@ -188,7 +189,7 @@ public class CC_SmartTankRBS : CC_SmartTank
     public void InitiliseStats()
     {
 
-
+        Debug.Log("init stats ");
         stats.Add("attackState", false); //we are in the attack state
         stats.Add("searchState", true); //we are in the search state
         stats.Add("retreatState", false); //we are in the retreat state
@@ -219,6 +220,23 @@ public class CC_SmartTankRBS : CC_SmartTank
         stats.Add("hadChase", false);
         stats.Add("canAttackBase",false);
         stats.Add("chaseBase", false);
+
+        if(TryGetComponent(typeof( CC_smartTankFSMRBSBT), out var tankFSMRBSBT))
+        {
+            Debug.Log("FSMRBSBTfound initing multi stat query");
+            multiStatQueryForBT = new Dictionary<string, Dictionary<string, bool>>
+            { 
+            {"canAttack",canAttackCheck },
+            {"chaseBase",shouldChaseBase },
+            {"canAttackBase",canAttackEnemyBaseCheck },
+            {"shouldChase",shouldChaseCheck },
+            {"shouldRetreat",shouldRetreatCheck } 
+            };
+        }
+     
+
+
+
      /*   stats.Add("shootBase", false);*/
 
      /*   stats.Add("shootTank", false);
@@ -516,6 +534,10 @@ public class CC_SmartTankRBS : CC_SmartTank
            
         
     }
+
+    
+
+
     private void enemyBaseWithinRange()
     {
         if (stats["enemyBaseSeen"] == true)
@@ -713,7 +735,7 @@ public class CC_SmartTankRBS : CC_SmartTank
     }
 
 
-
+ 
     private bool checkSum(Dictionary<string, bool> statsList) // utility function to check multiple stats against the global stat dictionary  at once
     {
 
@@ -750,6 +772,41 @@ public class CC_SmartTankRBS : CC_SmartTank
 
 
 
+
+    public bool BtStatMultiQuery(string statsName)
+    {
+
+
+        return checkSumbt(multiStatQueryForBT[statsName]);
+
+
+
+    }
+    private bool checkSumbt(Dictionary<string, bool> statsList) // utility function to check multiple stats against the global stat dictionary  at once
+    {
+
+        foreach (KeyValuePair<string, bool> stat in statsList)
+        {
+
+            if (stat.Key.ToLower().Contains("state"))
+            {
+                continue;
+            }
+
+            if (stat.Value != stats[stat.Key] )
+            {
+
+                return false;
+            }
+
+
+        }
+        return true;
+
+    }
+
+
+
     public override void AITankStart()
     {
         base.AITankStart();
@@ -767,8 +824,8 @@ public class CC_SmartTankRBS : CC_SmartTank
     {
         base.AITankUpdate();
 
-       
 
+        Debug.Log("update");
         SetEnemySeen();
         checkAmmo();
         CheckFuel();

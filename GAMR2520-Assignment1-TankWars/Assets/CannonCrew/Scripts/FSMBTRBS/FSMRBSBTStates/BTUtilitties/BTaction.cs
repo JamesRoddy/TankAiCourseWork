@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 public class BTaction : BTbaseNode
 {
@@ -14,6 +15,8 @@ public class BTaction : BTbaseNode
     public BTaction(ActionNodeFunction action)
     {
         this.action = action;
+        
+        
     }
     public BTaction(ActionNodeFunction action, bool forceSuccess, BTNODESTATES nodeStateToForceSucces)
     {
@@ -29,9 +32,9 @@ public class BTaction : BTbaseNode
     public override BTNODESTATES evaluate()
     {
         
-        this.nodeState = action();
-    
-        return this.nodeState;
+        nodeState = (action());
+        
+        return nodeState;
 
     }
 

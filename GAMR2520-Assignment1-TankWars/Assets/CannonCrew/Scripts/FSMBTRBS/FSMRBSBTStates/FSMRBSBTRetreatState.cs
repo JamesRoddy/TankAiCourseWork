@@ -23,6 +23,7 @@ public class CC_BTFSMRBSRetreatState : BaseST
     }
     public override Type Update()
     {
+        Debug.Log("RETREAT STATE BTFSMRBS");
 
         if (Tank.retreating.evaluate() == BTNODESTATES.SUCCESS) // if we succeded the attack sequence check all of the rules to see the next state transition 
         {

@@ -9,7 +9,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 {
 
 
-
+    
 
     public BTaction targetVisisbleCheck;
     public BTaction withinRangeCheck;
@@ -89,99 +89,18 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         attackDebugs = new BTFSMRBSAttack(debugTanks);
         retreatDebugs = new CC_BTFSMRBSRetreatState(debugTanks);
         searchDebugs = new CC_BTFSMRBSSearchState(debugTanks);
-        rulesForFSMRBSBT = new List<Rule>
-        {
-         new Rule("shouldRetreat", "attackState", typeof(CC_BTFSMRBSRetreatState),retreatDebugs, Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
-        new Rule("shouldRetreat", "searchState", typeof(CC_BTFSMRBSRetreatState), retreatDebugs,Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
-        new Rule("shouldRetreat", "chaseState", typeof(CC_BTFSMRBSRetreatState),retreatDebugs, Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
-        new Rule("withinRange", "canAttack", typeof(BTFSMRBSAttack),attackDebugs, Rule.Predicate.And),// if we are able to attack(our health and fuel are high and ammo isn't a major priority) we should go into the attack state
-        new Rule("enemyBaseWithinRange", "canAttackBase", typeof(BTFSMRBSAttack), attackDebugs, Rule.Predicate.And),
-        new Rule("shouldChase", "moveToTarget", typeof(CC_BTFSMRBChaseState),chaseDebugs ,Rule.Predicate.Or), // if we are in the attack state
-        new Rule("enemyBaseSeen", "chaseBase", typeof(CC_BTFSMRBChaseState), chaseDebugs, Rule.Predicate.And),
-
-        };
+       
         
-        InitiliseStats();
-        InitiliseRules(rulesForFSMRBSBT);
-        foreach(Rule rule in rules.GetRules)
-        {
-            Debug.Log("rule type "+rule.debugType.GetType());
-        }
-        initRuleDictionaries();
-        initBt();
         initStateMachine();
        
     }
 
-
-    private void initBt()
-    {
-
-        tankActionsForAttack = new BTAttackActions(this);
-        tankActionsForSearch = new BTActionsSearch(this);
-        tankActionsForChase = new BTActionsChase(this);
-        tankActionsForRetreat = new BTactionRetreat(this);
-
-        checkEnemyPos = new BTaction(checkPosRetreat);
-        getSafeSpot = new BTaction(getSafteySpot);
-        moveToSafeSpot = new BTaction(moveToSaftey);
-        
-
-        targetVisisbleCheck = new BTaction(ActionCheckEnemyVisisble);
-        withinRangeCheck = new BTaction(ActionCheckRange);
-        checkHighHealth = new BTaction(ActionCheckHighHealth);
-        checkLowHealth = new BTaction(ActionCheckLowHealth);
-        checkHighAmmo = new BTaction(ActionCheckHighAmmo);
-        checkLowAmmo = new BTaction(ActionCheckLowAmmo);
-        checkAmmoCritical = new BTaction(ActionmCheckCriticalAmmo);
-
-        
-
-
-        checkHighFuel = new BTaction(ActionCheckHighFuel);
-        checkLowFuel = new BTaction(ActionCheckLowFuel);
-
-        checkShouldChase = new BTaction(ActionCheckShouldChase);
-        checkLostTarget = new BTaction(ActionCheckLostSight);
-        checkShoulChaseBase = new BTaction(chaseBase);
-        checkSearch = new BTaction(checkShouldSearch);
-        checkShouldAttack = new BTaction(ActionCanAttackEnemy);
-        checkShouldRetreat = new BTaction(ActionCheckShouldRetreat);
-        checkShouldAttackBase = new BTaction(ActionCanAttackEnemyBase);
-        checkEnemyBaseVisible = new BTaction(ActionCheckEnemyVisisble);
-        checkWihtinRangeOfBase = new BTaction(ActionCheckBaseRange);
-        
-
-        priorityCheck = new BTaction(checkHasPriorityresource);
-        seenConsumable = new BTaction(ActionSeeConsumable);
-
-        
-        attackingEnemy = new BTselector(new List<BTaction> {  checkShouldAttack, withinRangeCheck });
-        attackingBase = new BTselector(new List<BTaction> { checkShouldAttackBase, checkWihtinRangeOfBase });
-        chasing = new BTsequence(new List<BTaction> { checkLostTarget, checkShouldChase,checkShoulChaseBase }); 
-
-        retreating = new BTsequence(new List<BTaction> { checkEnemyPos,getSafeSpot,moveToSafeSpot });
-       
-        
-        sequencesFromSearch = new List<BTsequence> { chasing }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
-        selectorsFromSearch = new List<BTselector> {attackingEnemy,attackingBase }; // same as above but with selectors
-        selectorsForAttack = new List< BTselector>{ attackingEnemy,attackingBase};
-        evaluateConsumable = new BTsequence(new List<BTaction> { seenConsumable, priorityCheck });
-
-
-
-
-
-
-
-    }
-
-
     public BTNODESTATES checkShouldSearch()
     {
-        
+
         if (stats["searchState"])
         {
+            Debug.Log("searchState");
             tankActionsForSearch.search();
             return BTNODESTATES.FAILURE;
         }
@@ -192,7 +111,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     }
 
-  
+
     public BTNODESTATES findPriorityConsuamble()
     {
 
@@ -271,7 +190,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
             return BTNODESTATES.FORCESUCCES; // consider the whole sequence complete 
         }
         else
-        {
+        {   
             Debug.Log("found tank continue retreat  sequence");
             return BTNODESTATES.SUCCESS; // otherwise if we saw the enemy tank we need to continue the sequence regardless 
         }
@@ -337,11 +256,11 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     }
     public BTNODESTATES ActionCheckRange()
     {
-       
+ 
             if (stats["withinRange"])
             {
-    
-
+            Debug.Log("wihtin range check ");
+            Debug.Log("within range btfsmrbs");
                 tankActionsForAttack.attackEnemy();
                 return BTNODESTATES.FAILURE;
             }
@@ -424,7 +343,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     
     public BTNODESTATES ActionCheckCanAttackBase()
     {
-        if (stats["canAttackBase"])
+        if (BtStatMultiQuery("canAttackBase"))
         {
 
 
@@ -516,7 +435,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     public BTNODESTATES chaseBase()
     {
-        if (stats["chaseBase"])
+        if (BtStatMultiQuery("chaseBase"))
         {
         
             tankActionsForChase.moveToBase();
@@ -531,7 +450,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTNODESTATES ActionCheckShouldChase()
     {
 
-        if (stats["shouldChase"])
+        if (BtStatMultiQuery("shouldChase"))
         {
         
 
@@ -576,7 +495,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTNODESTATES ActionCanAttackEnemyBase()
     {
 
-        if (stats["canAttackBase"])
+        if (BtStatMultiQuery("canAttackBase"))
         {
            
             return BTNODESTATES.FAILURE;
@@ -595,9 +514,9 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTNODESTATES ActionCanAttackEnemy()
     {
         
-        if (stats["canAttack"])
+        if (BtStatMultiQuery("canAttack"))
         {
-    
+            Debug.Log("CAN ATTACK");
             return BTNODESTATES.FAILURE;
 
         }
@@ -629,7 +548,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     
     public BTNODESTATES ActionCheckShouldRetreat()
     {
-        if (stats["shouldRetreat"])
+        if (BtStatMultiQuery("shouldRetreat"))
         {
             
 
@@ -666,6 +585,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>
         {
+           
             {typeof(CC_BTFSMRBSSearchState),new CC_BTFSMRBSSearchState(this)},
             {typeof(BTFSMRBSAttack),new BTFSMRBSAttack(this)},
             {typeof(CC_BTFSMRBChaseState),new CC_BTFSMRBChaseState(this)},
@@ -727,6 +647,75 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public override void AITankStart()
     {
         base.AITankStart();
+
+        InitiliseStats();
+        rulesForFSMRBSBT = new List<Rule>
+        {
+         new Rule("shouldRetreat", "attackState", typeof(CC_BTFSMRBSRetreatState),retreatDebugs, Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
+        new Rule("shouldRetreat", "searchState", typeof(CC_BTFSMRBSRetreatState), retreatDebugs,Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
+        new Rule("shouldRetreat", "chaseState", typeof(CC_BTFSMRBSRetreatState),retreatDebugs, Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
+        new Rule("withinRange", "canAttack", typeof(BTFSMRBSAttack),attackDebugs, Rule.Predicate.And),// if we are able to attack(our health and fuel are high and ammo isn't a major priority) we should go into the attack state
+        new Rule("enemyBaseWithinRange", "canAttackBase", typeof(BTFSMRBSAttack), attackDebugs, Rule.Predicate.And),
+        new Rule("shouldChase", "moveToTarget", typeof(CC_BTFSMRBChaseState),chaseDebugs ,Rule.Predicate.Or), // if we are in the attack state
+        new Rule("enemyBaseSeen", "chaseBase", typeof(CC_BTFSMRBChaseState), chaseDebugs, Rule.Predicate.And),
+
+        };
+        InitiliseRules(rulesForFSMRBSBT);
+        foreach (Rule rule in rules.GetRules)
+        {
+            Debug.Log("rule type " + rule.debugType.GetType());
+        }
+        initRuleDictionaries();
+        tankActionsForAttack = new BTAttackActions(this);
+        tankActionsForSearch = new BTActionsSearch(this);
+        tankActionsForChase = new BTActionsChase(this);
+        tankActionsForRetreat = new BTactionRetreat(this);
+
+        checkEnemyPos = new BTaction(checkPosRetreat);
+        getSafeSpot = new BTaction(getSafteySpot);
+        moveToSafeSpot = new BTaction(moveToSaftey);
+
+
+        targetVisisbleCheck = new BTaction(ActionCheckEnemyVisisble);
+        withinRangeCheck = new BTaction(ActionCheckRange);
+        checkHighHealth = new BTaction(ActionCheckHighHealth);
+        checkLowHealth = new BTaction(ActionCheckLowHealth);
+        checkHighAmmo = new BTaction(ActionCheckHighAmmo);
+        checkLowAmmo = new BTaction(ActionCheckLowAmmo);
+        checkAmmoCritical = new BTaction(ActionmCheckCriticalAmmo);
+
+
+
+
+        checkHighFuel = new BTaction(ActionCheckHighFuel);
+        checkLowFuel = new BTaction(ActionCheckLowFuel);
+
+        checkShouldChase = new BTaction(ActionCheckShouldChase);
+        checkLostTarget = new BTaction(ActionCheckLostSight);
+        checkShoulChaseBase = new BTaction(chaseBase);
+        checkSearch = new BTaction(checkShouldSearch);
+        checkShouldAttack = new BTaction(ActionCanAttackEnemy);
+        checkShouldRetreat = new BTaction(ActionCheckShouldRetreat);
+        checkShouldAttackBase = new BTaction(ActionCanAttackEnemyBase);
+        checkEnemyBaseVisible = new BTaction(ActionCheckEnemyVisisble);
+        checkWihtinRangeOfBase = new BTaction(ActionCheckBaseRange);
+
+
+        priorityCheck = new BTaction(checkHasPriorityresource);
+        seenConsumable = new BTaction(ActionSeeConsumable);
+
+
+        attackingEnemy = new BTselector(new List<BTbaseNode> { checkShouldAttack, withinRangeCheck });
+        attackingBase = new BTselector(new List<BTbaseNode> { checkShouldAttackBase, checkWihtinRangeOfBase });
+        chasing = new BTsequence(new List<BTbaseNode> { checkLostTarget, checkShouldChase, checkShoulChaseBase });
+
+        retreating = new BTsequence(new List<BTbaseNode> { checkEnemyPos, getSafeSpot, moveToSafeSpot });
+
+
+        sequencesFromSearch = new List<BTsequence> { chasing }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
+        selectorsFromSearch = new List<BTselector> { attackingEnemy, attackingBase }; // same as above but with selectors
+        selectorsForAttack = new List<BTselector> { attackingEnemy, attackingBase };
+        evaluateConsumable = new BTsequence(new List<BTbaseNode> { seenConsumable, priorityCheck });
 
 
 
