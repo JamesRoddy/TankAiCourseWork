@@ -65,7 +65,12 @@ public class CC_SmartTank : AITank
     protected GameObject enemyBasePosition;
     public List<GameObject> currentBases;
 
-
+    Dictionary<PRIORITIES, string> resourcesLinkedToTags = new Dictionary<PRIORITIES, string>
+    {
+        {PRIORITIES.HEALTH,"Health" },
+        {PRIORITIES.FUEL,"Fuel" },
+        {PRIORITIES.AMMO,"Ammo" },
+    };
 
     public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     // if the enenmy tank is visible it willl be first stored in this dicionary and cna be accessed through the first key
     public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    // stores any consumables visible 
@@ -276,12 +281,27 @@ public class CC_SmartTank : AITank
     }
 
 
+    public bool seeResource(PRIORITIES resource) // check if tabk saw a aprticualr resource
+    {
+        
+        foreach(KeyValuePair<GameObject,float> gameObject in consumablesFound) // loop through visible conusmables
+        {
 
+            if (gameObject.Key.CompareTag(resourcesLinkedToTags[resource])) // check their type
+            {
+                return true;// if type macthes resoucre we want return true
+            }
+
+        }
+
+        return false; 
+
+
+    }
 
     public bool stopAndCheckPos(GameObject position, float waitTime, GameObject checkFor, ref float timer)
     {
         
-
         if (timer < waitTime)
         {
             timer += Time.deltaTime;
@@ -374,6 +394,8 @@ public class CC_SmartTank : AITank
 
 
     }
+
+
     public float getDistanceToEnemyBase()
     {
         if (enemyBase != null)

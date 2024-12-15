@@ -41,7 +41,7 @@ public class CC_BTFSMRBSSearchState : BaseST
 
         Debug.Log("SEARCH STATE BTFSMRBS");
   
-        if ( Tank.evaluateSequences(Tank.sequencesFromSearch))
+        if (Tank.findingConsumables.evaluate() == BTNODESTATES.SUCCESS && Tank.evaluateSequences(Tank.sequencesFromSearch) )
            // if we dont need to execute any other sequences or selectors that would require us to switch from search) // we will continue searching 
         {
 

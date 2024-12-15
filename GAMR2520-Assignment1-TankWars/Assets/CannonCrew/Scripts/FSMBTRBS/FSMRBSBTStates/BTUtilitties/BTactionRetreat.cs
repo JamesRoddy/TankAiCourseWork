@@ -36,12 +36,12 @@ public class BTactionRetreat : MonoBehaviour
         Debug.Log("waiting");
 
        
-        if (runtimeIncrement >= runTime || CheckPositionReference() )
+        if (runtimeIncrement >= runTime || CheckPositionReference() ) // if we need a postiion refernce or if the runtime is exceeded 
         {
             Debug.Log(runtimeIncrement + "after run");
             Debug.Log("needed position reference" + CheckPositionReference());
             
-            if (Tank.stopAndCheckPos(Tank.LastKnownEPos, tankCheckBehindTime, Tank.enemyTank, ref waitTime))
+            if (Tank.stopAndCheckPos(Tank.LastKnownEPos, tankCheckBehindTime, Tank.enemyTank, ref waitTime)) // look back for a reference to the enemy
             {
                 Debug.Log("returned true wait retreat");
                 if (Tank.enemyTank != null) {
@@ -104,7 +104,7 @@ public class BTactionRetreat : MonoBehaviour
         {
 
 
-            if (!hasinversion && Tank.enemyTank != null)
+            if (!hasinversion && Tank.stats["enemySeen"])
             {
                 Debug.Log("calculating enemy tank inversion");
                 hasinversion = true;

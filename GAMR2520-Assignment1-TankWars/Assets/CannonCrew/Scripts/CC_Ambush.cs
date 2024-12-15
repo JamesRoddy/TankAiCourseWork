@@ -101,7 +101,7 @@ public class Ambush : BaseST
             {
                
 
-                transitionContext.SetWaitStateGlobalContext(consumableFound, 0.3f, false); // set the context for the wait state before going into it
+                transitionContext.SetWaitStateGlobalContext(consumableFound, 2.5f, false); // set the context for the wait state before going into it
                 return typeof(WaitState);
             }
             fRotate += Time.deltaTime;
@@ -123,7 +123,7 @@ public class Ambush : BaseST
         if (hasFoundConsumable && !waitCheckComplete)// if we found a consumable and havent already waited to check if its there 
         {
             Debug.Log("should wait in ambush ");
-            transitionContext.SetWaitStateGlobalContext(consumableFound, 0.5f, false);
+            transitionContext.SetWaitStateGlobalContext(consumableFound, 2.5f, false);
             return typeof(WaitState); // jump out of ambush state to get any consumables we found that may not be of priority but we still need them  
         }
 

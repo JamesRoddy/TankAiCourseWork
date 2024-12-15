@@ -42,10 +42,32 @@ public class PriorityManager
 
             priorityQueues[prioritiesList[i].CurrentClassification].Add(prioritiesList[i].Name);
            
-            Debug.Log("current class " + prioritiesList[i].CurrentClassification);
-            Debug.Log("prev class " + prioritiesList[i].PreviousClassification);
 
         }
+    }
+
+
+
+    public PRIORITIES getResources(List<queuePriority> priorities,List<PRIORITIES> resources)
+    {
+
+        int maxResources = resources.Count;
+        int resourceCount = 0;
+        foreach (queuePriority priority in priorities) {
+
+            resourceCount = resourceCount % maxResources;
+           
+            if (priorityQueues[priority].Contains(resources[resourceCount])) { 
+              
+                 return resources[resourceCount];
+            }
+
+            resourceCount++;
+        }
+
+        return PRIORITIES.NONE;
+
+
     }
 
 
@@ -58,7 +80,6 @@ public class PriorityManager
     {
         foreach (PriorityHolder priority in prioritiesList)
         {
-           /* Debug.Log(priority.CurrentValue);*/
 
             if ((priority.CurrentClassification != queuePriority.SAFE &&  priority.checkSafe() )) /// if resource prriority becomes safe and isnt safe already 
             { 
@@ -66,7 +87,6 @@ public class PriorityManager
 
                  priorityQueues[priority.PreviousClassification].Remove(priority.Name); // remove it from its current list in the priorityQueues dictionary 
                  priorityQueues[priority.CurrentClassification].Add(priority.Name);// add it to the list under the key SAFE in the dictionary 
-                 Debug.Log("resource moved " + priorityQueues[priority.CurrentClassification][priorityQueues[priority.CurrentClassification].Count - 1] + " new priority " + priority.CurrentClassification);
 
                
                  priority.setSafe();
@@ -77,13 +97,10 @@ public class PriorityManager
             if (priority.checkForHigherPriorites()) // check if there has been a change in state when it comes to any other priorities other than SAFE 
             {
                 
-                Debug.Log("resource decreased " + priority.Name + " :previous priority: " + priority.PreviousClassification + " :lower threshHold: " + priority.PriorityThreshHold +" :currentThreshHold: " + priority.CurrentValue +" :saftey threshHold: " + priority.SafetyThreshHold);
                 priorityQueues[priority.PreviousClassification].Remove(priority.Name); // if the state has changed remove the associated resource enum from the associated list that represents the current prirotiy queue the resource is in 
                 priorityQueues[priority.CurrentClassification].Add(priority.Name); // add the resource to the queue associated with its updated priority 
-                Debug.Log("resource moved " + priorityQueues[priority.CurrentClassification][priorityQueues[priority.CurrentClassification].Count-1] + " new priority " + priority.CurrentClassification);
+
                
-
-
 
             }
            

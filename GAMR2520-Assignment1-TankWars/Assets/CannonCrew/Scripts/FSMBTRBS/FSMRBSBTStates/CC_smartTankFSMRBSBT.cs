@@ -12,7 +12,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
 
     
-
+    // all action nodes of the tree 
     public BTaction targetVisisbleCheck;
     public BTaction withinRangeCheck;
     public BTaction checkHighHealth;
@@ -30,57 +30,59 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTaction checkShouldRetreat;
     public BTaction checkShouldAttackBase;
     public BTaction checkEnemyBaseVisible;
-    public BTaction checkEnemyVisible;
     public BTaction checkLostSightInSearch;
     public BTaction checkWihtinRangeOfBase;
-    public BTaction seenConsumable;
-    public BTaction priorityCheck;
+    public BTaction moveToConsumable;
+    public BTaction checkForConsumable;
+    public BTaction findPriorityResource;
+  
+    
+    
+
+   BTaction checkEnemyPos;
+   BTaction lookForEnemy;
+   BTaction getSafeSpot;
+   BTaction moveToSafeSpot;
+    // selectors and sequences for the tree allowing for multiple actions to be chained and evaulted togther 
+   public BTselector attackingBase; // selector for attacking enemy base and checking if we are in range 
+   public BTselector attackingEnemy;// selector for attacking enemy and if we are in range if one succeed then we will nnot attack
+   public BTsequence retreating; // sequnce fo retreating inlcuidg looking behind moving to sfatey spot and getting sfatey spot 
+   public List<BTsequence> sequencesFromSearch ; // define all sequnces that if met will rantions us out of search
+   public List<BTselector> selectorsForAttack; // wrapp all the selectors for attack into one list so they can be looped through and checked at once
+   public BTsequence chasingEnemy; // seqeunce for checking if we lost sight of the enemy during chase so we chase the last knwon postion or if we should chase the enemy weh they are visisble
+   public BTaction chasingBases; // sequence for getting close to a base and shooting it to ensure we dont miss 
+ 
+
+
+    public BTsequence findingConsumables; // sequence for findnig consumables and evaluating their prirority
+
+   public BTselector switchFromSearch;
+
+   private BTAttackActions tankActionsForAttack;
+   private BTActionsSearch tankActionsForSearch;
+   private BTActionsChase tankActionsForChase;
+   private BTactionRetreat tankActionsForRetreat; 
+
+   public BTsequence checkHighHealthAndBaseVisbible;
     public BTsequence checkLowHealthAndEnemyVisible;
-    public BTaction attackBase;
-    public BTaction attackEnemy;
-    
 
-    BTaction checkEnemyPos;
-    BTaction lookForEnemy;
-    BTaction getSafeSpot;
-    BTaction moveToSafeSpot;
-
-   public BTselector attackingBase;
-   public BTselector attackingEnemy;
-   public BTsequence retreating;
-   public List<BTsequence> sequencesFromSearch ;
-   public List<BTselector> selectorsFromSearch;
-    public List<BTselector> selectorsForAttack;
-   public BTsequence chasingEnemy;
-  public BTaction chasingBases;
-
-    public BTaction checkHighPriority; 
-   public BTaction checkLowPriority;
-   public BTsequence resourceCheck;
-   public BTsequence evaluateConsumable;
-   public BTaction moveToconsumable;
-    public BTselector switchFromSearch;
-    private BTAttackActions tankActionsForAttack;
-    private BTActionsSearch tankActionsForSearch;
-    private BTActionsChase tankActionsForChase;
-    private BTactionRetreat tankActionsForRetreat;
-    public BTsequence checkHighHealthAndBaseVisbible;
     public BTsequence checkSearchSwitch;
-    private List<queuePriority> priorityOrder =  new List<queuePriority> { queuePriority.MAJOR, queuePriority.CRITICAL };
-   public List<PRIORITIES> currentPriorityResources = new List<PRIORITIES>();
-    public BTsequence checkHighHealthAndTargetVisbible;
+   private List<queuePriority> priorityOrder =  new List<queuePriority> { queuePriority.MAJOR, queuePriority.CRITICAL };
+   private List<PRIORITIES> resourcePriorityOrder = new List<PRIORITIES> { PRIORITIES.HEALTH, PRIORITIES.FUEL, PRIORITIES.AMMO };
+   public PRIORITIES currentPriorityResource;
+   public BTsequence checkHighHealthAndTargetVisbible;
 
-    List<Rule> rulesForFSMRBSBT;
+    List<Rule> rulesForFSMRBSBT;// initilaise rules for bt
 
 
-    // timers associated with certain actions
-    private CC_BTFSMRBChaseState chaseDebugs;
-    private CC_smartTankFSMRBSBT debugTanks;
-    private BTFSMRBSAttack attackDebugs;
-    private CC_BTFSMRBSRetreatState retreatDebugs;
-    private CC_BTFSMRBSSearchState searchDebugs;
     
-    float attackBaseTimer = 2.0f;
+   private CC_BTFSMRBChaseState chaseDebugs;
+   private CC_smartTankFSMRBSBT debugTanks;
+   private BTFSMRBSAttack attackDebugs;
+   private CC_BTFSMRBSRetreatState retreatDebugs; 
+   private CC_BTFSMRBSSearchState searchDebugs;
+    
+
 
 
 
@@ -97,6 +99,10 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
        
     }
+
+
+
+    // deifne various action node functions that corrleate to particualr nodes in the tree using the stats defined by the rule based system to detemine the state of the action along with if the tank is performing a particualr action such as waiting 
 
     public BTNODESTATES checkShouldSearch() // allows the search satte to be contious while also allowing for sequences to be evelauted that may cause a switch from search state 
     {
@@ -115,67 +121,99 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     }
 
+    public BTNODESTATES getConsumable()
+    {
 
+        if (tankActionsForSearch.moveToConsumable()) // if we have reached the consumable we saw initially 
+        {
+            Debug.Log("has moved to consumable in front ");
+
+            tankActionsForSearch.hasFoundResource = false; // we collected a reosurce so we no longer see one
+            if (stats["hasReachedPriorityMax"]) /// if we are taking this consumable beacuse we failed to find the priority resource a number of times(3)
+            {
+                Debug.Log("has moved to conusmable in front but still has prirority");
+
+                tankActionsForSearch.resetPriorityResourceNotFoundCounter(); // reset counter before retruing success 
+                
+                return BTNODESTATES.FAILURE; // we couldnt find priorty resource so return failure to reset sequence
+            }
+            return BTNODESTATES.SUCCESS;
+        }
+        else
+            Debug.Log("has not reached consumable in front ");
+        {
+            return BTNODESTATES.FAILURE;
+        }
+
+
+    }
     public BTNODESTATES findPriorityConsuamble()
     {
 
-        currentPriorityResources = priorityManager.sweepQueues(priorityOrder);
-        
-        if(currentPriorityResources.Count>0  )
+        if (stats["hasReachedPriorityMax"])                                                     // if weve not found the priority resource a scertain number of times then we will take the reource weve found anyway and succed this part of the sequence to do so
         {
-            if (currentPriorityResources.Contains(PRIORITIES.HEALTH))
+            Debug.Log("hit  max for  not finding priroity resource ");
+
+            return BTNODESTATES.SUCCESS;
+        }
+
+        if (stats["hasPriorityResource"]  )                                             // if we have a priroity resource that needs tending to(major or critical)
+        {
+
+            if (tankActionsForSearch.findPriorityResource(currentPriorityResource))                  // if we have reached the position
             {
-                
+                Debug.Log("has  completed finding priroity resource ");
+
+                return BTNODESTATES.SUCCESS;                                            // set the action node's state to success 
             }
-            
+            Debug.Log("has  not completed finding priority resource ");
+
+
             return BTNODESTATES.FAILURE;
         }
        
         else
         {
-            return BTNODESTATES.SUCCESS;
+            Debug.Log("has no priroity resource moving to collect conusmable in front");
+            return BTNODESTATES.FORCESUCCES;
         }
 
 
 
-    }
+    } 
+
     public BTNODESTATES ActionSeeConsumable ()
     {
+        if (stats["enemySeen"]) // if we see the enemy we need to eveaulte what to do so we drop out of the sequence to find consumables
+        {
+            return BTNODESTATES.FORCESUCCES;
+        }
 
-        if (consumablesFound.Count > 0)
-        { 
-            return BTNODESTATES.FAILURE;
+        if (stats["hasSeenConsumable"] || tankActionsForSearch.hasFoundResource || stats["hasPriorityResource"]  ) // if we see a consumable or we known weve  found one
+        {   
+            tankActionsForSearch.hasFoundResource  = true;
+            if(currentPriorityResource != PRIORITIES.NONE && !seeResource(currentPriorityResource)) // if we have a current resource of priority and the one we are looking at doesnt mact
+            {
+                Debug.Log("has found consumable we was not of priroity so increment counter ");
+                tankActionsForSearch.incrementPriorityResourceNotFoundCounter(); // count how many times we dont find our resource 
+
+            }
+            Debug.Log("go to finding resource ");
+
+            return BTNODESTATES.SUCCESS; // continue on to the next part of the sequence
             
         }
         else
         {
-            return BTNODESTATES.SUCCESS;
+            Debug.Log("has found consumable or does not see consumable force success r ");
+
+            return BTNODESTATES.FORCESUCCES;// otherwise we dont need to execute the sequnce so force success 
         }
 
 
 
     }
-    public BTNODESTATES checkHasPriorityresource()
-    {
-
-        currentPriorityResources = priorityManager.sweepQueues(priorityOrder);
-        currentPriorityResources = priorityManager.sweepQueues(priorityOrder);
-
-        if (currentPriorityResources.Count > 0)
-        {
-            return BTNODESTATES.FAILURE;
-
-        }
-        else
-        {
-            return BTNODESTATES.SUCCESS;
-        }
-
-
-
-
-
-    }
+   
 
 
     public BTNODESTATES checkPosRetreat()
@@ -193,7 +231,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
             Debug.Log("wait not complete ");
             return BTNODESTATES.FAILURE;
         }
-         if (enemyTank == null) // if we ddint see the enemy tank that means the retreat was successful and we are safe so the sequence is 'forced' inot success through the force success state for nodes 
+         if (stats["enemySeen"] == false) // if we ddint see the enemy tank that means the retreat was successful and we are safe so the sequence is 'forced' inot success through the force success state for nodes 
           {
               Debug.Log("found  no tank in retreat");
               tankActionsForRetreat.resetTimers();
@@ -394,8 +432,9 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     public BTNODESTATES ChaseTargetNotVisisble()
     {
-
-        if (stats["lostSight"]) /// this is still evaluated by the backwards chaining in the RBSFSM system to identify whether or not we lost the enemy when switching to the search state 
+        /// this is still evaluated by the backwards chaining in the 
+        /// RBSFSM system to identify whether or not we lost the enemy when switching to the search state 
+        if (stats["lostSight"]) 
         {
             Debug.Log("chasing enemt last known pso btfsmrbs");
             tankActionsForChase.moveToLastKnownPos();// use the moveToBase function defined in the BTactionsFromChase wrapper class  to have the tank chase the enemy based on their last known position allowing us to catch up when ew loose sight 
@@ -525,7 +564,8 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
 
     
-    // check if we can atttack the enemy by querying the canAttack stat which complies multiple stats into a singular check to evaluate the situation 
+    // check if we can atttack the enemy by querying the canAttack stat which complies
+    // multiple stats into a singular check to evaluate the situation 
     public BTNODESTATES ActionCanAttackEnemy()
     {
         
@@ -624,16 +664,17 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     void initBTSpecifcStats()
     {
         stats.Add("btBaseDead",false);
-
-
-
+        stats.Add("hasSeenConsumable",false);
+        stats.Add("hasPriorityResource", false);
+        stats.Add("hasReachedPriorityMax", false);
     }
 
     void updateBTSpecifcStats()
     {
         stats["btBaseDead"] = tankActionsForAttack.baseTimerIncrement >= tankActionsForAttack.baseDeadTimer;
-
-
+        stats["hasSeenConsumable"] = consumablesFound.Count > 0;
+        stats["hasPriorityResource"] = currentPriorityResource != PRIORITIES.NONE;
+        stats["hasReachedPriorityMax"] = tankActionsForSearch.priorityResourceNoHitMax <= tankActionsForSearch.priorityResourceNotHitCounter;
 
     }
     public bool evaluateSelectors(List<BTselector> selectors) // util function to evaluate multiple sequences at once
@@ -677,10 +718,10 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     public override void AITankStart()
     {
-        base.AITankStart();
+        base.AITankStart(); // call base start(FSMRBS)
 
-        InitiliseStats();
-        initBTSpecifcStats();
+        InitiliseStats(); /// intiilai stats of the original FSMRBS
+        initBTSpecifcStats(); // allow for intilaisation of stats unquie to the behvaiour tree not related to the base rule based system 
         rulesForFSMRBSBT = new List<Rule>
         {
          new Rule("shouldRetreat", "attackState", typeof(CC_BTFSMRBSRetreatState),retreatDebugs, Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
@@ -699,16 +740,24 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         }
         initRuleDictionaries();
       
+        // intilaise wrapper for actions associated with various sequence and selctors or action nodes such as attacking a base chaing  a base to get in range so we dont miss a shot, retreating, looking behind and waiting, etc 
         tankActionsForAttack = new BTAttackActions(this);
         tankActionsForSearch = new BTActionsSearch(this);
         tankActionsForChase = new BTActionsChase(this);
         tankActionsForRetreat = new BTactionRetreat(this);
 
+
+        // intilaing the action nodes of the tree with their associated function to be subscribed to the delegate within the action node object 
+
         checkEnemyPos = new BTaction(checkPosRetreat);
         getSafeSpot = new BTaction(getSafteySpot);
         moveToSafeSpot = new BTaction(moveToSaftey);
 
-      
+        checkForConsumable = new BTaction(ActionSeeConsumable);
+        findPriorityResource = new BTaction(findPriorityConsuamble);
+        moveToConsumable = new BTaction(getConsumable);
+
+
         targetVisisbleCheck = new BTaction(ActionCheckEnemyVisisble);
         withinRangeCheck = new BTaction(ActionCheckRange);
         checkHighHealth = new BTaction(ActionCheckHighHealth);
@@ -732,30 +781,30 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         checkShouldAttackBase = new BTaction(ActionCheckCanAttackBase);
         checkEnemyBaseVisible = new BTaction(ActionCheckEnemyBaseVisisble);
         checkWihtinRangeOfBase = new BTaction(ActionCheckBaseRange);
-
-        priorityCheck = new BTaction(checkHasPriorityresource);
-        seenConsumable = new BTaction(ActionSeeConsumable);
-
+        
         switchFromSearch = new BTselector(new List<BTbaseNode> {  targetVisisbleCheck, checkLostSightInSearch,checkSearch });
         attackingEnemy = new BTselector(new List<BTbaseNode> {  checkShouldAttack, withinRangeCheck, });
         attackingBase = new BTselector(new List<BTbaseNode> { checkShouldAttackBase, checkWihtinRangeOfBase });
         chasingEnemy = new BTsequence(new List<BTbaseNode> { checkLostTarget, checkShouldChase });
         
-        retreating = new BTsequence(new List<BTbaseNode> { checkEnemyPos, getSafeSpot, moveToSafeSpot });
-        checkHighHealthAndTargetVisbible = new BTsequence(new List<BTbaseNode> { checkHighHealth, targetVisisbleCheck });
-        checkHighHealthAndBaseVisbible = new BTsequence(new List<BTbaseNode> { checkHighHealth, checkEnemyBaseVisible });
-        checkLowHealthAndEnemyVisible= new BTsequence(new List<BTbaseNode> { checkLowHealth, checkEnemyVisible});
-        checkSearchSwitch = new BTsequence(new List<BTbaseNode> { checkSearch });
-        sequencesFromSearch = new List<BTsequence> { checkHighHealthAndTargetVisbible,checkHighHealthAndBaseVisbible,checkLowHealthAndEnemyVisible,checkSearchSwitch }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
-        // health giverns intial decisions as to whether or not we enegae with the enemy after that we will then check reosurces such as fuel and ammo 
+        retreating = new BTsequence(new List<BTbaseNode> { checkEnemyPos, getSafeSpot, moveToSafeSpot }); // sequence for retreating one action node that being the node for checking the enemy is there hasa force success as it is not the ned of the sequnce but is a potential break point if we dont see the enemy after looking behind 
+        findingConsumables = new BTsequence(new List<BTbaseNode> { checkForConsumable, findPriorityResource, moveToConsumable });
+
+        // health governs intial decisions as to whether or not we engage
+        // with the enemy after that we will then check reosurces such as fuel and ammo 
         // which are eveualted and updated by the rules and stats 
-        /*selectorsFromSearch = new List<BTselector> { attackingEnemy, attackingBase }; // same as above but with selectors
-        selectorsForAttack = new List<BTselector> { attackingEnemy, attackingBase };*/
-        evaluateConsumable = new BTsequence(new List<BTbaseNode> { seenConsumable, priorityCheck });
+        checkHighHealthAndTargetVisbible = new BTsequence(new List<BTbaseNode> { checkHighHealth, targetVisisbleCheck }); 
+        checkHighHealthAndBaseVisbible = new BTsequence(new List<BTbaseNode> { checkHighHealth, checkEnemyBaseVisible });        
+
+        checkLowHealthAndEnemyVisible = new BTsequence(new List<BTbaseNode> { checkLowHealth, targetVisisbleCheck}); // seqeunces wrapped in lists so multiple can be evalulated at once through the evelaute sequences utility method 
+        checkSearchSwitch = new BTsequence(new List<BTbaseNode> { checkSearch }); 
+        sequencesFromSearch = new List<BTsequence> { checkHighHealthAndTargetVisbible,checkHighHealthAndBaseVisbible,checkLowHealthAndEnemyVisible,checkSearchSwitch }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
+        
+        
 
 
 
-        initStateMachine();
+        initStateMachine(); // inti state machine for FSMRBSBT
 
 
 
@@ -769,6 +818,8 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public override void AITankUpdate()
     {
         base.AITankUpdate();
+        currentPriorityResource = priorityManager.getResources(priorityOrder, resourcePriorityOrder);
+
         updateBTSpecifcStats();
 
 

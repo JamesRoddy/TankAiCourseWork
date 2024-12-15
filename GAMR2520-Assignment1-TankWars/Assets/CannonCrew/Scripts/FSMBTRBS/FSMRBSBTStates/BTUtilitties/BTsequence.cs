@@ -26,7 +26,7 @@ public class BTsequence : BTbaseNode
             Debug.Log(nodeState);
 
              
-            if(nodeState == BTNODESTATES.FORCESUCCES )
+            if(nodeState == BTNODESTATES.FORCESUCCES ) // alllow a certain node within the sequence to force a success of the entire sequence used in the retreat state for the action node repsonisble for checking if the enemy tank is there for example 
             {
                 Debug.Log("FORCE SUCCESSS");
                 return BTNODESTATES.SUCCESS;
