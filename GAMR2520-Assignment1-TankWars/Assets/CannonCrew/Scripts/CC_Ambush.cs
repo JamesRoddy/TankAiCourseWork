@@ -48,7 +48,7 @@ public class Ambush : BaseST
         orbitPath.transform.position = Vector3.zero;
         tankPosition.transform.position = Vector3.zero;
         origin.transform.position = Vector3.zero;
-       
+
         fRotate = 0.0f;
         t = 0.0f;
         return null;
@@ -64,25 +64,25 @@ public class Ambush : BaseST
             Debug.Log("ambush found prioirity resource wait check complete moving to search");
             return typeof(SearchState);
         }
-        if ((t <= fTimeLimit&& !waitCheckComplete))
+        if ((t <= fTimeLimit && !waitCheckComplete))
         {
-            
-        
-            if(Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH)) // if we are still wainting and see the enemy tank and we are on high healthn we go into the attack styate to get the drop on the enemy while we are stood still(fire first)
+
+
+            if (Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH)) // if we are still wainting and see the enemy tank and we are on high healthn we go into the attack styate to get the drop on the enemy while we are stood still(fire first)
             {
                 return typeof(CC_AttackState);
             }
 
             hasFoundConsumable = consumableFound.transform.position != Vector3.zero; // checking for consumables 
-            if (!hasFoundConsumable || ( resourceFoundDuringAmbush!=PRIORITIES.NONE &&!Tank.priorityManager.checkLow(resourceFoundDuringAmbush) 
-                && Tank.priorityManager.checkLow( Tank.resourceFoundWhileWaiting))) // if we havent found a consuamble or see one of higher priority while we are wiaitng for the enemy tank
+            if (!hasFoundConsumable || (resourceFoundDuringAmbush != PRIORITIES.NONE && !Tank.priorityManager.checkLow(resourceFoundDuringAmbush)
+                && Tank.priorityManager.checkLow(Tank.resourceFoundWhileWaiting))) // if we havent found a consuamble or see one of higher priority while we are wiaitng for the enemy tank
             {
                 consumableFound.transform.position = Tank.checkConsumablesWhileWaiting().transform.position;
                 resourceFoundDuringAmbush = Tank.resourceFoundWhileWaiting; // we will get the resource found during ambush 
-                Debug.Log("consumables found during ambush " +consumableFound.transform.position);
+                Debug.Log("consumables found during ambush " + consumableFound.transform.position);
 
             }
-         
+
 
 
 
@@ -90,7 +90,7 @@ public class Ambush : BaseST
             {
                 float dotBetweenEnenmyAndResouce = Vector3.Dot(Vector3.Normalize(consumableFound.transform.position - Tank.transform.position), Tank.EtankLastKnownTransformForward); // see if the resource is behind us 
 
-                if(resourceFoundDuringAmbush != PRIORITIES.HEALTH || (resourceFoundDuringAmbush == PRIORITIES.HEALTH && !(dotBetweenEnenmyAndResouce > 0))) // if the resouce was health but in front of us ie near the enemy tank or it was not health
+                if (resourceFoundDuringAmbush != PRIORITIES.HEALTH || (resourceFoundDuringAmbush == PRIORITIES.HEALTH && !(dotBetweenEnenmyAndResouce > 0))) // if the resouce was health but in front of us ie near the enemy tank or it was not health
                 {
                     return typeof(Retreat); // we go into retreat from ambush
                 }
@@ -99,7 +99,7 @@ public class Ambush : BaseST
             }
             if (checkTimeLimitToMoveToConsumable()) // if the time limit is at 30% and weve found a consumable of high prioiryt during ambush we dont wait as long for the enemy tank and move to the conusmable instead
             {
-               
+
 
                 transitionContext.SetWaitStateGlobalContext(consumableFound, 2.5f, false); // set the context for the wait state before going into it
                 return typeof(WaitState);
@@ -107,16 +107,16 @@ public class Ambush : BaseST
             fRotate += Time.deltaTime;
             //Rotates the turret over a period of time
             //Need to find a way to adjust the speed.
-            
-            orbitPath.transform.position = new Vector3(Mathf.Sin(fRotate)*(Time.realtimeSinceStartup*10.0f), 0.0f, Mathf.Cos(fRotate) * (Time.realtimeSinceStartup*10.0f));
+
+            orbitPath.transform.position = new Vector3(Mathf.Sin(fRotate) * (Time.realtimeSinceStartup * 10.0f), 0.0f, Mathf.Cos(fRotate) * (Time.realtimeSinceStartup * 10.0f));
             tankPosition.transform.position = tankPosition.transform.position + orbitPath.transform.position;
 
             Tank.TurretFaceWorldPoint(tankPosition);
             return null;
-           
+
         }
 
-        if(Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))
+        if (Tank.enemyTank != null && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))
         {
             return typeof(CC_AttackState);
         }
@@ -142,27 +142,29 @@ public class Ambush : BaseST
         {
             if (Tank.priorityManager.checkLow(resourceFoundDuringAmbush)) // if we had any resources of high priority
             {
-                
+
                 // we dont know the position of the object as the ambush state will repetedly turn the turret for
                 // 30% of its original wait time event when it sees a consumable it needs
                 // so we may not have eyes on the consumable initially so we need to turn the turret to look at it before we can move to it 
                 return true;
-            }  
+            }
         }
 
         return false;
     }
-    private void checkForConsumable() {
+    private void checkForConsumable()
+    {
 
-        
-       lastKnownConsumablePos.transform.position = Tank.checkConsumablesWhileWaiting().transform.position;  
+
+        lastKnownConsumablePos.transform.position = Tank.checkConsumablesWhileWaiting().transform.position;
         // get the consumable we saw if we saw multiple it will be one of highest priroity
-        if (lastKnownConsumablePos.transform.position != Vector3.zero) { // found consumable 
+        if (lastKnownConsumablePos.transform.position != Vector3.zero)
+        { // found consumable 
             hasFoundConsumable = true;
         }
 
 
-        
+
 
     }
 
@@ -176,9 +178,9 @@ public class Ambush : BaseST
         lastKnownConsumablePos.transform.position = Vector3.zero;
         fRotate = 0.0f;
         t = 0.0f;
-        return null ;
+        return null;
     }
 
-    
+
 }
 

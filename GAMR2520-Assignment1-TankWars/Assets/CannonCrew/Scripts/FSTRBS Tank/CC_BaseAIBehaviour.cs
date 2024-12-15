@@ -43,15 +43,15 @@ public class BaseAIBehaviourModel : MonoBehaviour
         set { previousState = value; }
     }
 
-    public void SetWaitStateGlobalContext(GameObject positionToLookAt,  float waitTime,bool isCheckingForObject)
+    public void SetWaitStateGlobalContext(GameObject positionToLookAt, float waitTime, bool isCheckingForObject)
     {
         toLookForInWait = positionToLookAt;
 
         waitShouldCheckForObject = isCheckingForObject;
 
         UnityEngine.Debug.Log(posToLookForInWait.transform.position);
-        waitTimer = waitTime;   
-    }     
+        waitTimer = waitTime;
+    }
 
     // allow access to previous state allowing certain states such as the wait state to have context provided to them such as how  wait or the object tp look for based on previous state 
     public bool wasInState(Type stateType)
@@ -74,5 +74,5 @@ public class BaseAIBehaviourModel : MonoBehaviour
         set { waitTimer = value; }
         get { return waitTimer; }
 
-     }
+    }
 }

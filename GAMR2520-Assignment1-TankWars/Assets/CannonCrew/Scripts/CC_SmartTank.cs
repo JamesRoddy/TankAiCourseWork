@@ -88,7 +88,8 @@ public class CC_SmartTank : AITank
     public Vector3 getBasePosition()
     {
 
-        if (currentBases[0] != null) {
+        if (currentBases[0] != null)
+        {
 
             return currentBases[0].transform.position;
 
@@ -120,11 +121,12 @@ public class CC_SmartTank : AITank
         // transition context to certain states like the retreat state and wait state allowing the
         // states to set and adjust their values based on the previous state only this does not mean every single state is aware of every state or the state machine
         // simply that they have some kind of AI behaviour that has a global context they can access via their previous state or themselves
-       
 
-       
-      
-        if (!TryGetComponent(out CC_SmartTankRBS rules) || !TryGetComponent(out CC_smartTankFSMRBSBT bt)){
+
+
+
+        if (!TryGetComponent(out CC_SmartTankRBS rules) || !TryGetComponent(out CC_smartTankFSMRBSBT bt))
+        {
             Debug.Log("found did not find RBS ");
             Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>
         {
@@ -135,7 +137,7 @@ public class CC_SmartTank : AITank
             {typeof(Chase),new Chase(this)},
             {typeof(DodgeState),new DodgeState(this)},
             {typeof(Ambush),new Ambush(this,GetComponent<CC_FSM>())},
-            {typeof(Guard),new Guard(this)},
+            
         };
             GetComponent<CC_FSM>().setStates(states);
         }
@@ -269,7 +271,7 @@ public class CC_SmartTank : AITank
         {
             enemyBase = null;
         }
-        
+
         // updating current percent values for resources 
         healthValuesHolder.CurrentPriorityVal = a_GetHealthLevel / maxHealth;
         ammoValuesHolder.CurrentPriorityVal = a_GetAmmoLevel / maxAmmo;
@@ -283,8 +285,8 @@ public class CC_SmartTank : AITank
 
     public bool seeResource(PRIORITIES resource) // check if tabk saw a aprticualr resource
     {
-        
-        foreach(KeyValuePair<GameObject,float> gameObject in consumablesFound) // loop through visible conusmables
+
+        foreach (KeyValuePair<GameObject, float> gameObject in consumablesFound) // loop through visible conusmables
         {
 
             if (gameObject.Key.CompareTag(resourcesLinkedToTags[resource])) // check their type
@@ -294,14 +296,14 @@ public class CC_SmartTank : AITank
 
         }
 
-        return false; 
+        return false;
 
 
     }
 
     public bool stopAndCheckPos(GameObject position, float waitTime, GameObject checkFor, ref float timer)
     {
-        
+
         if (timer < waitTime)
         {
             timer += Time.deltaTime;
@@ -408,9 +410,10 @@ public class CC_SmartTank : AITank
 
     public Vector3 EtankLastKnownTransformForward
     {
-        get { return lastKnownEnemyData.transform.forward;  }
+        get { return lastKnownEnemyData.transform.forward; }
     }
-    public Vector3 urrentSafteySpot{
+    public Vector3 urrentSafteySpot
+    {
 
         set { currentSafteySpot = value; }
     }
@@ -418,17 +421,18 @@ public class CC_SmartTank : AITank
     {
         get { return tankFiringDistance; }
     }
-    
+
     public float BaseFiringDistance
     {
         get { return enemyBaseFiringDistance; }
     }
-    public float TankWaitTimer {
+    public float TankWaitTimer
+    {
         get { return tankWaitTime; }
         set { tankWaitTime = value; }
-    
 
-    
+
+
     }
 
     public GameObject LastKnownEPos
@@ -448,7 +452,7 @@ public class CC_SmartTank : AITank
     }
     public Vector3 BasePositionStore
     {
-        get{ return basePositionHolder.transform.position; }
+        get { return basePositionHolder.transform.position; }
     }
     /// <summary>
     /// Generate a path from current position to pointInWorld (GameObject). If no heuristic mode is set, default is Euclidean,
