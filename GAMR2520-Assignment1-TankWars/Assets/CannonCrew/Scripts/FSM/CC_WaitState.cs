@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaitState : BaseST
+public class CC_WaitState : BaseST
 {
 
 
@@ -18,7 +18,7 @@ public class WaitState : BaseST
     private float waitTimeRef = 0.0f;// timer to increment
     private CC_SmartTank tank;
     private bool wasInRetreat = false;
-    public WaitState(BaseAIBehaviourModel behaviourModel,CC_SmartTank tank)
+    public CC_WaitState(BaseAIBehaviourModel behaviourModel,CC_SmartTank tank)
     {
         
         transitionContext = behaviourModel;
@@ -27,18 +27,16 @@ public class WaitState : BaseST
 
     public override Type Entry()
     {
-        Debug.Log("wait entered "+logCounter);
         logCounter++;
         waitTime = transitionContext.GlobalTimerForWaitState; // get the context for the current wait state based on state that transitioned into it 
         objectPosition = transitionContext.GlobalObjectPositionForWait; // get the position we are looking at during the wait 
-        wasInRetreat = transitionContext.wasInState(typeof(Retreat)); // if our previous state was the retreat
+        wasInRetreat = transitionContext.wasInState(typeof(CC_Retreat)); // if our previous state was the retreat
 
         return null;
     }
 
     public override Type Exit()
     {
-        Debug.Log("wait exit " + logCounter);
         logCounter++;
         waitTimeRef = 0.0f;
         return null;
@@ -47,22 +45,15 @@ public class WaitState : BaseST
 
     public override Type Update()
     {
-        Debug.Log("wait update");
-
-       
         if (wasInRetreat) // if we were in the retreat state
         {
-            Debug.Log("getting reference to enemy tank");
             objectToLookFor = tank.enemyTank; // set and update the appropriate object to look for during wait
         }
 
 
-        if (tank.stopAndCheckPos(objectPosition, waitTime,objectToLookFor , ref waitTimeRef)){ // make the tank look ata positio  for a certain amount of time 
-            
-            Debug.Log("waiting for "+waitTime+" current time "+waitTimeRef);
-            Debug.Log( "was retreating " + (transitionContext.PreviousBehaviourStateType ==  typeof(Retreat)));
-            return transitionContext.PreviousBehaviourStateType; // jump back to previous behaviour that returned the wait state 
-            
+        if (tank.stopAndCheckPos(objectPosition, waitTime,objectToLookFor , ref waitTimeRef))
+        { // make the tank look ata positio  for a certain amount of time 
+           return transitionContext.PreviousBehaviourStateType; // jump back to previous behaviour that returned the wait state 
         };
 
 

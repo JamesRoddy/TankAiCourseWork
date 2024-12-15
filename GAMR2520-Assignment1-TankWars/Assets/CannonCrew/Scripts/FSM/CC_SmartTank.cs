@@ -106,7 +106,6 @@ public class CC_SmartTank : AITank
     }
     public bool isBasesALive()
     {
-        Debug.Log(currentBases.Count);
         if (currentBases[0] != null)
         {
             return true;
@@ -127,16 +126,15 @@ public class CC_SmartTank : AITank
 
         if (!TryGetComponent(out CC_SmartTankRBS rules) || !TryGetComponent(out CC_smartTankFSMRBSBT bt))
         {
-            Debug.Log("found did not find RBS ");
             Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>
         {
-            {typeof(SearchState),new SearchState(this)},
+            {typeof(CC_SearchState),new CC_SearchState(this)},
             {typeof(CC_AttackState),new CC_AttackState(this)},
-            {typeof(Retreat),new Retreat(this,GetComponent<CC_FSM>())},
-            {typeof(WaitState),new WaitState(GetComponent<CC_FSM>(),this)},
-            {typeof(Chase),new Chase(this)},
-            {typeof(DodgeState),new DodgeState(this)},
-            {typeof(Ambush),new Ambush(this,GetComponent<CC_FSM>())},
+            {typeof(CC_Retreat),new CC_Retreat(this,GetComponent<CC_FSM>())},
+            {typeof(CC_WaitState),new CC_WaitState(GetComponent<CC_FSM>(),this)},
+            {typeof(CC_Chase),new CC_Chase(this)},
+            {typeof(CC_DodgeState),new CC_DodgeState(this)},
+            {typeof(CC_Ambush),new CC_Ambush(this,GetComponent<CC_FSM>())},
             
         };
             GetComponent<CC_FSM>().setStates(states);
@@ -153,7 +151,6 @@ public class CC_SmartTank : AITank
 
     public override void AITankStart()
     {
-        Debug.Log("base start");
         // store current bases 
         currentBases = MyBases;
         /// lower thesh holds, higher thresh holds and max for each resource 
@@ -227,14 +224,10 @@ public class CC_SmartTank : AITank
         if (timer < waitTime)
         {
             timer += Time.deltaTime;
-            Debug.Log("tank stopping and checking position wait time: " + waitTime);
-
-            Debug.Log("waiting for " + timer);
             a_FaceTurretToPoint(position);
             return false;
         }
         timer = 0.0f;
-        Debug.Log("wait finished tank wait time  " + timer);
         return true;
 
 
@@ -307,21 +300,16 @@ public class CC_SmartTank : AITank
         if (timer < waitTime)
         {
             timer += Time.deltaTime;
-            Debug.Log("tank stopping and checking position wait time: " + waitTime);
 
             if (checkFor != null)
             {
-                Debug.Log("wait interupted object found at wait time : " + tankWaitTime);
                 timer = 0.0f;
                 return true;
             }
-
-            Debug.Log("waiting for " + timer);
             a_FaceTurretToPoint(position);
             return false;
         }
         timer = 0.0f;
-        Debug.Log("wait finished tank wait time  " + timer);
         return true;
 
 
@@ -345,7 +333,6 @@ public class CC_SmartTank : AITank
 
         }
 
-        Debug.Log("tried to get distance to enemy tank but was null returned 0.0f");
         return 0.0f;
 
     }
@@ -356,7 +343,6 @@ public class CC_SmartTank : AITank
         GameObject location = new GameObject();
         if (consumablesFound.Count > 0)
         {
-            Debug.Log("consuambles found");
             // consumables are assigned in order to priority so if we see a consumable that is of higher prioiryt during the ambush state than another as we are set checking around 
             // we could see multiple consumables during this 
             location = consumablesFound.First().Key;

@@ -6,7 +6,7 @@ using System.Net.NetworkInformation;
 using UnityEngine;
 using static PriorityManager;
 
-public class Ambush : BaseST
+public class CC_Ambush : BaseST
 {
     GameObject lastKnownConsumablePos = new GameObject();
     CC_SmartTank Tank;
@@ -27,15 +27,14 @@ public class Ambush : BaseST
     //This state is for when we havent seen anything important for 15 seconds.
     //So what it does is stop the tank, saving our precious fuel, and constantly rotate the turret in circles for 15 seconds lying in wait to ambush.
     //Once the enemy tank comes into proximity we ATTACK unless on of our resources is far too low.
-    public Ambush(CC_SmartTank newtank, BaseAIBehaviourModel transitionContext)
+    public CC_Ambush(CC_SmartTank newtank, BaseAIBehaviourModel transitionContext)
     {
         Tank = newtank;
         this.transitionContext = transitionContext;
     }
     public override Type Entry()
     {
-        Debug.Log("Entered Camping");
-        waitCheckComplete = transitionContext.wasInState(typeof(WaitState));
+        waitCheckComplete = transitionContext.wasInState(typeof(CC_WaitState));
 
         if (!waitCheckComplete) // only reset the turret if we wouldnt be looking at a consumable
         {
@@ -61,8 +60,7 @@ public class Ambush : BaseST
 
         if (waitCheckComplete) // if we waited fully to see if the consumable was still there(this will only trigger if the consuamble was of high priroity interupting the ambush 
         {
-            Debug.Log("ambush found prioirity resource wait check complete moving to search");
-            return typeof(SearchState);
+            return typeof(CC_SearchState);
         }
         if ((t <= fTimeLimit && !waitCheckComplete))
         {
@@ -79,7 +77,6 @@ public class Ambush : BaseST
             {
                 consumableFound.transform.position = Tank.checkConsumablesWhileWaiting().transform.position;
                 resourceFoundDuringAmbush = Tank.resourceFoundWhileWaiting; // we will get the resource found during ambush 
-                Debug.Log("consumables found during ambush " + consumableFound.transform.position);
 
             }
 
@@ -92,7 +89,7 @@ public class Ambush : BaseST
 
                 if (resourceFoundDuringAmbush != PRIORITIES.HEALTH || (resourceFoundDuringAmbush == PRIORITIES.HEALTH && !(dotBetweenEnenmyAndResouce > 0))) // if the resouce was health but in front of us ie near the enemy tank or it was not health
                 {
-                    return typeof(Retreat); // we go into retreat from ambush
+                    return typeof(CC_Retreat); // we go into retreat from ambush
                 }
                 t = fTimeLimit; // other wise we immidealy set our ambush timer to the max so we finish it 
 
@@ -100,9 +97,8 @@ public class Ambush : BaseST
             if (checkTimeLimitToMoveToConsumable()) // if the time limit is at 30% and weve found a consumable of high prioiryt during ambush we dont wait as long for the enemy tank and move to the conusmable instead
             {
 
-
                 transitionContext.SetWaitStateGlobalContext(consumableFound, 2.5f, false); // set the context for the wait state before going into it
-                return typeof(WaitState);
+                return typeof(CC_WaitState);
             }
             fRotate += Time.deltaTime;
             //Rotates the turret over a period of time
@@ -122,14 +118,13 @@ public class Ambush : BaseST
         }
         if (hasFoundConsumable && !waitCheckComplete)// if we found a consumable and havent already waited to check if its there 
         {
-            Debug.Log("should wait in ambush ");
             transitionContext.SetWaitStateGlobalContext(consumableFound, 2.5f, false);
-            return typeof(WaitState); // jump out of ambush state to get any consumables we found that may not be of priority but we still need them  
+            return typeof(CC_WaitState); // jump out of ambush state to get any consumables we found that may not be of priority but we still need them  
         }
 
 
         hasFoundConsumable = false;
-        return typeof(SearchState);
+        return typeof(CC_SearchState);
     }
 
 
@@ -170,7 +165,6 @@ public class Ambush : BaseST
 
     public override Type Exit()
     {
-        Debug.Log("Exited Camping");
         orbitPath.transform.position = Vector3.zero;
         tankPosition.transform.position = Vector3.zero;
         origin.transform.position = Vector3.zero;

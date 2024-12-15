@@ -5,7 +5,7 @@ using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 using static PriorityManager;
 
-public class DodgeState : BaseST
+public class CC_DodgeState : BaseST
 {
     public CC_SmartTank Tank;
     float tankAttackMinThresh = 10.0f;
@@ -20,17 +20,15 @@ public class DodgeState : BaseST
     GameObject tankPosition = new GameObject();
     GameObject orbitPath = new GameObject();
 
-    public DodgeState(CC_SmartTank newTank)
+    public CC_DodgeState(CC_SmartTank newTank)
     {
         Tank = newTank;
     }
 
     public override Type Entry()
     {
-        Debug.Log("Entered Kite");
         if (Tank.enemyTank != null && Vector3.Dot(Tank.enemyTank.transform.forward, Tank.transform.forward) >= 0)
         {
-            Debug.Log("Behinde the tank");
             return typeof(CC_AttackState);
         }
         enemyTarget = Tank.LastKnownEPos;
@@ -51,14 +49,13 @@ public class DodgeState : BaseST
         if (Tank.enemyTank == null)
         {
             
-            Debug.Log("Cant see tank");
         }
 
         //TO DO FIX BROKEN TRANSITION BETWEEN DODGE AND CHASE WE CAN END UP REPEATELDY SWITCHING BETWEEN THE TWO 
 
         if (Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position) > Tank.TankFiringDistance)
         {
-            return typeof(Chase);
+            return typeof(CC_Chase);
         }
 
         //Start a timer
@@ -85,7 +82,6 @@ public class DodgeState : BaseST
 
     public override Type Exit()
     {
-        Debug.Log("Exited Kite");
         t = 0f;
         enemyTarget = Tank.LastKnownEPos;
         orbitPath.transform.position = Vector3.zero;
