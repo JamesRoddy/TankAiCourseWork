@@ -23,7 +23,6 @@ public class CC_AttackState : BaseST
     }
     public override Type Entry()
     {
-        Debug.Log("Attack Enter " + logCounter);
         logCounter++;
         return null;
     }
@@ -36,20 +35,17 @@ public class CC_AttackState : BaseST
            
             if (Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {
-                // Debug.Log("attack switch to retreat low health " + logCounter);
                 logCounter++;
-                return typeof(Retreat);
+                return typeof(CC_Retreat);
             }
 
             if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))
             {
-                Debug.Log("priorities hit to chase ");
                 if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > Tank.TankFiringDistance
                    && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
                 {
-                    Debug.Log("attack switch to chase tank out of firing range " + logCounter);
                     logCounter++;
-                    return typeof(Chase);
+                    return typeof(CC_Chase);
 
                 }
             }
@@ -70,56 +66,24 @@ public class CC_AttackState : BaseST
             t += Time.deltaTime;
             if(baseDeadTimer<t  )
             {
-                Debug.Log("base dead");
                 isFiringAtBase = false;
                 t = 0.0f;
             }
-            //Potential to do 
-         /*   GameObject inverseEnemeyBase = new GameObject();
-            inverseEnemeyBase.transform.position = new Vector3(Tank.transform.forward.x , 0, Tank.transform.position.z + -Tank.transform.forward.z*5.0f);
-            */
-            /*if (Tank.stopAndCheckPos(inverseEnemeyBase, 2.5f,Tank.enemyTank)) {*/
-                
-               /* if(Tank.enemyTank != null)
-                {
-                    Debug.Log("saw enemy tank before attacking base ");
-                    return null;
-                }*/
-                 Debug.Log("Attacking enemy base");
-                 if(isFiringAtBase != true)
-                 {
-                   Tank.TurretFireAtPoint(Tank.EnemyBasePos);
-                   isFiringAtBase = true; 
-                 }
-                
-                 
-                  
-                Debug.Log("go into search after firing at base preventing chase with timer bug");
+
+            if(isFiringAtBase != true)
+            {
+                Tank.TurretFireAtPoint(Tank.EnemyBasePos);
+                isFiringAtBase = true; 
+            }
 
             return null;
         }
-        
-        Debug.Log("is enemy base null");
-         Debug.Log("attack switch to search no condtion was hit " + logCounter);
-         return typeof(SearchState);
 
-
-        /*  Debug.Log("attack switch to search low on res " + logCounter);
-          logCounter++;
-          return typeof(SearchState);*/
-
-
+         return typeof(CC_SearchState);
     }
 
     public override Type Exit()
     {
-        /*if(bCalc == false)
-        {
-            kitePath.transform.position = new Vector3(Mathf.Sin(Time.realtimeSinceStartup) * fkiteRadius, 0.0f, Mathf.Cos(Time.realtimeSinceStartup) * fkiteRadius);
-            kiteTankPosition.transform.position = Tank.LastKnownEPos.transform.position + kitePath.transform.position;
-            bCalc = true;
-        }*/
-        Debug.Log("Attack Exit "+ logCounter);
         fshootT = 0f;
         isFiringAtBase = false;
         t = 0.0f;

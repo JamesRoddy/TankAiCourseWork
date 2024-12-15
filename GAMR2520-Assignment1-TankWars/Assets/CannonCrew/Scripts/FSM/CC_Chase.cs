@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 using UnityEngine;
 using static CC_SmartTank;
 using static PriorityManager;
-public class Chase : BaseST
+public class CC_Chase : BaseST
 {
 
     private CC_SmartTank Tank;
@@ -16,14 +16,13 @@ public class Chase : BaseST
     float t = 0.0f;
     bool hasSeenBase = false;
     int logCounter = 0;
-    public Chase(CC_SmartTank newtank)
+    public CC_Chase(CC_SmartTank newtank)
     {
         Tank = newtank;
     }
 
     public override Type Entry()
     {
-        Debug.Log("Entered Chase " + logCounter);
         logCounter++;
         fSpeed = 1f;
         t = 0.0f;
@@ -32,7 +31,6 @@ public class Chase : BaseST
 
     public override Type Exit()
     {
-        Debug.Log("Chase Exit " + logCounter);
         logCounter++;
         t = 0.0f;
         fSpeed = 1f;
@@ -49,15 +47,14 @@ public class Chase : BaseST
         {
             if(Tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.AMMO))
             {
-                return typeof(SearchState);
+                return typeof(CC_SearchState);
             }
 
 
             if (Tank.priorityManager.checkLow(PRIORITIES.FUEL) || Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {
-                Debug.Log(" switch retreat due to fuel priority " + logCounter);
                 logCounter++;
-                return typeof(Retreat);
+                return typeof(CC_Retreat);
             }
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
@@ -65,13 +62,11 @@ public class Chase : BaseST
           
 
             //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the kite state
-             if ((Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
-                && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh) || 
-                ( Tank.enemyTank != null && Vector3.Dot(Tank.EtankLastKnownTransformForward,Tank.transform.forward) < 0.0f  ))
+             if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
+                && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
              {
-                Debug.Log("switch dodge: greater than min attack dist and smaller than max attack dist and not low fuel or ammo " + logCounter);
                 logCounter++;
-                return typeof(DodgeState);
+                return typeof(CC_DodgeState);
             }
 
           
@@ -85,7 +80,6 @@ public class Chase : BaseST
             hasSeenBase = true;
 
             //Once we have seen the enemy the base we travel towards it.
-            Debug.Log("Chasing Enemy Bases");
             if(Tank.enemyBase != null)// ensure base doesnt slip out of vision
             {
                 Tank.FollowPathToWorldPoint(Tank.enemyBase, fSpeed);
@@ -101,7 +95,6 @@ public class Chase : BaseST
                 if (Vector3.Distance(Tank.transform.position, Tank.EnemyBasePos.transform.position) < Tank.BaseFiringDistance
                && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
                 {
-                    Debug.Log("Base switch attack: greater than min attack dist and smaller than max attack dist and ammo " + logCounter);
                     logCounter++;
                     hasSeenBase = false;
                     return typeof(CC_AttackState);
@@ -109,8 +102,7 @@ public class Chase : BaseST
             }
             else if(Tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.AMMO))
             {
-                Debug.Log("chase switch to search chasing base no ammo");
-                return typeof(SearchState);
+                return typeof(CC_SearchState);
             }
            
 
@@ -122,13 +114,8 @@ public class Chase : BaseST
         }
         else if (t < chaseTime && Tank.enemyTank == null && Tank.enemyBase == null )
         {
-            Debug.Log("Chasing with timer ");
             t += Time.deltaTime;
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
-
-
-
-
             return null;
         }
 
@@ -149,7 +136,6 @@ public class Chase : BaseST
                     if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < Tank.TankFiringDistance
                         && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
                     {
-                        Debug.Log("Switches to attack after it tries to chase a retreating tank");
                         return typeof(CC_AttackState);
                     }
 
@@ -160,14 +146,13 @@ public class Chase : BaseST
     
                 }
 
-                Debug.Log("switch search tank no longer visible after moving to last known pos " + logCounter);
                 logCounter++;
-                return typeof(SearchState);
+                return typeof(CC_SearchState);
             }
             return null;
         }
 
-      return typeof(SearchState);
+      return typeof(CC_SearchState);
 
     }
 }
