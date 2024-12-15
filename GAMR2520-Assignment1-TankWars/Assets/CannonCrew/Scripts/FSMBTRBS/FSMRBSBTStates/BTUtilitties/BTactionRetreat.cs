@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// wrapper for all actions the behaviour tree can perform when in retreat state
+
 public class BTactionRetreat : MonoBehaviour
 {
     CC_smartTankFSMRBSBT Tank;
@@ -92,11 +92,10 @@ public class BTactionRetreat : MonoBehaviour
     public bool findSafteySpot()
     {
 
-        if (baseIsViable())
+        if (baseIsViable()) // check if the base is a valid coation for the tank to move to 
         {
-            safetySpot.transform.position = Tank.BasePositionStore;
-            hasinversion = false;
-            Debug.Log("base was viable");
+            safetySpot.transform.position = Tank.BasePositionStore; // set the saftey spot to the base 
+            hasinversion = false; // we dont need to use the enemies inverted position at this point as we know the base is safe 
             Tank.FollowPathToWorldPoint(safetySpot, currentSpeed);
             return true;
         }
@@ -104,24 +103,22 @@ public class BTactionRetreat : MonoBehaviour
         {
 
 
-            if (!hasinversion && Tank.stats["enemySeen"])
+            if (!hasinversion && Tank.stats["enemySeen"]) // if we dont have a current postion refence to the enemy and we see them
             {
-                Debug.Log("calculating enemy tank inversion");
-                hasinversion = true;
-                findInversionToETank(Tank.enemyTank.transform.position);
-                Tank.FollowPathToWorldPoint(safetySpot, currentSpeed);
+                hasinversion = true; // set the inversion
+                findInversionToETank(Tank.enemyTank.transform.position); // calculate the inverison
+                Tank.FollowPathToWorldPoint(safetySpot, currentSpeed); // move to the location considered safe 
 
             }
-            else if (CheckPositionReference() )
+            else if (CheckPositionReference() ) // if we dont have a position reference to the enemy
             {
                 
-                Debug.Log("need position refence no longer has inversion");
 
-                hasinversion = false;
+                hasinversion = false; // we no longer have a refernce to a spot that would be safe
                 return false;
             }
             Debug.Log("saftey spoot inversion found success");
-            Tank.FollowPathToWorldPoint(safetySpot, currentSpeed);
+            Tank.FollowPathToWorldPoint(safetySpot, currentSpeed); // follow the path to the saftey spot if we succed in fidning one 
             return true;
 
 
@@ -130,7 +127,7 @@ public class BTactionRetreat : MonoBehaviour
 
     }
 
-    public bool CheckPositionReference()
+    public bool CheckPositionReference() // used to validate the sfaety spot chosen by the tank
     {
        
         if (isToCloseToSafetySpotToRetreat(Tank.transform.position, safetySpot.transform.position, retreatToSpotDist) )
@@ -149,7 +146,7 @@ public class BTactionRetreat : MonoBehaviour
     {
 
 
-        if (runtimeIncrement < runTime)
+        if (runtimeIncrement < runTime) // coniute runnign to the saftey spot based ona timer so that we conver a certain amount of distance before looking behind us 
         {
             runtimeIncrement += Time.deltaTime;
             Debug.Log("run increment time " + runtimeIncrement);
@@ -165,7 +162,7 @@ public class BTactionRetreat : MonoBehaviour
 
 
 
-    private bool isRetreatToNotSpotViable(Vector3 position, Vector3 positionOfRetreat, float viableDistance)
+    private bool isRetreatToNotSpotViable(Vector3 position, Vector3 positionOfRetreat, float viableDistance) 
     {
 
         return isToCloseToSafetySpotToRetreat(position, positionOfRetreat, viableDistance);
@@ -244,30 +241,27 @@ public class BTactionRetreat : MonoBehaviour
     {
 
 
-
+        // check that we wont double back into the enemy tank if we chose the aftey spot as our base location
         float dotBetweenUsAndEnemy = Vector3.Dot(Tank.transform.forward, Tank.EtankLastKnownTransformForward);
         float dotBetweenBaseDirAndUs = Vector3.Dot(Tank.transform.forward, Vector3.Normalize(Tank.transform.position - Tank.BasePositionStore));
         bool baseAndTankIsNotBehindANotUs = !(dotBetweenUsAndEnemy >= 0 && dotBetweenBaseDirAndUs >= 0);
-
+        // check the enemy tank isnt too close to the base 
         float distanceToBaseOfEnemyTank = Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.BasePositionStore);
-
+        // check that we are not to close to the base
         bool baseIsAtHighDistance = Vector3.Distance(Tank.transform.position, Tank.BasePositionStore) > retreatToBaseViableDistance;
         bool enemyTankNotToCLoseToBase = Tank.compareDistanceBetwenPoints(Tank.BasePositionStore, Tank.LastKnownEPos.transform.position);
         float distanceToBaseAndEnemy = Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.BasePositionStore);
+        // if  the enemy  tank isnt too close and the base isnt too close to retreat to then it is considered a viable saftey spot 
 
-        UnityEngine.Debug.Log("tank is at high distance " + baseIsAtHighDistance);
-        UnityEngine.Debug.Log("tank not behind " + baseAndTankIsNotBehindANotUs);
-        UnityEngine.Debug.Log("e dist not too close " + enemyTankNotToCLoseToBase);
+
         return baseIsAtHighDistance && (enemyTankNotToCLoseToBase && baseAndTankIsNotBehindANotUs);
 
-        // if  the enemy  tank isnt too close and the base isnt too close to retreat to then it is considered a viable saftey spot 
 
     }
 
 
-   public void resetTimers()
+   public void resetTimers() // reset timers for retreat actions 
     {
-        Debug.Log("resetting retreat timers");
         waitTime = 0;
         runtimeIncrement = 0.0f;
 

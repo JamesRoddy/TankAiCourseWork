@@ -58,7 +58,11 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
    public BTselector switchFromSearch;
 
-   private BTAttackActions tankActionsForAttack;
+    // wrapper for all actions the behaviour tree can perform
+    // this comes from the modulation of actions that the behavioru tree provides allowing us to encapsulate all
+    // the actions into a single class that can be used 
+    // through out all of the behaviours and not just confined to something such as a state like with the FSM
+    private BTAttackActions tankActionsForAttack;
    private BTActionsSearch tankActionsForSearch;
    private BTActionsChase tankActionsForChase;
    private BTactionRetreat tankActionsForRetreat; 
@@ -150,21 +154,21 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     public BTNODESTATES findPriorityConsuamble()
     {
 
-        if (stats["hasReachedPriorityMax"])                                                     // if weve not found the priority resource a scertain number of times then we will take the reource weve found anyway and succed this part of the sequence to do so
+        if (stats["hasReachedPriorityMax"])   // if weve not found the priority resource a scertain number of times then we will take the reource weve found anyway and succed this part of the sequence to do so
         {
             Debug.Log("hit  max for  not finding priroity resource ");
 
             return BTNODESTATES.SUCCESS;
         }
 
-        if (stats["hasPriorityResource"]  )                                             // if we have a priroity resource that needs tending to(major or critical)
+        if (stats["hasPriorityResource"]  )  // if we have a priroity resource that needs tending to(major or critical)
         {
 
-            if (tankActionsForSearch.findPriorityResource(currentPriorityResource))                  // if we have reached the position
+            if (tankActionsForSearch.findPriorityResource(currentPriorityResource))  // if we have reached the position
             {
                 Debug.Log("has  completed finding priroity resource ");
 
-                return BTNODESTATES.SUCCESS;                                            // set the action node's state to success 
+                return BTNODESTATES.SUCCESS;    // set the action node's state to success 
             }
             Debug.Log("has  not completed finding priority resource ");
 

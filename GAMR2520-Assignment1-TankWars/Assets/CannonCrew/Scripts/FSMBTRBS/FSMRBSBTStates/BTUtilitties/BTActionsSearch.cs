@@ -52,12 +52,12 @@ public class BTActionsSearch : MonoBehaviour
 
 
 
-        if(priorityResourceNoHitMax == priorityResourceNotHitCounter)
+        if(priorityResourceNoHitMax == priorityResourceNotHitCounter) // if we have not  hit our priority resource for a certain number of times we will take the reosurce infront of us ensuring that we dont fall behind on other resources types that might not be the highest priority at the moment 
         {
             return true;
         }
 
-        if (!(Vector3.Distance(Tank.transform.position, currentPriorityPosition.transform.position) < consumableCheckDist))
+        if (!(Vector3.Distance(Tank.transform.position, currentPriorityPosition.transform.position) < consumableCheckDist)) // check if weve reached the desired consumable
         {
 
             Tank.FollowPathToWorldPoint(currentPriorityPosition, currentSpeed);
@@ -71,6 +71,8 @@ public class BTActionsSearch : MonoBehaviour
     }
 
 
+
+    // utlitlty method sto reset various vairbales associated with the actions related with search
     public bool isAtPriorityNoResourceHitMax()
     {
         return priorityResourceNotHitCounter == priorityResourceNoHitMax;
@@ -84,13 +86,13 @@ public class BTActionsSearch : MonoBehaviour
     {
         priorityResourceNotHitCounter++;
     }
-    public void checkIfPriorityResource(PRIORITIES priorityResource)
+    public void checkIfPriorityResource(PRIORITIES priorityResource) 
     {
-        organiseConsumables();
-        if (!organisedConsumables.ContainsKey(priorityResource))
+        organiseConsumables(); /// categorise resources 
+        if (!organisedConsumables.ContainsKey(priorityResource))//f wthe conusmable we see isnt the priority resource we need 
         {
 
-            priorityResourceNoHitMax++;
+            priorityResourceNoHitMax++; // inrement the counter each time we dont hit the prioriyt resource we need 
 
         }
     }
@@ -134,7 +136,7 @@ public class BTActionsSearch : MonoBehaviour
         }
         Tank.FollowPathToRandomWorldPoint(currentSpeed);
 
-        explorationTimer += Time.deltaTime;
+        explorationTimer += Time.deltaTime; 
         if (explorationTimer > maxSearchTime)
         {
             Tank.GenerateNewRandomWorldPoint();

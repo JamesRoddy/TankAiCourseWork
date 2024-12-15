@@ -13,10 +13,6 @@ public abstract class BTbaseNode  // bas node clss that allows for the evaulte m
 
     }
 
-
-
-
-
     public abstract BTNODESTATES evaluate();
 
 
