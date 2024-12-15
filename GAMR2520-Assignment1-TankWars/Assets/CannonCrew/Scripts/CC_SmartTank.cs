@@ -28,6 +28,7 @@ public class CC_SmartTank : AITank
     private Vector3 currentSafteySpot;
 
 
+    public PRIORITIES resourceFoundWhileWaiting = PRIORITIES.NONE;
 
     // current percentages for tank resources
     protected float healthPercentage;
@@ -64,7 +65,12 @@ public class CC_SmartTank : AITank
     protected GameObject enemyBasePosition;
     public List<GameObject> currentBases;
 
-
+    Dictionary<PRIORITIES, string> resourcesLinkedToTags = new Dictionary<PRIORITIES, string>
+    {
+        {PRIORITIES.HEALTH,"Health" },
+        {PRIORITIES.FUEL,"Fuel" },
+        {PRIORITIES.AMMO,"Ammo" },
+    };
 
     public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     // if the enenmy tank is visible it willl be first stored in this dicionary and cna be accessed through the first key
     public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    // stores any consumables visible 
@@ -82,7 +88,8 @@ public class CC_SmartTank : AITank
     public Vector3 getBasePosition()
     {
 
-        if (currentBases[0] != null) {
+        if (currentBases[0] != null)
+        {
 
             return currentBases[0].transform.position;
 
@@ -114,11 +121,12 @@ public class CC_SmartTank : AITank
         // transition context to certain states like the retreat state and wait state allowing the
         // states to set and adjust their values based on the previous state only this does not mean every single state is aware of every state or the state machine
         // simply that they have some kind of AI behaviour that has a global context they can access via their previous state or themselves
-       
 
-       
-      
-        if (!TryGetComponent(out CC_SmartTankRBS rules) && !TryGetComponent(out CC_SmartTankBT behaviourTree)){
+
+
+
+        if (!TryGetComponent(out CC_SmartTankRBS rules) || !TryGetComponent(out CC_smartTankFSMRBSBT bt))
+        {
             Debug.Log("found did not find RBS ");
             Dictionary<Type, BaseST> states = new Dictionary<Type, BaseST>
         {
@@ -128,8 +136,8 @@ public class CC_SmartTank : AITank
             {typeof(WaitState),new WaitState(GetComponent<CC_FSM>(),this)},
             {typeof(Chase),new Chase(this)},
             {typeof(DodgeState),new DodgeState(this)},
-            {typeof(Ambush),new Ambush(this)},
-           
+            {typeof(Ambush),new Ambush(this,GetComponent<CC_FSM>())},
+            
         };
             GetComponent<CC_FSM>().setStates(states);
         }
@@ -157,7 +165,7 @@ public class CC_SmartTank : AITank
         lastKnownEnemyData = new GameObject();
         enemyBasePosition = new GameObject();
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
-        healthPriorityThresh = 30.0f;
+        healthPriorityThresh = 40.0f;
         healthSafteyThresh = 50.0f;
 
 
@@ -212,7 +220,29 @@ public class CC_SmartTank : AITank
 
 
     }
+    public bool stopAndCheckPos(GameObject position, float waitTime, ref float timer)
+    {
 
+
+        if (timer < waitTime)
+        {
+            timer += Time.deltaTime;
+            Debug.Log("tank stopping and checking position wait time: " + waitTime);
+
+            Debug.Log("waiting for " + timer);
+            a_FaceTurretToPoint(position);
+            return false;
+        }
+        timer = 0.0f;
+        Debug.Log("wait finished tank wait time  " + timer);
+        return true;
+
+
+
+
+
+
+    }
 
 
     public override void AITankUpdate()
@@ -241,7 +271,7 @@ public class CC_SmartTank : AITank
         {
             enemyBase = null;
         }
-        
+
         // updating current percent values for resources 
         healthValuesHolder.CurrentPriorityVal = a_GetHealthLevel / maxHealth;
         ammoValuesHolder.CurrentPriorityVal = a_GetAmmoLevel / maxAmmo;
@@ -253,11 +283,26 @@ public class CC_SmartTank : AITank
     }
 
 
+    public bool seeResource(PRIORITIES resource) // check if tabk saw a aprticualr resource
+    {
 
+        foreach (KeyValuePair<GameObject, float> gameObject in consumablesFound) // loop through visible conusmables
+        {
+
+            if (gameObject.Key.CompareTag(resourcesLinkedToTags[resource])) // check their type
+            {
+                return true;// if type macthes resoucre we want return true
+            }
+
+        }
+
+        return false;
+
+
+    }
 
     public bool stopAndCheckPos(GameObject position, float waitTime, GameObject checkFor, ref float timer)
     {
-        
 
         if (timer < waitTime)
         {
@@ -304,6 +349,54 @@ public class CC_SmartTank : AITank
         return 0.0f;
 
     }
+    public GameObject checkConsumablesWhileWaiting()
+    {
+
+        // used to check for consumables while waitiing 
+        GameObject location = new GameObject();
+        if (consumablesFound.Count > 0)
+        {
+            Debug.Log("consuambles found");
+            // consumables are assigned in order to priority so if we see a consumable that is of higher prioiryt during the ambush state than another as we are set checking around 
+            // we could see multiple consumables during this 
+            location = consumablesFound.First().Key;
+            if (priorityManager.sweepQueues(new List<queuePriority> { queuePriority.MAJOR, queuePriority.CRITICAL }).Count > 0) // if we have any resources of critcial or major priority we check for them indivudally so if we see ammo and its of low prioiryt but then we see health and its of high priority we go to health
+            {
+                foreach (KeyValuePair<GameObject, float> gameObject in consumablesFound)
+                {
+                    if (gameObject.Key.CompareTag("Ammo") && priorityManager.checkLow(PRIORITIES.AMMO))
+                    {
+
+                        resourceFoundWhileWaiting = PRIORITIES.AMMO; // set the prioiryt resource found 
+                        return gameObject.Key; ;
+                    }
+                    else if (gameObject.Key.CompareTag("Fuel") && priorityManager.checkLow(PRIORITIES.HEALTH))
+                    {
+                        resourceFoundWhileWaiting = PRIORITIES.HEALTH;
+
+                        return gameObject.Key;
+                    }
+                    else if (gameObject.Key.CompareTag("Health") && priorityManager.checkLow(PRIORITIES.FUEL))
+                    {
+                        resourceFoundWhileWaiting = PRIORITIES.FUEL;
+
+                        return gameObject.Key;
+                    }
+
+                }
+            }
+
+
+        }
+
+
+
+
+        return location;
+
+
+    }
+
 
     public float getDistanceToEnemyBase()
     {
@@ -317,9 +410,10 @@ public class CC_SmartTank : AITank
 
     public Vector3 EtankLastKnownTransformForward
     {
-        get { return lastKnownEnemyData.transform.forward;  }
+        get { return lastKnownEnemyData.transform.forward; }
     }
-    public Vector3 urrentSafteySpot{
+    public Vector3 urrentSafteySpot
+    {
 
         set { currentSafteySpot = value; }
     }
@@ -327,17 +421,18 @@ public class CC_SmartTank : AITank
     {
         get { return tankFiringDistance; }
     }
-    
+
     public float BaseFiringDistance
     {
         get { return enemyBaseFiringDistance; }
     }
-    public float TankWaitTimer {
+    public float TankWaitTimer
+    {
         get { return tankWaitTime; }
         set { tankWaitTime = value; }
-    
 
-    
+
+
     }
 
     public GameObject LastKnownEPos
@@ -357,7 +452,7 @@ public class CC_SmartTank : AITank
     }
     public Vector3 BasePositionStore
     {
-        get{ return basePositionHolder.transform.position; }
+        get { return basePositionHolder.transform.position; }
     }
     /// <summary>
     /// Generate a path from current position to pointInWorld (GameObject). If no heuristic mode is set, default is Euclidean,

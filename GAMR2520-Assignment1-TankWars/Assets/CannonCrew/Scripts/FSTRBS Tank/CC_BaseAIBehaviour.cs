@@ -21,6 +21,7 @@ public class BaseAIBehaviourModel : MonoBehaviour
     protected BaseST previousState; // defines the context (allows this to be adjusted per behaviour used without needing to know which script is attached to the game object using the behavour )
     private GameObject toLookForInWait;
     private GameObject posToLookForInWait;
+    bool waitShouldCheckForObject;
     private float waitTimer = 0.0f;
     private void Awake()
     {
@@ -42,13 +43,15 @@ public class BaseAIBehaviourModel : MonoBehaviour
         set { previousState = value; }
     }
 
-    public void SetWaitStateGlobalContext(GameObject ToLookFor,  float waitTime)
+    public void SetWaitStateGlobalContext(GameObject positionToLookAt, float waitTime, bool isCheckingForObject)
     {
-        toLookForInWait = ToLookFor;
+        toLookForInWait = positionToLookAt;
+
+        waitShouldCheckForObject = isCheckingForObject;
 
         UnityEngine.Debug.Log(posToLookForInWait.transform.position);
-        waitTimer = waitTime;   
-    }     
+        waitTimer = waitTime;
+    }
 
     // allow access to previous state allowing certain states such as the wait state to have context provided to them such as how  wait or the object tp look for based on previous state 
     public bool wasInState(Type stateType)
@@ -57,7 +60,10 @@ public class BaseAIBehaviourModel : MonoBehaviour
         return PreviousBehaviourStateType == stateType;
     }
 
-  
+    public bool WaitCheckingForObject
+    {
+        get { return waitShouldCheckForObject; }
+    }
     public GameObject GlobalObjectPositionForWait
     {
         set { posToLookForInWait = value; }
@@ -68,5 +74,5 @@ public class BaseAIBehaviourModel : MonoBehaviour
         set { waitTimer = value; }
         get { return waitTimer; }
 
-     }
+    }
 }
