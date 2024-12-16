@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // wrapper for all actions the behaviour tree can perform when in chase state
-public class BTActionsChase : MonoBehaviour
+public class CC_BTActionsChase : MonoBehaviour
 {
 
     CC_smartTankFSMRBSBT Tank;
     float currentSpeed = 1.0f;
-    public BTActionsChase(CC_smartTankFSMRBSBT tank)
+    public CC_BTActionsChase(CC_smartTankFSMRBSBT tank)
     {
         Tank = tank;
     }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static PriorityManager;
-using static BTaction;
+using static CC_BTaction;
 using UnityEngine.Video;
 using JetBrains.Annotations;
 using System.Runtime.CompilerServices;
@@ -13,68 +13,68 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
     
     // all action nodes of the tree 
-    public BTaction targetVisisbleCheck;
-    public BTaction withinRangeCheck;
-    public BTaction checkHighHealth;
-    public BTaction checkLowHealth;
-    public BTaction checkHighAmmo;
-    public BTaction checkLowAmmo;
-    public BTaction checkAmmoCritical;
-    public BTaction checkSearch;
-    public BTaction checkHighFuel;
-    public BTaction checkLowFuel;
-    public BTaction checkShouldChaseBase;
-    public BTaction checkShouldChase;
-    public BTaction checkLostTarget;
-    public BTaction checkShouldAttack;
-    public BTaction checkShouldRetreat;
-    public BTaction checkShouldAttackBase;
-    public BTaction checkEnemyBaseVisible;
-    public BTaction checkLostSightInSearch;
-    public BTaction checkWihtinRangeOfBase;
-    public BTaction moveToConsumable;
-    public BTaction checkForConsumable;
-    public BTaction findPriorityResource;
+    public CC_BTaction targetVisisbleCheck;
+    public CC_BTaction withinRangeCheck;
+    public CC_BTaction checkHighHealth;
+    public CC_BTaction checkLowHealth;
+    public CC_BTaction checkHighAmmo;
+    public CC_BTaction checkLowAmmo;
+    public CC_BTaction checkAmmoCritical;
+    public CC_BTaction checkSearch;
+    public CC_BTaction checkHighFuel;
+    public CC_BTaction checkLowFuel;
+    public CC_BTaction checkShouldChaseBase;
+    public CC_BTaction checkShouldChase;
+    public CC_BTaction checkLostTarget;
+    public CC_BTaction checkShouldAttack;
+    public CC_BTaction checkShouldRetreat;
+    public CC_BTaction checkShouldAttackBase;
+    public CC_BTaction checkEnemyBaseVisible;
+    public CC_BTaction checkLostSightInSearch;
+    public CC_BTaction checkWihtinRangeOfBase;
+    public CC_BTaction moveToConsumable;
+    public CC_BTaction checkForConsumable;
+    public CC_BTaction findPriorityResource;
   
     
     
 
-   BTaction checkEnemyPos;
-   BTaction lookForEnemy;
-   BTaction getSafeSpot;
-   BTaction moveToSafeSpot;
+   CC_BTaction checkEnemyPos;
+   CC_BTaction lookForEnemy;
+   CC_BTaction getSafeSpot;
+   CC_BTaction moveToSafeSpot;
     // selectors and sequences for the tree allowing for multiple actions to be chained and evaulted togther 
-   public BTselector attackingBase; // selector for attacking enemy base and checking if we are in range 
-   public BTselector attackingEnemy;// selector for attacking enemy and if we are in range if one succeed then we will nnot attack
-   public BTsequence retreating; // sequnce fo retreating inlcuidg looking behind moving to sfatey spot and getting sfatey spot 
-   public List<BTsequence> sequencesFromSearch ; // define all sequnces that if met will rantions us out of search
-   public List<BTselector> selectorsForAttack; // wrapp all the selectors for attack into one list so they can be looped through and checked at once
-   public BTsequence chasingEnemy; // seqeunce for checking if we lost sight of the enemy during chase so we chase the last knwon postion or if we should chase the enemy weh they are visisble
-   public BTaction chasingBases; // sequence for getting close to a base and shooting it to ensure we dont miss 
+   public CC_BTselector attackingBase; // selector for attacking enemy base and checking if we are in range 
+   public CC_BTselector attackingEnemy;// selector for attacking enemy and if we are in range if one succeed then we will nnot attack
+   public CC_BTsequence retreating; // sequnce fo retreating inlcuidg looking behind moving to sfatey spot and getting sfatey spot 
+   public List<CC_BTsequence> sequencesFromSearch ; // define all sequnces that if met will rantions us out of search
+   public List<CC_BTselector> selectorsForAttack; // wrapp all the selectors for attack into one list so they can be looped through and checked at once
+   public CC_BTsequence chasingEnemy; // seqeunce for checking if we lost sight of the enemy during chase so we chase the last knwon postion or if we should chase the enemy weh they are visisble
+   public CC_BTaction chasingBases; // sequence for getting close to a base and shooting it to ensure we dont miss 
  
 
 
-    public BTsequence findingConsumables; // sequence for findnig consumables and evaluating their prirority
+    public CC_BTsequence findingConsumables; // sequence for findnig consumables and evaluating their prirority
 
-   public BTselector switchFromSearch;
+   public CC_BTselector switchFromSearch;
 
     // wrapper for all actions the behaviour tree can perform
     // this comes from the modulation of actions that the behavioru tree provides allowing us to encapsulate all
     // the actions into a single class that can be used 
     // through out all of the behaviours and not just confined to something such as a state like with the FSM
-    private BTAttackActions tankActionsForAttack;
-   private BTActionsSearch tankActionsForSearch;
-   private BTActionsChase tankActionsForChase;
-   private BTactionRetreat tankActionsForRetreat; 
+    private CC_BTAttackActions tankActionsForAttack;
+   private CC_BTActionsSearch tankActionsForSearch;
+   private CC_BTActionsChase tankActionsForChase;
+   private CC_BTactionRetreat tankActionsForRetreat; 
 
-   public BTsequence checkHighHealthAndBaseVisbible;
-    public BTsequence checkLowHealthAndEnemyVisible;
+   public CC_BTsequence checkHighHealthAndBaseVisbible;
+    public CC_BTsequence checkLowHealthAndEnemyVisible;
 
-    public BTsequence checkSearchSwitch;
+    public CC_BTsequence checkSearchSwitch;
    private List<queuePriority> priorityOrder =  new List<queuePriority> { queuePriority.MAJOR, queuePriority.CRITICAL };
    private List<PRIORITIES> resourcePriorityOrder = new List<PRIORITIES> { PRIORITIES.HEALTH, PRIORITIES.FUEL, PRIORITIES.AMMO };
    public PRIORITIES currentPriorityResource;
-   public BTsequence checkHighHealthAndTargetVisbible;
+   public CC_BTsequence checkHighHealthAndTargetVisbible;
 
     List<Rule> rulesForFSMRBSBT;// initilaise rules for bt
 
@@ -681,11 +681,11 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         stats["hasReachedPriorityMax"] = tankActionsForSearch.priorityResourceNoHitMax <= tankActionsForSearch.priorityResourceNotHitCounter;
 
     }
-    public bool evaluateSelectors(List<BTselector> selectors) // util function to evaluate multiple sequences at once
+    public bool evaluateSelectors(List<CC_BTselector> selectors) // util function to evaluate multiple sequences at once
     {
      
         BTNODESTATES result = BTNODESTATES.FAILURE;
-        foreach (BTselector selector in selectors)
+        foreach (CC_BTselector selector in selectors)
         {
             
 
@@ -705,10 +705,10 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
 
 
-    public bool evaluateSequences(List<BTsequence> sequences) // allows us to evaluate multiple seuqences at once to se if we should go into other states from search for exmaple
+    public bool evaluateSequences(List<CC_BTsequence> sequences) // allows us to evaluate multiple seuqences at once to se if we should go into other states from search for exmaple
     {
         
-        foreach (BTsequence sequence in sequences)
+        foreach (CC_BTsequence sequence in sequences)
         {
           if(sequence.evaluate() == BTNODESTATES.SUCCESS) {
 
@@ -745,64 +745,64 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         initRuleDictionaries();
       
         // intilaise wrapper for actions associated with various sequence and selctors or action nodes such as attacking a base chaing  a base to get in range so we dont miss a shot, retreating, looking behind and waiting, etc 
-        tankActionsForAttack = new BTAttackActions(this);
-        tankActionsForSearch = new BTActionsSearch(this);
-        tankActionsForChase = new BTActionsChase(this);
-        tankActionsForRetreat = new BTactionRetreat(this);
+        tankActionsForAttack = new CC_BTAttackActions(this);
+        tankActionsForSearch = new CC_BTActionsSearch(this);
+        tankActionsForChase = new CC_BTActionsChase(this);
+        tankActionsForRetreat = new CC_BTactionRetreat(this);
 
 
         // intilaing the action nodes of the tree with their associated function to be subscribed to the delegate within the action node object 
 
-        checkEnemyPos = new BTaction(checkPosRetreat);
-        getSafeSpot = new BTaction(getSafteySpot);
-        moveToSafeSpot = new BTaction(moveToSaftey);
+        checkEnemyPos = new CC_BTaction(checkPosRetreat);
+        getSafeSpot = new CC_BTaction(getSafteySpot);
+        moveToSafeSpot = new CC_BTaction(moveToSaftey);
 
-        checkForConsumable = new BTaction(ActionSeeConsumable);
-        findPriorityResource = new BTaction(findPriorityConsuamble);
-        moveToConsumable = new BTaction(getConsumable);
+        checkForConsumable = new CC_BTaction(ActionSeeConsumable);
+        findPriorityResource = new CC_BTaction(findPriorityConsuamble);
+        moveToConsumable = new CC_BTaction(getConsumable);
 
 
-        targetVisisbleCheck = new BTaction(ActionCheckEnemyVisisble);
-        withinRangeCheck = new BTaction(ActionCheckRange);
-        checkHighHealth = new BTaction(ActionCheckHighHealth);
-        checkLowHealth = new BTaction(ActionCheckLowHealth);
-        checkHighAmmo = new BTaction(ActionCheckHighAmmo);
-        checkLowAmmo = new BTaction(ActionCheckLowAmmo);
-        checkAmmoCritical = new BTaction(ActionmCheckCriticalAmmo);
-        checkLostSightInSearch = new BTaction(isInSearchAndLostSight);
+        targetVisisbleCheck = new CC_BTaction(ActionCheckEnemyVisisble);
+        withinRangeCheck = new CC_BTaction(ActionCheckRange);
+        checkHighHealth = new CC_BTaction(ActionCheckHighHealth);
+        checkLowHealth = new CC_BTaction(ActionCheckLowHealth);
+        checkHighAmmo = new CC_BTaction(ActionCheckHighAmmo);
+        checkLowAmmo = new CC_BTaction(ActionCheckLowAmmo);
+        checkAmmoCritical = new CC_BTaction(ActionmCheckCriticalAmmo);
+        checkLostSightInSearch = new CC_BTaction(isInSearchAndLostSight);
 
 
     
-        checkHighFuel = new BTaction(ActionCheckHighFuel);
-        checkLowFuel = new BTaction(ActionCheckLowFuel);
+        checkHighFuel = new CC_BTaction(ActionCheckHighFuel);
+        checkLowFuel = new CC_BTaction(ActionCheckLowFuel);
 
-        checkShouldChase = new BTaction(ActionCheckShouldChase);
-        checkLostTarget = new BTaction(ActionCheckLostSight);
-        checkShouldChaseBase = new BTaction(chaseBase);
-        checkSearch = new BTaction(checkShouldSearch);
-        checkShouldAttack = new BTaction(ActionCanAttackEnemy);
-        checkShouldRetreat = new BTaction(ActionCheckShouldRetreat);
-        checkShouldAttackBase = new BTaction(ActionCheckCanAttackBase);
-        checkEnemyBaseVisible = new BTaction(ActionCheckEnemyBaseVisisble);
-        checkWihtinRangeOfBase = new BTaction(ActionCheckBaseRange);
+        checkShouldChase = new CC_BTaction(ActionCheckShouldChase);
+        checkLostTarget = new CC_BTaction(ActionCheckLostSight);
+        checkShouldChaseBase = new CC_BTaction(chaseBase);
+        checkSearch = new CC_BTaction(checkShouldSearch);
+        checkShouldAttack = new CC_BTaction(ActionCanAttackEnemy);
+        checkShouldRetreat = new CC_BTaction(ActionCheckShouldRetreat);
+        checkShouldAttackBase = new CC_BTaction(ActionCheckCanAttackBase);
+        checkEnemyBaseVisible = new CC_BTaction(ActionCheckEnemyBaseVisisble);
+        checkWihtinRangeOfBase = new CC_BTaction(ActionCheckBaseRange);
         
-        switchFromSearch = new BTselector(new List<BTbaseNode> {  targetVisisbleCheck, checkLostSightInSearch,checkSearch });
-        attackingEnemy = new BTselector(new List<BTbaseNode> {  checkShouldAttack, withinRangeCheck, });
-        attackingBase = new BTselector(new List<BTbaseNode> { checkShouldAttackBase, checkWihtinRangeOfBase });
-        chasingEnemy = new BTsequence(new List<BTbaseNode> { checkLostTarget, checkShouldChase });
+        switchFromSearch = new CC_BTselector(new List<CC_BTbaseNode> {  targetVisisbleCheck, checkLostSightInSearch,checkSearch });
+        attackingEnemy = new CC_BTselector(new List<CC_BTbaseNode> {  checkShouldAttack, withinRangeCheck, });
+        attackingBase = new CC_BTselector(new List<CC_BTbaseNode> { checkShouldAttackBase, checkWihtinRangeOfBase });
+        chasingEnemy = new CC_BTsequence(new List<CC_BTbaseNode> { checkLostTarget, checkShouldChase });
         
-        retreating = new BTsequence(new List<BTbaseNode> { checkEnemyPos, getSafeSpot, moveToSafeSpot }); // sequence for retreating one action node that being the node for checking the enemy is there hasa force success as it is not the ned of the sequnce but is a potential break point if we dont see the enemy after looking behind 
-        findingConsumables = new BTsequence(new List<BTbaseNode> { checkForConsumable, findPriorityResource, moveToConsumable });
+        retreating = new CC_BTsequence(new List<CC_BTbaseNode> { checkEnemyPos, getSafeSpot, moveToSafeSpot }); // sequence for retreating one action node that being the node for checking the enemy is there hasa force success as it is not the ned of the sequnce but is a potential break point if we dont see the enemy after looking behind 
+        findingConsumables = new CC_BTsequence(new List<CC_BTbaseNode> { checkForConsumable, findPriorityResource, moveToConsumable });
 
         // health governs intial decisions as to whether or not we engage
         // with the enemy after that we will then check reosurces such as fuel and ammo 
         // which are eveualted and updated by the rules and stats 
-        checkHighHealthAndTargetVisbible = new BTsequence(new List<BTbaseNode> { checkHighHealth, targetVisisbleCheck }); 
-        checkHighHealthAndBaseVisbible = new BTsequence(new List<BTbaseNode> { checkHighHealth, checkEnemyBaseVisible });        
+        checkHighHealthAndTargetVisbible = new CC_BTsequence(new List<CC_BTbaseNode> { checkHighHealth, targetVisisbleCheck }); 
+        checkHighHealthAndBaseVisbible = new CC_BTsequence(new List<CC_BTbaseNode> { checkHighHealth, checkEnemyBaseVisible });        
 
-        checkLowHealthAndEnemyVisible = new BTsequence(new List<BTbaseNode> { checkLowHealth, targetVisisbleCheck}); // seqeunces wrapped in lists so multiple can be evalulated at once through the evelaute sequences utility method 
-        checkSearchSwitch = new BTsequence(new List<BTbaseNode> { checkSearch }); 
-        sequencesFromSearch = new List<BTsequence> { checkHighHealthAndTargetVisbible,checkHighHealthAndBaseVisbible,checkLowHealthAndEnemyVisible,checkSearchSwitch }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
+        checkLowHealthAndEnemyVisible = new CC_BTsequence(new List<CC_BTbaseNode> { checkLowHealth, targetVisisbleCheck}); // seqeunces wrapped in lists so multiple can be evalulated at once through the evelaute sequences utility method 
+        checkSearchSwitch = new CC_BTsequence(new List<CC_BTbaseNode> { checkSearch }); 
+        sequencesFromSearch = new List<CC_BTsequence> { checkHighHealthAndTargetVisbible,checkHighHealthAndBaseVisbible,checkLowHealthAndEnemyVisible,checkSearchSwitch }; // allows us to evelaute multiple seuqences at once to se if we should go into other states from search for exmaple
         
         
 

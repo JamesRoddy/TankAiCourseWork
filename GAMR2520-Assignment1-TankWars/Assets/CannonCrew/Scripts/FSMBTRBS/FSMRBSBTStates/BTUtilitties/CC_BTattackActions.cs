@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using UnityEngine;
 // wrapper for all actions the behaviour tree can perform when in attack state
 
-public class BTAttackActions : MonoBehaviour
+public class CC_BTAttackActions : MonoBehaviour
 {
 
     CC_smartTankFSMRBSBT Tank;
@@ -12,7 +12,7 @@ public class BTAttackActions : MonoBehaviour
     public float baseDeadTimer = 2.10f;
     public float baseTimerIncrement = 0.0f;
     bool isFiringAtBase = false;
-    public BTAttackActions(CC_smartTankFSMRBSBT tank)
+    public CC_BTAttackActions(CC_smartTankFSMRBSBT tank)
     {
         Tank = tank;
     }

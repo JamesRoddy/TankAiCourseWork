@@ -5,7 +5,7 @@ using UnityEngine;
 using static PriorityManager;
 // wrapper for all actions the behaviour tree can perform when in search state
 
-public class BTActionsSearch : MonoBehaviour
+public class CC_BTActionsSearch : MonoBehaviour
 {
 
 
@@ -24,7 +24,7 @@ public class BTActionsSearch : MonoBehaviour
     public GameObject consumablePosition;
 
     Dictionary<PRIORITIES, GameObject> organisedConsumables = new Dictionary<PRIORITIES, GameObject>();
-    public BTActionsSearch(CC_smartTankFSMRBSBT tank)
+    public CC_BTActionsSearch(CC_smartTankFSMRBSBT tank)
     {
         this.Tank = tank;
         currentPriorityPosition = new GameObject();

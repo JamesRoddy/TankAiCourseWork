@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
-public class BTaction : BTbaseNode
+public class CC_BTaction : CC_BTbaseNode
 {
 
     // allows a specifc function to be allocated or subscribed to each BTaction which will return a node state 
@@ -12,13 +12,13 @@ public class BTaction : BTbaseNode
     private ActionNodeFunction action;
     public bool forceSuccess = false;
     public BTNODESTATES forceSuccesOn = BTNODESTATES.SUCCESS;
-    public BTaction(ActionNodeFunction action)
+    public CC_BTaction(ActionNodeFunction action)
     {
         this.action = action;
         
         
     }
-    public BTaction(ActionNodeFunction action, bool forceSuccess, BTNODESTATES nodeStateToForceSucces)
+    public CC_BTaction(ActionNodeFunction action, bool forceSuccess, BTNODESTATES nodeStateToForceSucces)
     {
         this.action = action;
         this.forceSuccess = forceSuccess;

@@ -5,10 +5,10 @@ using UnityEngine;
 
 
 
-public class BTselector:BTbaseNode //s electors act as an or gate for action nodes and willl evelaute until at least when is a success
+public class CC_BTselector:CC_BTbaseNode //s electors act as an or gate for action nodes and willl evelaute until at least when is a success
 {
-    public List<BTbaseNode> actions = new List<BTbaseNode>();
-    public  BTselector(List<BTbaseNode> actions)
+    public List<CC_BTbaseNode> actions = new List<CC_BTbaseNode>();
+    public  CC_BTselector(List<CC_BTbaseNode> actions)
     {
         Debug.Log("init actions ");
         this.actions = actions;
@@ -18,7 +18,7 @@ public class BTselector:BTbaseNode //s electors act as an or gate for action nod
     {
 
  
-        foreach (BTbaseNode action in actions) {  // go through all actions required
+        foreach (CC_BTbaseNode action in actions) {  // go through all actions required
         
 
             nodeState = (action.evaluate()); // get state of action node 

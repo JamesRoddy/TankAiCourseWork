@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BTactionRetreat : MonoBehaviour
+public class CC_BTactionRetreat : MonoBehaviour
 {
     CC_smartTankFSMRBSBT Tank;
     float runTime = 8.5f;
@@ -21,7 +21,7 @@ public class BTactionRetreat : MonoBehaviour
     private float retreatToBaseViableDistance = 90.0f;
     private GameObject safetySpot = new GameObject();
 
-    public BTactionRetreat(CC_smartTankFSMRBSBT tank)
+    public  CC_BTactionRetreat(CC_smartTankFSMRBSBT tank)
     {
         Tank = tank;
         

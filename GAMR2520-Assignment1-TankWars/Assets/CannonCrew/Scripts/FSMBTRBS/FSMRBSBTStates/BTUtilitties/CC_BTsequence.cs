@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 
-public class BTsequence : BTbaseNode
+public class CC_BTsequence : CC_BTbaseNode
 {
 
-    public List<BTbaseNode> actions = new List<BTbaseNode>();
-    public BTsequence(List<BTbaseNode> sequenceOfAtcionsToBeEvaluated)
+    public List<CC_BTbaseNode> actions = new List<CC_BTbaseNode>();
+    public  CC_BTsequence(List<CC_BTbaseNode> sequenceOfAtcionsToBeEvaluated)
     {
         Debug.Log("init actions ");
         actions = sequenceOfAtcionsToBeEvaluated;
@@ -19,7 +19,7 @@ public class BTsequence : BTbaseNode
         // the sequeec eis essentially an && gate for the actions that must be successfull in order for the sequence to be complete 
         // therefore if one fails the sequenece is incomplete and therefore broken
  
-        foreach (BTbaseNode action in actions)
+        foreach (CC_BTbaseNode action in actions)
         { // go through all nodes
 
             nodeState = (action.evaluate());
