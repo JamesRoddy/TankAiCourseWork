@@ -7,7 +7,7 @@ using static PriorityManager;
 using static UnityEditor.ShaderData;
 using static UnityEngine.EventSystems.EventTrigger;
 
-public class RetreatRBS : BaseST
+public class CC_RetreatStateRBS : BaseST
 {
 
     private CC_SmartTankRBS Tank;
@@ -30,7 +30,7 @@ public class RetreatRBS : BaseST
     float fSpeed;
     bool bEnemySeen = true;
     int logCounter = 0;
-    public RetreatRBS(CC_SmartTankRBS newtank)
+    public CC_RetreatStateRBS(CC_SmartTankRBS newtank)
     {
         Tank = newtank;
     }
@@ -108,7 +108,7 @@ public class RetreatRBS : BaseST
             {
 
                 Debug.Log("enemy not seen when trying to get pos reference going to search");
-                return typeof(SearchStateRBS);
+                return typeof(CC_SearchStateRBS);
             }
             Debug.Log(safetySpot.transform.position);
             Debug.Log("does safety spot need to change " + changeSafteySpot);
@@ -153,39 +153,20 @@ public class RetreatRBS : BaseST
 
         if (!bEnemySeen)
         {
-/*            Debug.Log("stopping distance " + Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position));
-*/            //  wait 2 seconds to pass to make sure that the enemy tank isn't anywhere near us.
-            //If 2 seconds pass uninterrupted then we go back to the search state
-/*            Debug.Log("t before entering retreat swivile " + t);
-*/
-/*            Debug.Log("tank runtime met  t was " + t);
-*/                
             
                 if (Tank.stopAndCheckPos(Tank.LastKnownEPos, tankCheckBehindTime, Tank.enemyTank, ref waitTime))
                 {
-/*                    Debug.Log("last known enemy tank position " + Tank.LastKnownEPos.transform.position);
-*//*                     Debug.Log("current wait time " + waitTime);
-*/
-
 
                     if (Tank.enemyTank == null) // if we didnt see the tank when we retreated 
                     {
-/*                        Debug.Log("retreat switch to search on timer enemy not seen" + logCounter);
-*/                        logCounter++;
-                        /*Debug.Log("executing final retreat check for " + tankCheckBehindTime + "seconds");*/
-                        return typeof(SearchStateRBS); // go into search
+                        return typeof(CC_SearchStateRBS); // go into search
 
 
                     }
                     else if (Tank.enemyTank != null)
                     {
-
-/*                        Debug.Log("enemy tank was not null when checking retreat");
-*/                        
                         t = runTime;// set retreat timer  ready for next run 
-/*                        Debug.Log("retreat timer  " + t);
-*//*                        Debug.Log(" retreat timer set equal to runtime t was : " + t);
-*/                        bEnemySeen = true; // assume we saw the enemy
+                        bEnemySeen = true; // assume we saw the enemy
 
                     }
                     return null;
@@ -198,22 +179,6 @@ public class RetreatRBS : BaseST
 
 
         }
-
-
-        /*if ((Tank.enemyTank != null || bEnemySeen)) // we check again after we look behind us to prevent us from just stopping 
-        {
-
-            t += Time.deltaTime;
-            getSafetySpot();
-            Debug.Log("Going back to base ");
-            Tank.FollowPathToWorldPoint(safetySpot, fSpeed);
-
-            if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > retreatCheckDistance)
-            {
-                bEnemySeen = false;
-
-            }
-        }*/
 
         foreach (var item in Tank.rules.GetRules) // iterates through the rules
         {
@@ -274,12 +239,6 @@ public class RetreatRBS : BaseST
             }
         }
 
-
-
-
-        /*        safetySpot.transform.position = safetySpot.transform.position + new Vector3(MathF.Sin(Time.realtimeSinceStartup) * 10.0f, 0.0f, 0.0f);
-        */        //occsilate position to dodge;
-
     }
 
 
@@ -317,9 +276,6 @@ public class RetreatRBS : BaseST
     // is it safe to retreat to base 
     private bool isRetreatToNotSpotViable(Vector3 position, Vector3 positionOfRetreat, float viableDistance)
     {
-        /*        || !Tank.compareDistanceBetwenPoints(safetySpot.transform.position, Tank.LastKnownEPos.transform.position);
-         *        
-        */
         changeSafteySpot = isToCloseToSafetySpotToRetreat(position, positionOfRetreat, viableDistance);
         Debug.Log("  change saftey spot " + Vector3.Distance(position, positionOfRetreat));
         if (!changeSafteySpot)

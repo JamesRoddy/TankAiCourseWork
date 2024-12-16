@@ -8,7 +8,7 @@ using UnityEditor.XR;
 using UnityEngine;
 using static CC_SmartTank;
 using static PriorityManager;
-public class SearchStateRBS : BaseST
+public class CC_SearchStateRBS : BaseST
 {
 
     private CC_SmartTankRBS Tank;
@@ -24,7 +24,7 @@ public class SearchStateRBS : BaseST
     private float currentSpeed = 0.85f;
     float checkBehindWaitTime = 0.0f;
     int logCounter = 0;
-    public SearchStateRBS(CC_SmartTankRBS newTank)
+    public CC_SearchStateRBS(CC_SmartTankRBS newTank)
     {
         Tank = newTank;
 
@@ -69,14 +69,6 @@ public class SearchStateRBS : BaseST
                 return item.CheckRule(Tank.stats); // return the state
             }
         }
-        /*
-               checkStateTransitions();
-                if (stateToReturn != null)
-                {
-
-                    return stateToReturn;
-
-                }*/
         Debug.Log("current speed " + currentSpeed);
         if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
         {
@@ -132,8 +124,6 @@ public class SearchStateRBS : BaseST
     private void organiseConsumables()
     {
         // form a dicitionary that catergorises  each resource currently in view 
-/*        Debug.Log("consumables reset " + organisedConsumables.Count);
-*/
         foreach (KeyValuePair<GameObject, float> gameObject in Tank.consumablesFound) // loop through consumable dictionary 
         {
             if (!priorityPositions.Contains(gameObject.Key.transform.position))
@@ -179,142 +169,6 @@ public class SearchStateRBS : BaseST
 
 
     }
-
-
-/*    public void checkStateTransitions()
-    {
-
-
-
-
-        if (Tank.stats["enemySeen"])
-        {
-            //Debug.Log("would exit");
-            Debug.Log("Seen Enemey Tank");
-            if (shouldRetreatFromSearch()) return;
-            Debug.Log("no switch to retreat from search");
-            if (canAttackOrChaseETankFromSearch()) return;
-            Debug.Log("no switch to attack from search due to ammo");
-            logCounter++;
-            Debug.Log("No Transition from search");
-
-
-
-        }
-        else if (Tank.enemyBase != null)
-        {
-            Debug.Log("Seen Enemey base");
-
-            if (canAttackOrChaseEBaseFromSearch()) return;
-            Debug.Log("No Transition from search");
-
-
-        }
-        stateToReturn = null;
-
-
-    }*/
-/*
-    private bool shouldRetreatFromSearch()
-    {
-        if (Tank.priorityManager.checkLow(PRIORITIES.HEALTH) && Tank.enemyBase == null)
-        {
-            Debug.Log("search switch to retreat low health " + logCounter);
-            logCounter++;
-            stateToReturn = typeof(RetreatRBS);
-        }
-        return stateToReturn != null;
-
-    }
-
-    private bool canAttackOrChaseEBaseFromSearch()
-    {
-
-        Debug.Log("enemy base null in search " + (Tank.enemyBase == null));
-
-        Debug.Log("Seen Enemy Base");
-        if (!Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO) && Tank.enemyBase != null)
-        {
-            //chase
-            Debug.Log("search switch to attack base  ammo not crticial " + logCounter);
-            Tank.TurretFaceWorldPoint(Tank.enemyBase);
-            if (Tank.getDistanceToEnemyBase() < Tank.BaseFiringDistance && Tank.enemyBase != null)
-            {
-                Debug.Log(Tank.getDistanceToEnemyBase());
-                Debug.Log("  search switch to attack in firing distance  " + Tank.BaseFiringDistance + " " + logCounter);
-                stateToReturn = typeof(CC_AttackStateRBS);
-            }
-            else if (Tank.enemyBase != null && Tank.getDistanceToEnemyBase() > Tank.BaseFiringDistance)
-            {
-
-                Debug.Log(" search switch to chase not in firing distance  " + Tank.BaseFiringDistance + " " + logCounter);
-                stateToReturn = typeof(ChaseRBS);
-            }
-            logCounter++;
-
-
-        }
-
-        return stateToReturn != null;
-
-
-    }
-    private bool canAttackOrChaseETankFromSearch()
-    {
-        if (Tank.priorityManager.checkHigh(PRIORITIES.HEALTH) && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
-        {
-
-            if (Tank.getDistanceToEnemy() < Tank.TankFiringDistance)
-            {
-                Debug.Log(Tank.getDistanceToEnemy());
-                Debug.Log("  search switch to attack in firing distance  " + Tank.TankFiringDistance + " " + logCounter);
-                stateToReturn = typeof(CC_AttackStateRBS);
-            }
-            else if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL))
-            {
-
-                Debug.Log(" search switch to chase not in firing distance and high fuel " + Tank.TankFiringDistance + " " + logCounter);
-                stateToReturn = typeof(ChaseRBS);
-            }
-
-
-        }
-
-
-        return stateToReturn != null;
-    }
-*/
-    private void rushConsumable()
-    {
-
-        /*            List<PriorityManager.queuePriority> queuesToSweep = new List<PriorityManager.queuePriority>{PriorityManager.queuePriority.MAJOR,PriorityManager.queuePriority.MINOR };
-            List<PRIORITIES> currentPriorites = Tank.priorityManager.sweepQueues(queuesToSweep);
-
-            if (organisedConsumables.Count > 0 && !Tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL,PRIORITIES.HEALTH))
-            {
-                GameObject consumableToRush = null;
-
-                foreach (PRIORITIES priorities in currentPriorites)
-                {
-                    if (organisedConsumables.ContainsKey(priorities) ) {
-
-                        consumableToRush = organisedConsumables[priorities];
-                        break;                      
-
-                    }
-
-
-                }
-
-
-
-
-
-
-
-            }*/
-
-    }
     private void MoveToPriorityPositions()
     {
 
@@ -344,10 +198,6 @@ public class SearchStateRBS : BaseST
     }
     private void EvaluatePriorityPositions()
     {
-
-        /*bool isHealthMajor = Tank.priorityManager.checkLow(PRIORITIES.HEALTH);
-        bool isFuelMajor = Tank.priorityManager.checkLow(PRIORITIES.FUEL); // check if current priority of fuel is low
-        bool isAmmoMajor = Tank.priorityManager.checkQueue(queuePriority.MAJOR, PRIORITIES.AMMO);*/
         if (Tank.stats["lowHealth"] == true || Tank.stats["lowFuel"] == true) // if either was low
         {
             int getHealthOrFuel = Convert.ToInt32(organisedConsumables.ContainsKey(PRIORITIES.HEALTH)) - Convert.ToInt32(organisedConsumables.ContainsKey(PRIORITIES.FUEL));
@@ -375,8 +225,6 @@ public class SearchStateRBS : BaseST
 
                         if (organisedConsumables.ContainsKey(PRIORITIES.HEALTH))// if health was true that means a case of 0 means that both health and fuel were found in the orgainse items dictionary  
                         {
-
-                        //    currentSpeed = Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.FUEL) ? currentSpeed : 0.65f; // in this case we also check if speed can be increased
                             Vector3 posHealth = organisedConsumables[PRIORITIES.HEALTH].transform.position;
                             Vector3 posFuel = organisedConsumables[PRIORITIES.FUEL].transform.position;
                             float distanceDifference = Tank.consumablesFound[organisedConsumables[PRIORITIES.HEALTH]] - Tank.consumablesFound[organisedConsumables[PRIORITIES.FUEL]];
