@@ -82,7 +82,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
     
    private CC_BTFSMRBChaseState chaseDebugs;
    private CC_smartTankFSMRBSBT debugTanks;
-   private BTFSMRBSAttack attackDebugs;
+   private CC_BTFSMRBSAttack attackDebugs;
    private CC_BTFSMRBSRetreatState retreatDebugs; 
    private CC_BTFSMRBSSearchState searchDebugs;
     
@@ -95,7 +95,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
 
         debugTanks = new CC_smartTankFSMRBSBT();
         chaseDebugs = new CC_BTFSMRBChaseState(debugTanks);
-        attackDebugs = new BTFSMRBSAttack(debugTanks);
+        attackDebugs = new CC_BTFSMRBSAttack(debugTanks);
         retreatDebugs = new CC_BTFSMRBSRetreatState(debugTanks);
         searchDebugs = new CC_BTFSMRBSSearchState(debugTanks);
        
@@ -648,7 +648,7 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
         {
            
             {typeof(CC_BTFSMRBSSearchState),new CC_BTFSMRBSSearchState(this)},
-            {typeof(BTFSMRBSAttack),new BTFSMRBSAttack(this)},
+            {typeof(CC_BTFSMRBSAttack),new CC_BTFSMRBSAttack(this)},
             {typeof(CC_BTFSMRBChaseState),new CC_BTFSMRBChaseState(this)},
             {typeof(CC_BTFSMRBSRetreatState), new CC_BTFSMRBSRetreatState(this) }
 
@@ -731,8 +731,8 @@ public class CC_smartTankFSMRBSBT : CC_SmartTankRBS
          new Rule("shouldRetreat", "attackState", typeof(CC_BTFSMRBSRetreatState),retreatDebugs, Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
         new Rule("shouldRetreat", "searchState", typeof(CC_BTFSMRBSRetreatState), retreatDebugs,Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
         new Rule("shouldRetreat", "chaseState", typeof(CC_BTFSMRBSRetreatState),retreatDebugs, Rule.Predicate.And), // if we see the enemy and are on low health then we should retreat
-        new Rule("withinRange", "canAttack", typeof(BTFSMRBSAttack),attackDebugs, Rule.Predicate.And),// if we are able to attack(our health and fuel are high and ammo isn't a major priority) we should go into the attack state
-        new Rule("enemyBaseWithinRange", "canAttackBase", typeof(BTFSMRBSAttack), attackDebugs, Rule.Predicate.And),
+        new Rule("withinRange", "canAttack", typeof(CC_BTFSMRBSAttack),attackDebugs, Rule.Predicate.And),// if we are able to attack(our health and fuel are high and ammo isn't a major priority) we should go into the attack state
+        new Rule("enemyBaseWithinRange", "canAttackBase", typeof(CC_BTFSMRBSAttack), attackDebugs, Rule.Predicate.And),
         new Rule("shouldChase", "moveToTarget", typeof(CC_BTFSMRBChaseState),chaseDebugs ,Rule.Predicate.Or), // if we are in the attack state
         new Rule("enemyBaseSeen", "chaseBase", typeof(CC_BTFSMRBChaseState), chaseDebugs, Rule.Predicate.And),
 

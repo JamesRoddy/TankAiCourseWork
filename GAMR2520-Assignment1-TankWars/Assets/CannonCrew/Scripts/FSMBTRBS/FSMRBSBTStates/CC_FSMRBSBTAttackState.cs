@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BTFSMRBSAttack : BaseST
+public class CC_BTFSMRBSAttack : BaseST
 {
     CC_smartTankFSMRBSBT Tank;
 
-    public BTFSMRBSAttack(CC_smartTankFSMRBSBT tank)
+    public CC_BTFSMRBSAttack(CC_smartTankFSMRBSBT tank)
     {
         Tank = tank;
     }
