@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using static CC_SmartTank;
 using static PriorityManager;
-public class ChaseRBS : BaseST
+public class CC_ChaseStateRBS : BaseST
 {
 
     private CC_SmartTankRBS Tank;
@@ -17,7 +17,7 @@ public class ChaseRBS : BaseST
 
     float t = 0.0f;
     int logCounter = 0;
-    public ChaseRBS(CC_SmartTankRBS newtank)
+    public CC_ChaseStateRBS(CC_SmartTankRBS newtank)
     {
         Tank = newtank;
     }
@@ -71,11 +71,6 @@ public class ChaseRBS : BaseST
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
             Tank.FollowPathToWorldPoint(Tank.LastKnownEPos, fSpeed);  //Follow the tank so that we have a more accurate shot
 
-          
-          
-
-
-
             return null;
         }
 
@@ -87,27 +82,14 @@ public class ChaseRBS : BaseST
             
             Debug.Log(Tank.stats["enemyBaseSeen"] + " enemy base seen is ");
             //Once we have seen the enemy the base we travel towards it.
-/*            Debug.Log("Chasing Enemy Bases");
-*/            if (Tank.stats["enemyBaseSeen"] == true)// ensure base doesnt slip out of vision
+            if (Tank.stats["enemyBaseSeen"] == true)// ensure base doesnt slip out of vision
             {
                 Tank.FollowPathToWorldPoint(Tank.enemyBase, fSpeed);
             }
            
-
-        
-
-
             return null;
 
-
-
-
         }
-
-
-
-
-
         // every state will have a default return state allowing us to focus on more complex sides of the state governed by the global rules while still being able to use 
         // the simplicity of the finite state machine 
       
@@ -119,7 +101,7 @@ public class ChaseRBS : BaseST
             {
                 Debug.Log("chase timer is false and lost sight is false ");
                 Debug.Log("should going into SEARCH from CHASE with TIMER    ");
-                return typeof(SearchStateRBS);
+                return typeof(CC_SearchStateRBS);
             }
             else if (Tank.stats["lostSight"] )
             {

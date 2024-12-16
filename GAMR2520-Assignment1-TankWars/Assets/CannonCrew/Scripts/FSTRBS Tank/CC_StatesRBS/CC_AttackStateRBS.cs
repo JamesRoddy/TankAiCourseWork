@@ -24,8 +24,6 @@ public class CC_AttackStateRBS : BaseST
     }
     public override Type Entry()
     {
-        Debug.Log("Attack Enter " + logCounter);
-        logCounter++;
 
         Tank.stats["attackState"] = true;
 
@@ -88,7 +86,7 @@ public class CC_AttackStateRBS : BaseST
        Debug.Log("is enemy base null");
        Debug.Log("attack switch to search no condtion was hit " + logCounter);
          // reurn default state if none of the conditons are met 
-       return typeof(SearchStateRBS);
+       return typeof(CC_SearchStateRBS);
 
 
         
@@ -98,12 +96,6 @@ public class CC_AttackStateRBS : BaseST
 
     public override Type Exit()
     {
-        /*if(bCalc == false)
-        {
-            kitePath.transform.position = new Vector3(Mathf.Sin(Time.realtimeSinceStartup) * fkiteRadius, 0.0f, Mathf.Cos(Time.realtimeSinceStartup) * fkiteRadius);
-            kiteTankPosition.transform.position = Tank.LastKnownEPos.transform.position + kitePath.transform.position;
-            bCalc = true;
-        }*/
         Debug.Log("Attack Exit " + logCounter);
         fshootT = 0f;
         isFiringAtBase = false;
