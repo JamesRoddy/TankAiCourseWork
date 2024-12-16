@@ -23,6 +23,7 @@ public class CC_SmartTank : AITank
     public PriorityValuesHolder healthValuesHolder;
     public PriorityValuesHolder fuelValuesHolder;
     public PriorityValuesHolder ammoValuesHolder;
+    public bool hasCollidedWithEnemy = false;
     private Type stateToReturn = null;
     public PriorityManager priorityManager;
     private Vector3 currentSafteySpot;

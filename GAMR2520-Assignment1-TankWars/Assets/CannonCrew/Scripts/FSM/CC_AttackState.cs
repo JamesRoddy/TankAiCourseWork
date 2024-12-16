@@ -38,7 +38,10 @@ public class CC_AttackState : BaseST
                 logCounter++;
                 return typeof(CC_Retreat);
             }
-
+             
+            if(Tank.hasCollidedWithEnemy ==true) {
+                return typeof(CC_DodgeState);
+            }
             if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))// if we do not have health or fuel as a prioryt 
             {
                 if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > Tank.TankFiringDistance
