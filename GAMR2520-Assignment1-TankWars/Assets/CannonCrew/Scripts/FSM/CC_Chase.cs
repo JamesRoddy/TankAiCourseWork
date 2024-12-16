@@ -15,7 +15,9 @@ public class CC_Chase : BaseST
     float chaseTime = 2.0f;
     float t = 0.0f;
     bool hasSeenBase = false;
-    int logCounter = 0;
+    float tankDodegDist = 60.0f;
+    int engagementCounter = 0;
+    int dodgeMax = 2;
     public CC_Chase(CC_SmartTank newtank)
     {
         Tank = newtank;
@@ -23,7 +25,6 @@ public class CC_Chase : BaseST
 
     public override Type Entry()
     {
-        logCounter++;
         fSpeed = 1f;
         t = 0.0f;
         return null;
@@ -31,7 +32,7 @@ public class CC_Chase : BaseST
 
     public override Type Exit()
     {
-        logCounter++;
+        
         t = 0.0f;
         fSpeed = 1f;
         return null;
@@ -53,7 +54,7 @@ public class CC_Chase : BaseST
 
             if (Tank.priorityManager.checkLow(PRIORITIES.FUEL) || Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {
-                logCounter++;
+                
                 return typeof(CC_Retreat);
             }
             Tank.TurretFaceWorldPoint(Tank.LastKnownEPos);//Make the turret face the enemy tank so that we keep it in our vision
@@ -61,11 +62,26 @@ public class CC_Chase : BaseST
 
           
 
-            //if our tank is between max and min units away from the enemy and we are good on fuel, we go into the kite state
-             if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < 60f
-                && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > tankAttackMinThresh)
+            //if our tank is between max and min units away from the enemy and we are good on fuel and we arent currenlty behind the enemy so we dont uneccssarily dodge 
+             if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) < tankDodegDist
+                && Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > 
+                tankAttackMinThresh &&!(Vector3.Dot(Tank.EtankLastKnownTransformForward,Tank.transform.forward)>=0))
              {
-                logCounter++;
+                
+                
+                if(engagementCounter - dodgeMax > dodgeMax / 2.0f)
+                {
+                    engagementCounter = 0;
+                }
+                if(engagementCounter>=dodgeMax ) // if weve had three enagements and our health is currenlty safe or only of minor priority we will continue to chease the eenemy to attack them
+                {
+                        Debug.Log("didnt enage dodeg max was reached");
+                    engagementCounter++;
+                    return null;
+                }
+                
+
+                engagementCounter++;
                 return typeof(CC_DodgeState);
             }
 
@@ -95,7 +111,6 @@ public class CC_Chase : BaseST
                 if (Vector3.Distance(Tank.transform.position, Tank.EnemyBasePos.transform.position) < Tank.BaseFiringDistance
                && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
                 {
-                    logCounter++;
                     hasSeenBase = false;
                     return typeof(CC_AttackState);
                 }
@@ -146,7 +161,6 @@ public class CC_Chase : BaseST
     
                 }
 
-                logCounter++;
                 return typeof(CC_SearchState);
             }
             return null;

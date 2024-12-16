@@ -22,6 +22,7 @@ public class CC_SmartTank : AITank
     protected bool wasHit = false;
     public PriorityValuesHolder healthValuesHolder;
     public PriorityValuesHolder fuelValuesHolder;
+    bool hasCollidedWithEnemy = false;
     public PriorityValuesHolder ammoValuesHolder;
     private Type stateToReturn = null;
     public PriorityManager priorityManager;
@@ -206,11 +207,10 @@ public class CC_SmartTank : AITank
     }
     public override void AIOnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Projectile"))
-        {
-            hitTimer = 1.5f;
-            wasHit = true;
 
+        if (collision.gameObject.CompareTag("Tank"))
+        {
+            hasCollidedWithEnemy = true;
         }
 
 
@@ -430,12 +430,14 @@ public class CC_SmartTank : AITank
     {
         get { return enemyBasePosition; }
     }
-    public bool WasHit
+
+    public bool HasCollidedWithEnemy
     {
-
-        get { return wasHit; }
-
+        set { hasCollidedWithEnemy = value; }
+        get { return hasCollidedWithEnemy; }
     }
+
+
     public Vector3 BasePositionStore
     {
         get { return basePositionHolder.transform.position; }

@@ -9,7 +9,6 @@ public class CC_AttackState : BaseST
     private CC_SmartTank Tank;
     //Game object to store enemy position
     GameObject EnemyTankPositionStore = new GameObject();
-    int logCounter = 0;
     float fshootTimeLimit = 2f;
     float fkiteTime = 10f;
     float baseDeadTimer = 2.20f;
@@ -23,7 +22,6 @@ public class CC_AttackState : BaseST
     }
     public override Type Entry()
     {
-        logCounter++;
         return null;
     }
 
@@ -35,17 +33,24 @@ public class CC_AttackState : BaseST
            
             if (Tank.priorityManager.checkLow(PRIORITIES.HEALTH))
             {
-                logCounter++;
                 return typeof(CC_Retreat);
             }
 
             if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))
+
+
+            if (Tank.HasCollidedWithEnemy)
+            {
+                return typeof(CC_DodgeState);
+            }
+            if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))// if we do not have health or fuel as a prioryt 
             {
                 if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > Tank.TankFiringDistance
                    && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
                 {
                     logCounter++;
                     return typeof(CC_Chase);
+                    return typeof(CC_Chase);// go into chase
 
                 }
             }
@@ -87,7 +92,6 @@ public class CC_AttackState : BaseST
         fshootT = 0f;
         isFiringAtBase = false;
         t = 0.0f;
-        logCounter++;
         return null;
     }
 }

@@ -19,6 +19,7 @@ public class CC_DodgeState : BaseST
     GameObject enemyTarget = new GameObject();
     GameObject tankPosition = new GameObject();
     GameObject orbitPath = new GameObject();
+    int engamentCounter = 0;
 
     public CC_DodgeState(CC_SmartTank newTank)
     {
@@ -31,7 +32,16 @@ public class CC_DodgeState : BaseST
         {
             return typeof(CC_AttackState);
         }
+        engamentCounter++;
         enemyTarget = Tank.LastKnownEPos;
+        if (Tank.HasCollidedWithEnemy) // if we collided with the enmy we will try to snake around them at a wider angle 
+        {
+            orbitRadius = 60.0f;
+        }
+        else
+        {
+            orbitRadius = 25.0f;
+        }
         orbitPath.transform.position = Vector3.zero;
         tankPosition.transform.position = enemyTarget.transform.position + (Vector3.Normalize(enemyTarget.transform.position) * orbitRadius);
 
@@ -53,11 +63,19 @@ public class CC_DodgeState : BaseST
 
         //TO DO FIX BROKEN TRANSITION BETWEEN DODGE AND CHASE WE CAN END UP REPEATELDY SWITCHING BETWEEN THE TWO 
 
-        if (Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position) > Tank.TankFiringDistance)
+
+        if (Tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.FUEL) || Tank.priorityManager.checkLow(PRIORITIES.HEALTH)) // if fuel becomes a critcia prioity while we are snaking around the enemy then we retreat 
+        {
+            return typeof(CC_Retreat);
+        }
+         
+        if (Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position) > Tank.TankFiringDistance )// if the tank gets out of our firing range while were didging that means they have made the decision to retreat rather than chase or attack so we will
+                                                                                                                       // chase them assusming we either wasted their shots enough to where they 
+                                                                                                                       // validated the enagement as not worth it or they lost sight of us while we were moving in and out of their vision
         {
             return typeof(CC_Chase);
         }
-
+      
         //Start a timer
         t += Time.deltaTime;
 
@@ -74,6 +92,7 @@ public class CC_DodgeState : BaseST
             Tank.FollowPathToWorldPoint(tankPosition, fSpeed, AStar.HeuristicMode.EuclideanNoSqrt);
             return null;
         }
+        Tank.HasCollidedWithEnemy = false;
 
         return typeof(CC_AttackState);
 

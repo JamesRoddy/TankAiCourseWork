@@ -22,6 +22,7 @@ public class BaseAIBehaviourModel : MonoBehaviour
     private GameObject toLookForInWait;
     private GameObject posToLookForInWait;
     bool waitShouldCheckForObject;
+   
     private float waitTimer = 0.0f;
     private void Awake()
     {
@@ -30,6 +31,8 @@ public class BaseAIBehaviourModel : MonoBehaviour
         posToLookForInWait = new GameObject();
 
     }
+
+
 
     public Type PreviousBehaviourStateType
     {
