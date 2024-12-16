@@ -148,7 +148,7 @@ public class CC_SearchState : BaseST
     }
 
 
-    public void checkStateTransitions()
+    public void checkStateTransitions() // singular function that encapsulates all possible state transtions from search 
     {
 
 
@@ -178,7 +178,10 @@ public class CC_SearchState : BaseST
     {
         searchTimer += Time.deltaTime;
 
-        if (searchTimer > 15f)
+        if (searchTimer > 15f && !tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.AMMO)) // if we dont have crtical ammo we will transition into the ambush state to wait for the enemy 
+            // the main reason fuek and health priority checks are omitted here is that ambush also acts asa stationary search state as by stopping and swivling the turret the ambush state
+            // will also evalute the consumable it sees during this time allowing us to
+            // sweep the area for any priority resources such as fuel and  health and will evalute which ones to go for based on their priorty(major minor critical,etc)
         {
             stateToReturn = typeof(CC_Ambush);
         }
@@ -188,7 +191,9 @@ public class CC_SearchState : BaseST
 
     private bool shouldRetreatFromSearch()
     {
-        if (tank.priorityManager.checkLow(PRIORITIES.HEALTH) && tank.enemyBase == null)
+        if ((tank.priorityManager.checkLow(PRIORITIES.HEALTH) || tank.priorityManager.checkQueue(queuePriority.CRITICAL,PRIORITIES.AMMO ) && tank.enemyTank!= null ))
+            // we check the resource that are most critcal to an enagement that beng ammo and ehalth checking if ammo is not crticla(below half the lower thresh hold) as we still want to atake pop shots if we a re slightlty low on ammo 
+            // we also check if we have enough health to take the enagment and if any of these condtions are not met we transition inot the retreat state to run away and potentialy find more counsumables in the process 
         {
             logCounter++;
             stateToReturn = typeof(CC_Retreat);
@@ -200,18 +205,17 @@ public class CC_SearchState : BaseST
     private bool canAttackOrChaseEBaseFromSearch()
     {
 
-        if (!tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO) && tank.enemyBase != null)
+        if (!tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO) && tank.enemyBase != null && tank.priorityManager.checkHigh(PRIORITIES.HEALTH))  // if our ammo is not of critcual priority we check further if we can enage the enemy base and we are high on health as shoooting the base makes us an easier target for the enemy tank
         {
             tank.TurretFaceWorldPoint(tank.enemyBase);
-            if (tank.getDistanceToEnemyBase() < tank.BaseFiringDistance && tank.enemyBase != null)
+            if (tank.getDistanceToEnemyBase() < tank.BaseFiringDistance && tank.enemyBase != null) // if we are within our  firing distance so we dont miss the base
             {
-                stateToReturn = typeof(CC_AttackState);
+                stateToReturn = typeof(CC_AttackState); // we attack the base and transition into the attack state
             }
-            else if (tank.enemyBase != null && tank.getDistanceToEnemyBase() > tank.BaseFiringDistance)
+            else if (tank.enemyBase != null && tank.getDistanceToEnemyBase() > tank.BaseFiringDistance) // other wise if we see the enemy base and are not in firing dist
             {
-                stateToReturn = typeof(CC_Chase);
+                stateToReturn = typeof(CC_Chase); // we apparoch the base to ensure the shot 
             }
-            logCounter++;
 
 
         }
@@ -222,14 +226,17 @@ public class CC_SearchState : BaseST
     }
     private bool canAttackOrChaseETankFromSearch()
     {
-        if (tank.priorityManager.checkHigh(PRIORITIES.HEALTH) && !tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+        if (tank.priorityManager.checkHigh(PRIORITIES.HEALTH) && !tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO)) // validate most critcla resources to attack
         {
 
-            if (tank.getDistanceToEnemy() < tank.TankFiringDistance)
+            if (tank.getDistanceToEnemy() < tank.TankFiringDistance) // if we are within our firing disacnte to better ensure a shot 
             {
-                stateToReturn = typeof(CC_AttackState);
+                stateToReturn = typeof(CC_AttackState); // transition to the attack state
             }
-            else if (tank.priorityManager.checkHigh(PRIORITIES.FUEL))
+            else if (tank.priorityManager.checkHigh(PRIORITIES.FUEL)) // if we are not within our fiiring distance we return chase to get closer to ensure the shot on the enemy but only
+                                                                      // if fuel is not of high prioirty i.e crtical or major ensuring that
+                                                                      // we conserve fuel and dont chase as to not put our selevs at  a fuel
+                                                                      // disadvantage  as to only get one for potential shot on the enemy 
             {
                 stateToReturn = typeof(CC_Chase);
             }
@@ -241,53 +248,23 @@ public class CC_SearchState : BaseST
         return stateToReturn != null;
     }
 
-    private void rushConsumable()
-    {
 
-        /*            List<PriorityManager.queuePriority> queuesToSweep = new List<PriorityManager.queuePriority>{PriorityManager.queuePriority.MAJOR,PriorityManager.queuePriority.MINOR };
-            List<PRIORITIES> currentPriorites = tank.priorityManager.sweepQueues(queuesToSweep);
-
-            if (organisedConsumables.Count > 0 && !tank.priorityManager.checkQueue(PriorityManager.queuePriority.CRITICAL,PRIORITIES.HEALTH))
-            {
-                GameObject consumableToRush = null;
-
-                foreach (PRIORITIES priorities in currentPriorites)
-                {
-                    if (organisedConsumables.ContainsKey(priorities) ) {
-
-                        consumableToRush = organisedConsumables[priorities];
-                        break;                      
-
-                    }
-
-
-                }
-
-
-
-
-
-
-
-            }*/
-
-    }
     private void MoveToPriorityPositions()
     {
 
-        if (priorityPositions.Count > 0 && tank.consumablesFound.Count>0)
+        if (priorityPositions.Count > 0 && tank.consumablesFound.Count>0) // if we find a reosucre in search it will be pushed to the priority resource list and if we find multiple coumsables at once they will be pushed in order of prioirty
         {
 
             priorityPosition.transform.position = priorityPositions[0];
             tank.FollowPathToWorldPoint(priorityPosition, currentSpeed);
-            if (Vector3.Distance(priorityPosition.transform.position, tank.transform.position) < 5.0f)
+            if (Vector3.Distance(priorityPosition.transform.position, tank.transform.position) < 5.0f) // move to the currrent priority consumable location
             {
                 priorityPositions.RemoveAt(0);
             }
 
 
         }
-        else
+        else // other wise we no longer see a consumable to we go back to moudlating our speed based on fuel be setting the has found conusmable bool to false
         {
             priorityPositions.Clear();
             hasFoundConsumable = false;

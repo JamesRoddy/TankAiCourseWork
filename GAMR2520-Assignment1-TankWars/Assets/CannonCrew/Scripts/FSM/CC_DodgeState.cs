@@ -27,15 +27,15 @@ public class CC_DodgeState : BaseST
 
     public override Type Entry()
     {
-        if (Tank.enemyTank != null && Vector3.Dot(Tank.enemyTank.transform.forward, Tank.transform.forward) >= 0)
+        if (Tank.enemyTank != null && Vector3.Dot(Tank.enemyTank.transform.forward, Tank.transform.forward) > 0) // if the tank is already not facing us we immidealty go into the chase state
         {
-            return typeof(CC_AttackState);
+            return typeof(CC_Chase);
         }
         enemyTarget = Tank.LastKnownEPos;
         orbitPath.transform.position = Vector3.zero;
         tankPosition.transform.position = enemyTarget.transform.position + (Vector3.Normalize(enemyTarget.transform.position) * orbitRadius);
 
-        orbitPath.transform.position = new Vector3(Mathf.Sin(Time.realtimeSinceStartup) * orbitRadius, 0.0f, Mathf.Cos(Time.realtimeSinceStartup) * orbitRadius);
+        orbitPath.transform.position = new Vector3(Mathf.Sin(Time.realtimeSinceStartup) * orbitRadius, 0.0f, Mathf.Cos(Time.realtimeSinceStartup) * orbitRadius); //deine am initial curve around the enemy in attempt to doge a shot
         tankPosition.transform.position = enemyTarget.transform.position + orbitPath.transform.position;
 
         return null;
@@ -46,12 +46,7 @@ public class CC_DodgeState : BaseST
         //Check the posititon of the enemy tank
         enemyTarget = Tank.LastKnownEPos;
         Tank.stopAndCheckPos(enemyTarget, 0.5f,Tank.enemyTank,ref waitTime);
-        if (Tank.enemyTank == null)
-        {
-            
-        }
-
-        //TO DO FIX BROKEN TRANSITION BETWEEN DODGE AND CHASE WE CAN END UP REPEATELDY SWITCHING BETWEEN THE TWO 
+        
 
         if (Vector3.Distance(Tank.LastKnownEPos.transform.position, Tank.transform.position) > Tank.TankFiringDistance)
         {

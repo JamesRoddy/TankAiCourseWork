@@ -39,13 +39,13 @@ public class CC_AttackState : BaseST
                 return typeof(CC_Retreat);
             }
 
-            if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))
+            if (Tank.priorityManager.checkHigh(PRIORITIES.FUEL) && Tank.priorityManager.checkHigh(PRIORITIES.HEALTH))// if we do not have health or fuel as a prioryt 
             {
                 if (Vector3.Distance(Tank.transform.position, Tank.LastKnownEPos.transform.position) > Tank.TankFiringDistance
-                   && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+                   && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO)) // if we need to chase the enemy to get into firing disatnce and dont have ammo as a critcal priorty
                 {
                     logCounter++;
-                    return typeof(CC_Chase);
+                    return typeof(CC_Chase);// go into chase
 
                 }
             }
@@ -60,26 +60,26 @@ public class CC_AttackState : BaseST
         }
 
 
-        if (Tank.enemyBase != null  && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO))
+        if (Tank.enemyBase != null  && !Tank.priorityManager.checkQueue(queuePriority.CRITICAL, PRIORITIES.AMMO)) // if we see the bases and dont have ammo as a priority and we have evaluted tha t we dont see the tank above s
         {
 
-            t += Time.deltaTime;
+            t += Time.deltaTime; // timer to ensure that we delay our shots os that we dont shooot the bases twice 
             if(baseDeadTimer<t  )
             {
                 isFiringAtBase = false;
                 t = 0.0f;
             }
 
-            if(isFiringAtBase != true)
+            if(isFiringAtBase != true) // if we can fire based on the timer
             {
-                Tank.TurretFireAtPoint(Tank.EnemyBasePos);
+                Tank.TurretFireAtPoint(Tank.EnemyBasePos); // attempt to attack the base
                 isFiringAtBase = true; 
             }
 
             return null;
         }
 
-         return typeof(CC_SearchState);
+         return typeof(CC_SearchState); // if none of the above are met we go into search satte to look for consuambels 
     }
 
     public override Type Exit()

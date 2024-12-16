@@ -28,6 +28,7 @@ public class PriorityManager
     {
         prioritiesList = priorities;
         int prioritiesCount = prioritiesList.Count;
+        // deinfe all of the possible categories that can be assigined to a resource
         priorityQueues = new Dictionary<queuePriority, List<PRIORITIES>>
         {
             {queuePriority.CRITICAL,new List<PRIORITIES>(prioritiesCount)},
@@ -36,8 +37,8 @@ public class PriorityManager
             {queuePriority.SAFE,new List<PRIORITIES>(prioritiesCount)},
 
         };
-
-        for (int i = 0; i < prioritiesList.Count; i++)
+         
+        for (int i = 0; i < prioritiesList.Count; i++) // initialise the priority reosurce queues with the passed int list list of prioirty resources 
         {
 
             priorityQueues[prioritiesList[i].CurrentClassification].Add(prioritiesList[i].Name);
@@ -53,21 +54,21 @@ public class PriorityManager
 
         int maxResources = resources.Count;
         int resourceCount = 0;
-        foreach (queuePriority priority in priorities)
+        foreach (queuePriority priority in priorities) // loop throogh all of the queues within the prioirty queues dcionary
         {
 
-            resourceCount = resourceCount % maxResources;
+            resourceCount = resourceCount % maxResources; //ensure that we keep the count restrained to the numbre of items in the list
 
-            if (priorityQueues[priority].Contains(resources[resourceCount]))
+            if (priorityQueues[priority].Contains(resources[resourceCount])) // if one of the queues ocntains any of the define dprioirty resources 
             {
 
-                return resources[resourceCount];
+                return resources[resourceCount]; //return the resource
             }
 
             resourceCount++;
         }
 
-        return PRIORITIES.NONE;
+        return PRIORITIES.NONE; // no resources was in any of the priority queues being checked 
 
 
     }
@@ -75,7 +76,7 @@ public class PriorityManager
 
     public bool hasItems(queuePriority resource)
     {
-        return priorityQueues[resource].Count > 0;
+        return priorityQueues[resource].Count > 0; // check if a queue contains any resources
 
     }
     public void Update()
@@ -137,7 +138,7 @@ public class PriorityManager
         }
 
     }
-    public bool checkLow(PRIORITIES resource)
+    public bool checkLow(PRIORITIES resource) // check if a resoirces is a critical or major prioirty
     {
 
         if (priorityQueues[queuePriority.MAJOR].Count > 0 || priorityQueues[queuePriority.CRITICAL].Count > 0)
@@ -147,7 +148,7 @@ public class PriorityManager
         return false;
     }
 
-    public bool checkHigh(PRIORITIES resource)
+    public bool checkHigh(PRIORITIES resource) // check if a resources is of safe or minor priority
     {
         if (priorityQueues[queuePriority.SAFE].Count > 0 || priorityQueues[queuePriority.MINOR].Count > 0)
         {
@@ -155,7 +156,7 @@ public class PriorityManager
         }
         return false;
     }
-    public bool checkQueue(queuePriority queue, PRIORITIES resource)
+    public bool checkQueue(queuePriority queue, PRIORITIES resource) // check a specifc queue for a resource
     {
 
 

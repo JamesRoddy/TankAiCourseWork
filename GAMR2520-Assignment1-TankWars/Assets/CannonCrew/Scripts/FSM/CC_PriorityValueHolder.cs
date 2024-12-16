@@ -13,11 +13,10 @@ public class PriorityValuesHolder
     
     public PriorityValuesHolder(float lowThreshHold, float highThreshHold, float max )
     {
-        Debug.Log("non normalised threshHolds " + lowThreshHold + " " + highThreshHold + " max: " + max);
+        
         normalisedMinThresh = lowThreshHold / max;
         normalisedMaxThresh = highThreshHold / max;
-        Debug.Log("normalisedThreshHoldlow " + normalisedMinThresh);
-        Debug.Log("normalisedThreshHoldhigh " + normalisedMaxThresh);
+        
 
     }
 

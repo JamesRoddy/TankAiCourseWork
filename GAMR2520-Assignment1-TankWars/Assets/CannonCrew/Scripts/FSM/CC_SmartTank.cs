@@ -294,10 +294,11 @@ public class CC_SmartTank : AITank
 
     }
 
+    // mehthod for stopping the tanl and making it loook at a postion for a cetain amount of time used under various cirucmstances such as retreat ambush and the wait state
     public bool stopAndCheckPos(GameObject position, float waitTime, GameObject checkFor, ref float timer)
     {
 
-        if (timer < waitTime)
+        if (timer < waitTime) // while the timer is smaller than the specifced wait  time we consatnlty check for if the game object to check for is not null and return true when we find it or if the timer hits
         {
             timer += Time.deltaTime;
 
