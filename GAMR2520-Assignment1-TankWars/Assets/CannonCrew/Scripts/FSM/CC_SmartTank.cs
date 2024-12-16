@@ -163,7 +163,7 @@ public class CC_SmartTank : AITank
         lastKnownEnemyData = new GameObject();
         enemyBasePosition = new GameObject();
         // thresh holds used by prirotiy manager to determine which list each priority is placed in(ammo,health,fuel)
-        healthPriorityThresh = 40.0f;
+        healthPriorityThresh = 30.0f;
         healthSafteyThresh = 50.0f;
 
 
