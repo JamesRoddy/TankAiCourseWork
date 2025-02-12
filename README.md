@@ -1,5 +1,5 @@
 
-This was a group  project that produced at my time at univeristy that covered various different methods when it comes to designing AI for simulation and games and secured a 93% for the entire group. 
+This was a group  project that produced at my time at univeristy that covered various different methods when it comes to designing AI methods and pathfinding algorithms for simulation and games and secured a 93% for the entire group. 
 This projects was produced in unity using c#.
 
 
